@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¿Por qué se congestiona el camión? — Teoría de Colas</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ── */
+:root {
+  --ink:       #1a1a2e;
+  --ink2:      #2d2d4e;
+  --paper:     #f7f4ee;
+  --paper2:    #ede9e0;
+  --paper3:    #e2ddd3;
+  --rule:      rgba(26,26,46,0.12);
+  --rule2:     rgba(26,26,46,0.06);
+  --red:       #c0392b;
+  --amber:     #d4870a;
+  --green:     #1a7a4a;
+  --blue:      #1a4a8a;
+  --red-bg:    rgba(192,57,43,0.07);
+  --amber-bg:  rgba(212,135,10,0.08);
+  --green-bg:  rgba(26,122,74,0.07);
+  --blue-bg:   rgba(26,74,138,0.07);
+  --serif:     'Playfair Display', Georgia, serif;
+  --body:      'Source Serif 4', Georgia, serif;
+  --mono:      'JetBrains Mono', 'Courier New', monospace;
+}
+
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--body);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+/* ── PAGE GRAIN TEXTURE ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+  opacity: .6;
+}
+
+/* ── LAYOUT ── */
+.page { max-width: 780px; margin: 0 auto; padding: 0 2rem 4rem; }
+
+/* ── MASTHEAD ── */
+.masthead {
+  border-bottom: 2px solid var(--ink);
+  padding: 3rem 0 1.5rem;
+  margin-bottom: 3rem;
+}
+.masthead-kicker {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: .75rem;
+}
+.masthead h1 {
+  font-family: var(--serif);
+  font-size: clamp(2.2rem, 6vw, 3.6rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--ink);
+  margin-bottom: 1rem;
+}
+.masthead h1 em { font-style: italic; color: var(--red); }
+.masthead-sub {
+  font-size: 1.05rem;
+  color: var(--ink2);
+  max-width: 580px;
+  font-weight: 300;
+  font-style: italic;
+}
+.byline {
+  margin-top: 1.25rem;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .1em;
+  color: var(--ink2);
+  opacity: .6;
+  text-transform: uppercase;
+}
+
+/* ── DROP CAP SECTION ── */
+.drop-section { margin-bottom: 3rem; }
+.drop-section .lede {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--ink);
+  margin-bottom: 1.5rem;
+}
+.drop-section .lede::first-letter {
+  font-family: var(--serif);
+  font-size: 4.2rem;
+  font-weight: 700;
+  float: left;
+  line-height: .85;
+  margin-right: .12em;
+  margin-top: .06em;
+  color: var(--red);
+}
+
+/* ── PULL QUOTE ── */
+.pull {
+  border-left: 4px solid var(--ink);
+  margin: 2rem 0;
+  padding: .75rem 1.5rem;
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.pull span { display: block; font-family: var(--mono); font-size: 10px; font-style: normal; letter-spacing: .1em; text-transform: uppercase; color: var(--ink2); opacity: .5; margin-top: .4rem; }
+
+/* ── SECTION HEADING ── */
+.section-rule {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 2.5rem 0 1.25rem;
+}
+.section-rule::before {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--ink);
+}
+.section-rule h2 {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ink2);
+  white-space: nowrap;
+}
+.section-rule::after {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--ink);
+  flex-shrink: 0;
+}
+
+/* ── BODY TEXT ── */
+.body-text { font-size: 1rem; line-height: 1.8; color: var(--ink); margin-bottom: 1.25rem; }
+.body-text strong { font-weight: 600; }
+.body-text em { font-style: italic; color: var(--ink2); }
+
+/* ── INFOBOX ── */
+.infobox {
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+  background: var(--paper2);
+  position: relative;
+}
+.infobox.red   { border-left: 3px solid var(--red);   background: var(--red-bg); }
+.infobox.amber { border-left: 3px solid var(--amber); background: var(--amber-bg); }
+.infobox.green { border-left: 3px solid var(--green); background: var(--green-bg); }
+.infobox.blue  { border-left: 3px solid var(--blue);  background: var(--blue-bg); }
+.infobox-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  margin-bottom: .5rem;
+}
+.infobox.red   .infobox-label { color: var(--red); }
+.infobox.amber .infobox-label { color: var(--amber); }
+.infobox.green .infobox-label { color: var(--green); }
+.infobox.blue  .infobox-label { color: var(--blue); }
+.infobox p { font-size: .9rem; line-height: 1.7; color: var(--ink); }
+
+/* ── MATH DISPLAY ── */
+.math-block {
+  background: var(--paper2);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 1rem 1.5rem;
+  margin: 1.25rem 0;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 2.1;
+  color: var(--ink);
+  overflow-x: auto;
+}
+.math-block .eq-label {
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink2);
+  opacity: .5;
+  margin-bottom: .25rem;
+  font-family: var(--mono);
+}
+.math-block .eq { color: var(--blue); }
+.math-block .eq-result { color: var(--green); font-weight: 500; }
+.math-block .comment { color: var(--ink2); opacity: .5; font-size: 11px; }
+
+/* ── DERIVATION STEPS ── */
+.deriv { counter-reset: step; margin: 1.5rem 0; }
+.deriv-step {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: .75rem;
+  margin-bottom: 1rem;
+  align-items: start;
+}
+.deriv-step::before {
+  counter-increment: step;
+  content: counter(step);
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--paper);
+  background: var(--ink);
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: .15rem;
+}
+.deriv-step-body { font-size: .9rem; line-height: 1.7; color: var(--ink2); }
+.deriv-step-body .eq { font-family: var(--mono); font-size: 12px; color: var(--blue); display: block; background: var(--paper2); padding: .3rem .6rem; border-radius: 3px; margin-top: .3rem; }
+
+/* ── RESULT BOX ── */
+.result-box {
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 4px;
+  padding: .9rem 1.5rem;
+  font-family: var(--mono);
+  font-size: 14px;
+  text-align: center;
+  margin: 1.5rem 0;
+  letter-spacing: .02em;
+}
+.result-box .result-label { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; opacity: .5; margin-bottom: .25rem; }
+
+/* ══════════════════════════════════════
+   SIMULATOR
+══════════════════════════════════════ */
+.sim-wrapper {
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 2rem 0;
+}
+.sim-header {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.sim-header h3 { font-family: var(--serif); font-size: 1.1rem; font-weight: 400; font-style: italic; }
+.sim-header span { font-family: var(--mono); font-size: 9px; letter-spacing: .15em; text-transform: uppercase; opacity: .5; }
+.sim-body { padding: 1.5rem; background: var(--paper); }
+
+/* PARAM GRID */
+.param-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.param-card {
+  background: var(--paper2);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: .9rem 1rem;
+}
+.param-name {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink2);
+  opacity: .6;
+  margin-bottom: .2rem;
+}
+.param-meaning { font-size: .8rem; color: var(--ink2); margin-bottom: .6rem; line-height: 1.4; }
+.param-row { display: flex; align-items: center; gap: .6rem; }
+.param-row input[type=range] { flex: 1; accent-color: var(--ink); cursor: pointer; }
+.param-val {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  min-width: 52px;
+  text-align: right;
+}
+
+/* ROUTE VIZ */
+.route-section { margin-bottom: 1.5rem; }
+.route-section-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink2);
+  opacity: .5;
+  margin-bottom: .75rem;
+}
+#route-canvas {
+  width: 100%;
+  height: 120px;
+  display: block;
+  border-radius: 3px;
+  border: 1px solid var(--rule);
+  background: var(--paper3);
+  cursor: crosshair;
+}
+.route-hint { font-family: var(--mono); font-size: 10px; color: var(--ink2); opacity: .5; text-align: center; margin-top: .4rem; }
+.bc-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: .75rem; }
+
+/* K CONTROL */
+.k-section {
+  background: var(--paper2);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+.k-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: .5rem;
+}
+.k-title { font-family: var(--mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink2); opacity: .6; }
+.k-meta { font-family: var(--mono); font-size: 11px; color: var(--blue); }
+.k-row { display: flex; align-items: center; gap: .75rem; }
+.k-row input[type=range] { flex: 1; accent-color: var(--red); cursor: pointer; }
+.k-val { font-family: var(--mono); font-size: 15px; font-weight: 500; color: var(--ink); min-width: 60px; text-align: right; }
+.k-feasibility { margin-top: .6rem; font-size: .8rem; color: var(--ink2); font-style: italic; }
+
+/* RESULTS PANEL */
+.results-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+.res-col { background: var(--paper); padding: 1.1rem 1.25rem; }
+.res-col.proposed { background: var(--paper2); }
+.res-col-title {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink2);
+  opacity: .5;
+  margin-bottom: .9rem;
+  padding-bottom: .5rem;
+  border-bottom: 1px solid var(--rule);
+}
+.res-metric { display: flex; justify-content: space-between; align-items: baseline; padding: .35rem 0; border-bottom: 1px solid var(--rule2); }
+.res-metric:last-child { border-bottom: none; }
+.res-key { font-size: .8rem; color: var(--ink2); }
+.res-val { font-family: var(--mono); font-size: 14px; font-weight: 500; }
+.res-val.ok   { color: var(--green); }
+.res-val.warn { color: var(--amber); }
+.res-val.bad  { color: var(--red); }
+.res-val.na   { color: var(--ink2); opacity: .4; }
+
+/* ALERT STRIP */
+.alert-strip {
+  border-radius: 4px;
+  padding: .65rem 1rem;
+  font-size: .85rem;
+  margin-bottom: .75rem;
+  display: none;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .01em;
+}
+.alert-strip.red   { background: var(--red-bg);   color: var(--red);   border: 1px solid rgba(192,57,43,.2); display: none; }
+.alert-strip.amber { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(212,135,10,.2); display: none; }
+.alert-strip.green { background: var(--green-bg); color: var(--green); border: 1px solid rgba(26,122,74,.2); display: none; }
+
+/* SAVINGS STRIP */
+.savings {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: .75rem;
+}
+.saving-cell { background: var(--paper); padding: .75rem 1rem; text-align: center; }
+.saving-val { font-family: var(--serif); font-size: 1.6rem; color: var(--green); line-height: 1; }
+.saving-val.bad { color: var(--red); }
+.saving-lbl { font-size: .7rem; color: var(--ink2); margin-top: .2rem; }
+
+/* LEGEND */
+.legend { display: flex; gap: 1.25rem; flex-wrap: wrap; margin-bottom: .75rem; }
+.leg-item { display: flex; align-items: center; gap: .3rem; font-size: .75rem; color: var(--ink2); font-family: var(--mono); }
+.leg-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── TABLE ── */
+.data-table { width: 100%; border-collapse: collapse; font-size: .875rem; margin: 1.25rem 0; }
+.data-table th { text-align: left; padding: .4rem .75rem; border-bottom: 2px solid var(--ink); font-family: var(--mono); font-size: .75rem; letter-spacing: .06em; color: var(--ink2); }
+.data-table td { padding: .4rem .75rem; border-bottom: 1px solid var(--rule); }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table td.mono { font-family: var(--mono); font-size: .8rem; }
+.data-table td.hl { color: var(--blue); font-weight: 600; font-family: var(--mono); }
+
+/* ── REFERENCES ── */
+.references { margin-top: 3rem; border-top: 1px solid var(--ink); padding-top: 1.5rem; }
+.references h2 { font-family: var(--serif); font-size: 1.1rem; margin-bottom: 1rem; }
+.ref-item { font-size: .85rem; color: var(--ink2); padding: .4rem 0; border-bottom: 1px solid var(--rule2); padding-left: 1.5rem; text-indent: -1.5rem; line-height: 1.6; }
+.ref-item em { font-style: italic; }
+
+/* ── FOOTER ── */
+.page-footer { margin-top: 3rem; border-top: 2px solid var(--ink); padding-top: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .5rem; }
+.page-footer span { font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink2); opacity: .4; }
+.page-footer a { color: var(--blue); text-decoration: none; font-family: var(--mono); font-size: 9px; letter-spacing: .08em; }
+
+@media (max-width: 560px) {
+  .param-grid, .bc-row, .results-panel, .savings { grid-template-columns: 1fr; }
+  .page { padding-left: 1rem; padding-right: 1rem; }
+  .masthead h1 { font-size: 2rem; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ═══════════ MASTHEAD ═══════════ -->
+<div class="masthead">
+  <div class="masthead-kicker">Investigación de Operaciones · Teoría de Colas</div>
+  <h1>¿Por qué se congestiona<br>el camión en la <em>mañana</em>?</h1>
+  <p class="masthead-sub">Una introducción a la teoría de colas aplicada a rutas de transporte urbano, con un modelo matemático y un simulador interactivo.</p>
+  <div class="byline">FECA–UJED · Investigación de Operaciones · marionomics.com</div>
+</div>
+
+<!-- ═══════════ SECCIÓN 1 — EL PROBLEMA ═══════════ -->
+<div class="drop-section">
+  <p class="lede">En una ruta de camión urbano, hay un fenómeno que cualquier pasajero frecuente conoce bien: el camión llega más o menos a tiempo en las primeras paradas, pero en cierto punto del recorrido —generalmente a mitad de la mañana— todo se detiene. La cola crece, los camiones se acumulan, y lo que debía tardar diez minutos tarda cuarenta.</p>
+</div>
+
+<p class="body-text">La pregunta parece sencilla: ¿por qué se congestiona <em>ahí</em> y no en otra parte? ¿Y por qué solo en la mañana? La intuición dice "porque hay más gente" —y tiene razón, pero incompleta. El modelo matemático muestra algo más preciso: la congestión no es simplemente una función de cuánta gente hay, sino de la <strong>relación entre cuántos llegan y con qué rapidez se les puede atender</strong>. Cuando esa relación se acerca a un límite crítico, el sistema no se degrada gradualmente —colapsa.</p>
+
+<div class="pull">
+  "No basta con agregar camiones a la ruta. Si el problema es estructural —demasiada demanda en un tramo específico durante un horario específico— la solución también debe ser estructural."
+  <span>— La pregunta que motiva este modelo</span>
+</div>
+
+<p class="body-text">La propuesta que modelamos aquí es diferente a la solución obvia. En lugar de agregar camiones (inversión de capital que sería inútil fuera de la hora pico), se propone <strong>reasignar temporalmente</strong> una fracción de los camiones existentes para que operen exclusivamente en el tramo congestionado —llamémoslo el tramo B–C— durante la hora pico. Después del pico, regresan a la ruta completa. El modelo responde cuántos camiones redirigir, y si eso es suficiente.</p>
+
+<!-- ═══════════ SECCIÓN 2 — LAS HERRAMIENTAS ═══════════ -->
+<div class="section-rule"><h2>El modelo matemático</h2></div>
+
+<p class="body-text">Para analizar este sistema usamos <strong>teoría de colas estocástica</strong>. La palabra "estocástica" significa que los tiempos de llegada y de servicio son aleatorios —exactamente como ocurre en la realidad, donde los pasajeros no llegan en fila ordenada y el camión no tarda exactamente lo mismo en cada parada.</p>
+
+<div class="infobox blue">
+  <div class="infobox-label">Supuesto de modelado</div>
+  <p>Analizamos solo la <strong>hora pico</strong>: tomamos una "fotografía" del sistema durante la ventana crítica (por ejemplo, 7–9 am) y asumimos que las tasas de llegada y servicio son constantes en ese intervalo. Esto se llama <em>análisis en estado estacionario condicional</em> y es suficiente para responder la pregunta que nos interesa.</p>
+</div>
+
+<p class="body-text">Cada parada de la ruta se modela como un servidor. Los pasajeros llegan según un <strong>proceso de Poisson</strong> con tasa λ (pasajeros por hora). La flota asignada a ese segmento atiende pasajeros con una tasa de servicio total μ (pasajeros por hora). El modelo se llama M/M/1 —la primera M por las llegadas Markovianas, la segunda por los tiempos de servicio Markovianos.</p>
+
+<div class="math-block">
+  <div class="eq-label">Parámetros fundamentales</div>
+  <div class="eq">λ  →  tasa de llegadas (pasajeros / hora)</div>
+  <div class="eq">μ  →  tasa de servicio total del segmento (pasajeros / hora)</div>
+  <div class="eq">ρ  =  λ / μ    <span class="comment">← utilización: la fracción del tiempo que los camiones están ocupados</span></div>
+</div>
+
+<p class="body-text">La variable ρ (rho) es la clave de todo. Si ρ &lt; 1, el sistema es estable: en promedio, los camiones pueden atender a todos los pasajeros. Si ρ ≥ 1, la cola crece sin límite. Y lo que hace interesante al modelo es lo que ocurre <em>cerca</em> de ρ = 1: las métricas no crecen linealmente —explotan.</p>
+
+<div class="math-block">
+  <div class="eq-label">Fórmulas del estado estacionario — válidas cuando ρ &lt; 1</div>
+  <div class="eq">Lq  =  ρ² / (1 − ρ)              <span class="comment">← pasajeros promedio esperando en cola</span></div>
+  <div class="eq">Wq  =  λ / [μ · (μ − λ)]          <span class="comment">← tiempo promedio de espera (en horas)</span></div>
+  <div class="eq">W   =  1 / (μ − λ)                <span class="comment">← tiempo total en el sistema (espera + servicio)</span></div>
+</div>
+
+<div class="infobox green">
+  <div class="infobox-label">Ley de Little — el puente entre lo observable y lo calculable</div>
+  <p><strong>Lq = λ · Wq</strong> y <strong>L = λ · W</strong>. Esta identidad es exacta para cualquier tipo de cola, sin importar la distribución de llegadas o servicio. Si puedes contar cuántos pasajeros hay en la parada (L) y medir cuántos llegan por hora (λ), obtienes el tiempo de espera promedio directamente: <strong>Wq = Lq / λ</strong>. Sin cronómetro.</p>
+</div>
+
+<!-- ═══════════ SECCIÓN 3 — LA RED ═══════════ -->
+<div class="section-rule"><h2>La ruta completa como red de colas</h2></div>
+
+<p class="body-text">Una ruta con muchas paradas no es un solo servidor —es una <strong>red de colas en serie</strong>. El Teorema de Jackson (1957) establece que en una red abierta de colas en serie, cada parada puede analizarse independientemente como si fuera un nodo M/M/1 aislado. El tiempo total de viaje es:</p>
+
+<div class="math-block">
+  <div class="eq-label">Tiempo total de viaje de extremo a extremo</div>
+  <div class="eq eq-result">W_total  =  Σᵢ Wᵢ  +  Σᵢ tᵢ</div>
+  <div class="eq"><span class="comment">Wᵢ = tiempo de espera en la parada i</span></div>
+  <div class="eq"><span class="comment">tᵢ = tiempo de tránsito entre parada i e i+1 (medible en campo)</span></div>
+</div>
+
+<p class="body-text">El cuello de botella —la parada que más contribuye al tiempo de espera— es la que tiene mayor utilización ρᵢ. Cuando los alumnos identificaron las paradas B y C como el tramo congestionado, estaban localizando el nodo donde ρ se acerca peligrosamente a 1.</p>
+
+<!-- ═══════════ SECCIÓN 4 — REASIGNACIÓN ═══════════ -->
+<div class="section-rule"><h2>La propuesta: reasignar, no comprar</h2></div>
+
+<p class="body-text">Sea <strong>n</strong> el número total de camiones en la ruta y <strong>k</strong> los camiones que se redirigen al tramo B–C durante la hora pico. Los (n − k) restantes continúan la ruta completa. Cada segmento ahora tiene su propia capacidad:</p>
+
+<div class="math-block">
+  <div class="eq-label">Capacidad efectiva de cada segmento</div>
+  <div class="eq">μ_d  =  (n − k) · μ₀    <span class="comment">← ruta principal, con n−k camiones</span></div>
+  <div class="eq">μ_s  =  k · μ₀           <span class="comment">← subconjunto B–C, con k camiones</span></div>
+  <div class="eq"><span class="comment">μ₀ = capacidad de un solo camión (pasajeros / hora)</span></div>
+</div>
+
+<p class="body-text">La demanda en el tramo B–C es mayor que en el resto de la ruta —llamémosla λ_BC. Esto es precisamente por qué hay congestión: la misma flota que es suficiente para el resto de la ruta, no lo es para ese tramo en hora pico. La utilización de cada segmento con la reasignación es:</p>
+
+<div class="math-block">
+  <div class="eq-label">Utilización de cada segmento tras la reasignación</div>
+  <div class="eq">ρ_d  =  λ_normal / μ_d  =  λ_normal / [(n−k)·μ₀]</div>
+  <div class="eq">ρ_s  =  λ_BC    / μ_s  =  λ_BC    / [k·μ₀]</div>
+</div>
+
+<div class="infobox amber">
+  <div class="infobox-label">El trade-off fundamental</div>
+  <p>Aumentar k mejora el subconjunto B–C (baja ρ_s) pero <strong>debilita la ruta principal</strong> (sube ρ_d). Si k es demasiado pequeño, B–C sigue congestionado. Si k es demasiado grande, la ruta principal se colapsa. El modelo encuentra el rango de k que mantiene ambos segmentos estables.</p>
+</div>
+
+<!-- ═══════════ SECCIÓN 5 — RANGO FACTIBLE ═══════════ -->
+<div class="section-rule"><h2>¿Cuántos camiones redirigir? El rango factible</h2></div>
+
+<p class="body-text">Para que ambos segmentos sean estables simultáneamente, se necesita ρ_d &lt; 1 y ρ_s &lt; 1. Esas dos condiciones imponen un rango sobre k:</p>
+
+<div class="deriv">
+  <div class="deriv-step">
+    <div class="deriv-step-body">
+      El subconjunto B–C debe ser estable: ρ_s &lt; 1
+      <span class="eq">k · μ₀ &gt; λ_BC  →  k &gt; λ_BC / μ₀  →  k_mín = ⌈λ_BC / μ₀⌉</span>
+    </div>
+  </div>
+  <div class="deriv-step">
+    <div class="deriv-step-body">
+      La ruta principal debe ser estable: ρ_d &lt; 1
+      <span class="eq">(n−k) · μ₀ &gt; λ_normal  →  k &lt; n − λ_normal/μ₀  →  k_máx = ⌊n − λ_normal/μ₀⌋</span>
+    </div>
+  </div>
+  <div class="deriv-step">
+    <div class="deriv-step-body">
+      El rango factible es el intervalo de enteros entre k_mín y k_máx
+      <span class="eq">k_mín  ≤  k  ≤  k_máx</span>
+    </div>
+  </div>
+</div>
+
+<div class="result-box">
+  <div class="result-label">Si k_mín &gt; k_máx</div>
+  No existe ningún valor de k que estabilice ambos segmentos. La flota actual es insuficiente para resolver el problema con reasignación —se necesitan más camiones o reducir la demanda.
+</div>
+
+<!-- ═══════════ SECCIÓN 6 — OPTIMALIDAD ═══════════ -->
+<div class="section-rule"><h2>El k óptimo: igualar los tiempos de espera</h2></div>
+
+<p class="body-text">Dentro del rango factible, el k óptimo (k*) es aquel que iguala los tiempos de espera de ambos segmentos. Si Wq_d &gt; Wq_s, conviene mover más camiones a B–C; si Wq_d &lt; Wq_s, se están enviando demasiados. La condición de optimalidad es:</p>
+
+<div class="math-block">
+  <div class="eq-label">Condición de optimalidad</div>
+  <div class="eq eq-result">Wq_d(k*)  =  Wq_s(k*)</div>
+</div>
+
+<p class="body-text">Sustituyendo las expresiones M/M/1 y definiendo α = λ_normal/μ₀ y β = λ_BC/μ₀ (cargas normalizadas):</p>
+
+<div class="math-block">
+  <div class="eq-label">Ecuación de optimalidad en función de k</div>
+  <div class="eq">α / [(n−k)·(n−k − α)]  =  β / [k·(k − β)]</div>
+  <div class="eq"><span class="comment">→ cuadrática en k; se resuelve numéricamente por bisección</span></div>
+  <div class="eq"><span class="comment">→ caso especial λ_normal = λ_BC: k* = n/2 (división simétrica)</span></div>
+  <div class="eq"><span class="comment">→ en general λ_BC &gt; λ_normal: k* &gt; n/2</span></div>
+</div>
+
+<!-- ═══════════ SIMULADOR ═══════════ -->
+<div class="section-rule"><h2>Simulador interactivo</h2></div>
+
+<p class="body-text">Ajusta los parámetros estimados de tu ruta. Marca las paradas B y C donde identificas la congestión. Mueve k para ver cómo cambian las métricas —el simulador calcula el rango factible y el k* automáticamente.</p>
+
+<div class="sim-wrapper">
+  <div class="sim-header">
+    <h3>Modelo de reasignación de flota en hora pico</h3>
+    <span>M/M/1 · Red de Jackson</span>
+  </div>
+  <div class="sim-body">
+
+    <!-- PARAMS -->
+    <div class="param-grid">
+      <div class="param-card">
+        <div class="param-name">n — camiones totales en la ruta</div>
+        <div class="param-meaning">El total de unidades que opera la ruta actualmente. Es un dato fijo.</div>
+        <div class="param-row">
+          <input type="range" id="sl-n" min="3" max="25" value="10" step="1">
+          <div class="param-val"><span id="v-n">10</span></div>
+        </div>
+      </div>
+      <div class="param-card">
+        <div class="param-name">μ₀ — capacidad por camión (pas/hr)</div>
+        <div class="param-meaning">Pasajeros que un solo camión puede atender por hora en el tramo.</div>
+        <div class="param-row">
+          <input type="range" id="sl-mu0" min="20" max="200" value="80" step="5">
+          <div class="param-val"><span id="v-mu0">80</span></div>
+        </div>
+      </div>
+      <div class="param-card">
+        <div class="param-name">λ_normal — demanda fuera de B–C (pas/hr)</div>
+        <div class="param-meaning">Tasa de llegadas promedio en las paradas normales de la ruta.</div>
+        <div class="param-row">
+          <input type="range" id="sl-lamn" min="10" max="500" value="60" step="5">
+          <div class="param-val"><span id="v-lamn">60</span></div>
+        </div>
+      </div>
+      <div class="param-card">
+        <div class="param-name">λ_BC — demanda en B–C, hora pico (pas/hr)</div>
+        <div class="param-meaning">Tasa de llegadas en el tramo congestionado durante la hora pico. Debe ser mayor que λ_normal para que el modelo sea interesante.</div>
+        <div class="param-row">
+          <input type="range" id="sl-lambc" min="10" max="800" value="350" step="5">
+          <div class="param-val"><span id="v-lambc">350</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROUTE -->
+    <div class="route-section">
+      <div class="route-section-label">Ruta — ubica las paradas B y C del tramo congestionado</div>
+      <div class="legend">
+        <div class="leg-item"><div class="leg-dot" style="background:#1a7a4a"></div>ρ bajo (&lt;0.7)</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#d4870a"></div>ρ elevado (0.7–0.9)</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#c0392b"></div>ρ crítico (≥0.9)</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#1a4a8a; border:2px solid #1a4a8a"></div>Paradas B y C</div>
+      </div>
+      <canvas id="route-canvas"></canvas>
+      <div class="route-hint">Clic en la ruta: primer clic mueve B · segundo clic mueve C</div>
+      <div class="bc-row">
+        <div class="param-card">
+          <div class="param-name" style="color:var(--blue)">Parada B — inicio del tramo</div>
+          <div class="param-row">
+            <input type="range" id="sl-b" min="1" max="68" value="25" step="1">
+            <div class="param-val" style="color:var(--blue)"><span id="v-b">26</span></div>
+          </div>
+        </div>
+        <div class="param-card">
+          <div class="param-name" style="color:var(--blue)">Parada C — fin del tramo</div>
+          <div class="param-row">
+            <input type="range" id="sl-c" min="2" max="69" value="55" step="1">
+            <div class="param-val" style="color:var(--blue)"><span id="v-c">56</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- K CONTROL -->
+    <div class="k-section">
+      <div class="k-header">
+        <div class="k-title">k — camiones a redirigir al tramo B–C durante hora pico</div>
+        <div class="k-meta" id="k-range-label">Rango factible: —</div>
+      </div>
+      <div class="k-row">
+        <input type="range" id="sl-k" min="1" max="24" value="5" step="1">
+        <div class="k-val"><span id="v-k">5</span> / <span id="v-n2">10</span></div>
+      </div>
+      <div class="k-feasibility" id="k-feasibility-note"></div>
+    </div>
+
+    <!-- ALERTS -->
+    <div class="alert-strip red"   id="alert-infeasible"></div>
+    <div class="alert-strip amber" id="alert-warn"></div>
+    <div class="alert-strip green" id="alert-ok"></div>
+
+    <!-- RESULTS -->
+    <div class="results-panel">
+      <div class="res-col">
+        <div class="res-col-title">Sin reasignación — todos los camiones, ruta completa</div>
+        <div class="res-metric"><span class="res-key">ρ fuera de B–C</span><span class="res-val" id="r-base-n">—</span></div>
+        <div class="res-metric"><span class="res-key">ρ en B–C (hora pico)</span><span class="res-val" id="r-base-bc">—</span></div>
+        <div class="res-metric"><span class="res-key">Wq en B–C</span><span class="res-val" id="wq-base-bc">—</span></div>
+        <div class="res-metric"><span class="res-key">Lq en B–C</span><span class="res-val" id="lq-base-bc">—</span></div>
+      </div>
+      <div class="res-col proposed">
+        <div class="res-col-title">Con reasignación de k camiones a B–C</div>
+        <div class="res-metric"><span class="res-key">ρ_d ruta principal</span><span class="res-val" id="r-prop-d">—</span></div>
+        <div class="res-metric"><span class="res-key">ρ_s subconjunto B–C</span><span class="res-val" id="r-prop-s">—</span></div>
+        <div class="res-metric"><span class="res-key">Wq_d ruta principal</span><span class="res-val" id="wq-prop-d">—</span></div>
+        <div class="res-metric"><span class="res-key">Wq_s subconjunto B–C</span><span class="res-val" id="wq-prop-s">—</span></div>
+        <div class="res-metric"><span class="res-key">k* óptimo sugerido</span><span class="res-val ok" id="kopt-display">—</span></div>
+      </div>
+    </div>
+
+    <div class="savings">
+      <div class="saving-cell"><div class="saving-val" id="sav-rho">—</div><div class="saving-lbl">Δρ en B–C</div></div>
+      <div class="saving-cell"><div class="saving-val" id="sav-wq">—</div><div class="saving-lbl">ΔWq en B–C</div></div>
+      <div class="saving-cell"><div class="saving-val" id="sav-stability">—</div><div class="saving-lbl">Sistema factible</div></div>
+    </div>
+
+  </div><!-- /sim-body -->
+</div><!-- /sim-wrapper -->
+
+<!-- ═══════════ SECCIÓN 7 — EJERCICIO ═══════════ -->
+<div class="section-rule"><h2>Ejercicio numérico paso a paso</h2></div>
+
+<p class="body-text">Sigue este ejemplo con datos realistas. El objetivo es que puedas resolver un problema completo desde la estimación de parámetros hasta la interpretación del resultado.</p>
+
+<table class="data-table">
+  <thead><tr><th>Parámetro</th><th>Símbolo</th><th>Valor</th><th>Cómo lo obtienes</th></tr></thead>
+  <tbody>
+    <tr><td>Camiones en la ruta</td><td class="mono">n</td><td class="hl">10</td><td>Conteo directo en la ruta</td></tr>
+    <tr><td>Capacidad por camión</td><td class="mono">μ₀</td><td class="hl">80 pas/hr</td><td>60 ÷ tiempo_parada_promedio (min)</td></tr>
+    <tr><td>Demanda fuera de B–C</td><td class="mono">λ_normal</td><td class="hl">60 pas/hr</td><td>Conteo en paradas normales durante T min</td></tr>
+    <tr><td>Demanda en B–C, pico</td><td class="mono">λ_BC</td><td class="hl">700 pas/hr</td><td>Conteo en B–C durante la hora pico</td></tr>
+  </tbody>
+</table>
+
+<p class="body-text"><strong>Paso 1 — Situación actual.</strong> Con los 10 camiones en ruta completa, μ_total = 10 × 80 = 800 pas/hr. La utilización en B–C durante la hora pico es:</p>
+
+<div class="math-block">
+  <div class="eq">ρ_BC  =  700 / 800  =  <span style="color:var(--red)">0.875</span>    ← zona crítica</div>
+  <div class="eq">Wq_BC  =  700 / [800 × (800−700)]  =  700 / 80,000  =  0.00875 hr  =  <span style="color:var(--red)">0.525 min por parada</span></div>
+</div>
+
+<p class="body-text">Con 30 paradas en el tramo B–C, el retraso acumulado solo por espera es aproximadamente 15.75 minutos por encima del tiempo de tránsito normal.</p>
+
+<p class="body-text"><strong>Paso 2 — Rango factible de k.</strong></p>
+
+<div class="math-block">
+  <div class="eq">k_mín  =  ⌈λ_BC / μ₀⌉  =  ⌈700 / 80⌉  =  ⌈8.75⌉  =  9</div>
+  <div class="eq">k_máx  =  ⌊n − λ_normal/μ₀⌋  =  ⌊10 − 0.75⌋  =  ⌊9.25⌋  =  9</div>
+  <div class="eq eq-result">Rango factible: {9}  ← solo un valor posible</div>
+</div>
+
+<div class="infobox red">
+  <div class="infobox-label">Interpretación del rango de un solo punto</div>
+  <p>El hecho de que k_mín = k_máx = 9 no es una buena noticia operativa. Significa que <strong>no hay margen</strong>: si la demanda sube un poco más de 700 pas/hr, no existe ningún valor de k que estabilice ambos segmentos con n = 10 camiones. El modelo está señalando el límite del sistema, no solo la solución óptima.</p>
+</div>
+
+<p class="body-text"><strong>Paso 3 — Métricas con k = 9.</strong></p>
+
+<div class="math-block">
+  <div class="eq-label">Ruta principal (1 camión)</div>
+  <div class="eq">μ_d  =  1 × 80  =  80 pas/hr</div>
+  <div class="eq">ρ_d  =  60 / 80  =  0.75</div>
+  <div class="eq">Wq_d  =  60 / [80 × 20]  =  0.0375 hr  =  <span style="color:var(--amber)">2.25 min</span></div>
+</div>
+
+<div class="math-block">
+  <div class="eq-label">Subconjunto B–C (9 camiones)</div>
+  <div class="eq">μ_s  =  9 × 80  =  720 pas/hr</div>
+  <div class="eq">ρ_s  =  700 / 720  =  0.972    ← estable, pero muy ajustado</div>
+  <div class="eq">Wq_s  =  700 / [720 × 20]  =  0.0486 hr  =  <span style="color:var(--amber)">2.92 min</span></div>
+</div>
+
+<p class="body-text"><strong>Paso 4 — Verificación con Ley de Little.</strong> Para el subconjunto con k = 9:</p>
+
+<div class="math-block">
+  <div class="eq">Lq  =  λ_BC × Wq_s  =  700 × 0.0486  =  34.0 pasajeros      ← Ley de Little</div>
+  <div class="eq">Lq  =  ρ_s² / (1−ρ_s)  =  0.945 / 0.028  =  33.7  ≈  34 ✓  ← fórmula directa</div>
+</div>
+
+<div class="infobox green">
+  <div class="infobox-label">Pregunta de reflexión</div>
+  <p>Con los mismos datos pero n = 12 camiones: ¿cuál es el nuevo rango factible de k? ¿Existe ahora un k* interior donde Wq_d = Wq_s? ¿Qué implica para el tiempo de espera en ambos segmentos? ¿Justifica esa mejora la inversión en 2 camiones adicionales?</p>
+</div>
+
+<!-- ═══════════ REFERENCIAS ═══════════ -->
+<div class="references">
+  <h2>Referencias</h2>
+  <div class="ref-item">Jackson, J. R. (1957). Networks of waiting lines. <em>Operations Research, 5</em>(4), 518–521. — Teorema que permite analizar cada nodo de la red independientemente.</div>
+  <div class="ref-item">Erlang, A. K. (1917). Solution of some problems in the theory of probabilities of significance in automatic telephone exchanges. <em>Elektroteknikeren, 13</em>. — Fórmulas fundacionales para colas con múltiples servidores.</div>
+  <div class="ref-item">Little, J. D. C. (1961). A proof for the queuing formula: L = λW. <em>Operations Research, 9</em>(3), 383–387. — Demostración de la identidad que conecta L, λ y W.</div>
+  <div class="ref-item">Kleinrock, L. (1975). <em>Queueing Systems, Volume 1: Theory</em>. Wiley-Interscience. — Referencia estándar de teoría de colas para redes.</div>
+  <div class="ref-item">Hillier, F. S. & Lieberman, G. J. (2021). <em>Introduction to Operations Research</em> (11ª ed.). McGraw-Hill. — Capítulo 17: Teoría de colas. Incluye M/M/1, M/M/s y redes.</div>
+  <div class="ref-item">Taha, H. A. (2017). <em>Operations Research: An Introduction</em> (10ª ed.). Pearson. — Capítulo 15: Modelos de colas. Tratamiento accesible con ejemplos de transporte.</div>
+</div>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<div class="page-footer">
+  <span>FECA–UJED · Investigación de Operaciones · 2025</span>
+  <a href="https://marionomics.com" target="_blank">marionomics.com</a>
+</div>
+
+</div><!-- /page -->
+
+<!-- ═══════════════════════════════════
+     JAVASCRIPT — CLEAN SLATE
+═══════════════════════════════════ -->
+<script>
+const N_STOPS = 70;
+let B = 25, C = 55, clickPhase = 0;
+
+// ── helpers ──
+const $ = id => document.getElementById(id);
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+
+function wqHours(lam, muEf) {
+  if (muEf <= lam) return Infinity;
+  return lam / (muEf * (muEf - lam));
+}
+
+function rhoColor(rho) {
+  if (rho >= 0.9) return '#c0392b';
+  if (rho >= 0.7) return '#d4870a';
+  return '#1a7a4a';
+}
+
+function rhoClass(rho) {
+  if (!isFinite(rho) || rho >= 1) return 'bad';
+  if (rho >= 0.8) return 'warn';
+  return 'ok';
+}
+
+function fmt(val, unit) {
+  if (!isFinite(val)) return '∞';
+  return val.toFixed(2) + (unit || '');
+}
+
+// ── find k* by minimising |Wq_d - Wq_s| over feasible range ──
+function findKStar(n, mu0, lamN, lamBC, kMin, kMax) {
+  if (kMin > kMax) return null;
+  let best = kMin, bestDiff = Infinity;
+  for (let k = kMin; k <= kMax; k++) {
+    const wqD = wqHours(lamN,  (n - k) * mu0);
+    const wqS = wqHours(lamBC, k * mu0);
+    const diff = Math.abs(wqD - wqS);
+    if (diff < bestDiff) { bestDiff = diff; best = k; }
+  }
+  return best;
+}
+
+// ── canvas ──
+const canvas = $('route-canvas');
+const ctx = canvas.getContext('2d');
+
+function drawRoute() {
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const n   = +$('sl-n').value;
+  const mu0 = +$('sl-mu0').value;
+  const lamN  = +$('sl-lamn').value;
+  const lamBC = +$('sl-lambc').value;
+  const k     = +$('sl-k').value;
+
+  const padX = 20;
+  const step = (W - padX * 2) / (N_STOPS - 1);
+  const lineY = H * 0.52;
+
+  // segments
+  for (let i = 0; i < N_STOPS - 1; i++) {
+    const inBC = i >= B && i <= C;
+    const lam = inBC ? lamBC : lamN;
+    // use proposed allocation for coloring
+    const muEf = inBC ? k * mu0 : (n - k) * mu0;
+    const rho  = lam / muEf;
+    ctx.strokeStyle = rhoColor(rho);
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(padX + i * step, lineY);
+    ctx.lineTo(padX + (i + 1) * step, lineY);
+    ctx.stroke();
+  }
+
+  // stops
+  for (let i = 0; i < N_STOPS; i++) {
+    const x = padX + i * step;
+    const inBC = i >= B && i <= C;
+    const lam  = inBC ? lamBC : lamN;
+    const muEf = inBC ? k * mu0 : (n - k) * mu0;
+    const rho  = lam / muEf;
+
+    // utilization bar
+    const barH = clamp(rho * 28, 0, H * 0.38);
+    ctx.fillStyle = rhoColor(rho);
+    ctx.globalAlpha = 0.18;
+    ctx.fillRect(x - 2, lineY - barH, 4, barH);
+    ctx.globalAlpha = 1;
+
+    // dot
+    const isEnd = i === B || i === C;
+    ctx.beginPath();
+    ctx.arc(x, lineY, isEnd ? 6 : 3.5, 0, Math.PI * 2);
+    ctx.fillStyle = isEnd ? '#1a4a8a' : rhoColor(rho);
+    ctx.fill();
+    if (isEnd) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke(); }
+  }
+
+  // B / C labels
+  const xB = padX + B * step, xC = padX + C * step;
+  ctx.font = '600 12px "Source Serif 4", serif';
+  ctx.fillStyle = '#1a4a8a';
+  ctx.textAlign = 'center';
+  ctx.fillText('B', xB, lineY - 14);
+  ctx.fillText('C', xC, lineY - 14);
+
+  // stop numbers at key points
+  ctx.font = '9px "JetBrains Mono", monospace';
+  for (let i = 0; i < N_STOPS; i++) {
+    if (i === 0 || i === N_STOPS - 1 || i % 10 === 0 || i === B || i === C) {
+      const x = padX + i * step;
+      ctx.textAlign = 'center';
+      ctx.fillStyle = (i === B || i === C) ? '#1a4a8a' : '#6b6b8a';
+      ctx.fillText(i + 1, x, lineY + 18);
+    }
+  }
+
+  // bracket
+  ctx.strokeStyle = 'rgba(26,74,138,0.25)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([3, 3]);
+  ctx.beginPath();
+  ctx.moveTo(xB, lineY + 4); ctx.lineTo(xB, H - 8);
+  ctx.moveTo(xC, lineY + 4); ctx.lineTo(xC, H - 8);
+  ctx.moveTo(xB, H - 8);    ctx.lineTo(xC, H - 8);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = 'rgba(26,74,138,0.5)';
+  ctx.font = '9px "JetBrains Mono", monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('tramo B–C · ' + (C - B + 1) + ' paradas', (xB + xC) / 2, H - 1);
+}
+
+// ── main update ──
+function update() {
+  const n     = +$('sl-n').value;
+  const mu0   = +$('sl-mu0').value;
+  const lamN  = +$('sl-lamn').value;
+  const lamBC = +$('sl-lambc').value;
+  const k     = +$('sl-k').value;
+
+  // sync labels
+  $('v-n').textContent    = n;
+  $('v-n2').textContent   = n;
+  $('v-mu0').textContent  = mu0;
+  $('v-lamn').textContent = lamN;
+  $('v-lambc').textContent= lamBC;
+  $('v-k').textContent    = k;
+  $('v-b').textContent    = B + 1;
+  $('v-c').textContent    = C + 1;
+
+  // clamp k slider range
+  $('sl-k').max = n - 1;
+  if (k >= n) { $('sl-k').value = n - 1; }
+
+  // ── baseline (no reallocation) ──
+  const muAll   = n * mu0;
+  const rhoBaseN  = lamN  / muAll;
+  const rhoBaseBC = lamBC / muAll;
+  const wqBaseBC  = wqHours(lamBC, muAll);
+  const lqBaseBC  = rhoBaseBC < 1 ? (rhoBaseBC * rhoBaseBC) / (1 - rhoBaseBC) : Infinity;
+
+  function setVal(id, val, cls) {
+    const el = $(id); if (!el) return;
+    el.textContent = val;
+    el.className = 'res-val ' + (cls || 'na');
+  }
+
+  setVal('r-base-n',  rhoBaseN.toFixed(3),  rhoClass(rhoBaseN));
+  setVal('r-base-bc', rhoBaseBC.toFixed(3), rhoClass(rhoBaseBC));
+  setVal('wq-base-bc', isFinite(wqBaseBC) ? (wqBaseBC * 60).toFixed(2) + ' min' : '∞', rhoClass(rhoBaseBC));
+  setVal('lq-base-bc', isFinite(lqBaseBC) ? lqBaseBC.toFixed(1) + ' pas' : '∞', rhoClass(rhoBaseBC));
+
+  // ── feasibility range ──
+  const kMinRaw = lamBC / mu0;
+  const kMaxRaw = n - lamN / mu0;
+  const kMin = Math.ceil(kMinRaw + 1e-9);
+  const kMax = Math.floor(kMaxRaw - 1e-9);
+  const feasible = kMin <= kMax && kMin >= 1 && kMax <= n - 1;
+
+  $('k-range-label').textContent = feasible
+    ? `Rango factible: k = ${kMin} … ${kMax}`
+    : 'Sin rango factible con esta flota';
+  $('k-range-label').style.color = feasible ? 'var(--green)' : 'var(--red)';
+
+  const kStar = feasible ? findKStar(n, mu0, lamN, lamBC, kMin, kMax) : null;
+  $('kopt-display').textContent = kStar !== null ? kStar + ' camiones' : '— (no factible)';
+
+  // feasibility note for current k
+  const kInRange = feasible && k >= kMin && k <= kMax;
+  let fNote = '';
+  if (!feasible) {
+    fNote = 'No existe k que estabilice ambos segmentos. Aumenta n o μ₀, o reduce λ_BC.';
+  } else if (k < kMin) {
+    fNote = `k = ${k} es demasiado bajo — B–C sigue inestable. Mínimo recomendado: k = ${kMin}.`;
+  } else if (k > kMax) {
+    fNote = `k = ${k} es demasiado alto — la ruta principal se vuelve inestable. Máximo: k = ${kMax}.`;
+  } else if (kStar !== null && k === kStar) {
+    fNote = `k = ${k} es el óptimo — iguala los tiempos de espera de ambos segmentos.`;
+  } else {
+    fNote = `k = ${k} es factible. El óptimo es k* = ${kStar}.`;
+  }
+  $('k-feasibility').textContent = fNote;
+
+  // alerts
+  const alertInf  = $('alert-infeasible');
+  const alertWarn = $('alert-warn');
+  const alertOk   = $('alert-ok');
+  alertInf.style.display = alertWarn.style.display = alertOk.style.display = 'none';
+
+  if (!feasible) {
+    alertInf.textContent = `La demanda en B–C (λ_BC = ${lamBC}) supera la capacidad máxima reorganizable. Con n = ${n} camiones y μ₀ = ${mu0}, se necesitarían al menos ${Math.ceil(lamBC/mu0 + lamN/mu0)} camiones totales.`;
+    alertInf.style.display = 'block';
+  } else if (kMax - kMin <= 1) {
+    alertWarn.textContent = `Rango factible muy estrecho (k = ${kMin} a ${kMax}). El sistema opera sin margen operativo.`;
+    alertWarn.style.display = 'block';
+  } else if (kInRange && kStar !== null) {
+    alertOk.textContent = `Sistema estable. k* = ${kStar} camiones al subconjunto B–C.`;
+    alertOk.style.display = 'block';
+  }
+
+  // ── proposed metrics ──
+  const muD = (n - k) * mu0;
+  const muS = k * mu0;
+  const rhoD = lamN  / muD;
+  const rhoS = lamBC / muS;
+  const wqD  = wqHours(lamN,  muD);
+  const wqS  = wqHours(lamBC, muS);
+
+  setVal('r-prop-d', rhoD.toFixed(3), rhoClass(rhoD));
+  setVal('r-prop-s', rhoS.toFixed(3), rhoClass(rhoS));
+  setVal('wq-prop-d', isFinite(wqD) ? (wqD * 60).toFixed(2) + ' min' : '∞ (inestable)', rhoClass(rhoD));
+  setVal('wq-prop-s', isFinite(wqS) ? (wqS * 60).toFixed(2) + ' min' : '∞ (inestable)', rhoClass(rhoS));
+
+  // savings
+  const savRho = rhoBaseBC - rhoS;
+  $('sav-rho').textContent = (savRho > 0 ? '−' : '+') + (Math.abs(savRho) * 100).toFixed(1) + '%';
+  $('sav-rho').className = 'saving-val' + (savRho > 0 ? '' : ' bad');
+
+  if (isFinite(wqBaseBC) && isFinite(wqS)) {
+    const savWq = (wqBaseBC - wqS) * 60;
+    $('sav-wq').textContent = (savWq > 0 ? '−' : '+') + Math.abs(savWq).toFixed(1) + ' min';
+    $('sav-wq').className = 'saving-val' + (savWq > 0 ? '' : ' bad');
+  } else if (!isFinite(wqBaseBC) && isFinite(wqS)) {
+    $('sav-wq').textContent = 'Sistema salvado';
+    $('sav-wq').className = 'saving-val';
+  } else {
+    $('sav-wq').textContent = '—';
+    $('sav-wq').className = 'saving-val bad';
+  }
+
+  $('sav-stability').textContent = (rhoD < 1 && rhoS < 1) ? 'Sí ✓' : 'No ✗';
+  $('sav-stability').className = 'saving-val' + ((rhoD < 1 && rhoS < 1) ? '' : ' bad');
+
+  drawRoute();
+}
+
+// ── canvas resize ──
+function resizeCanvas() {
+  canvas.width  = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+  drawRoute();
+}
+
+// ── canvas click ──
+canvas.addEventListener('click', function(e) {
+  const rect = canvas.getBoundingClientRect();
+  const x    = (e.clientX - rect.left) * (canvas.width / rect.width);
+  const padX = 20;
+  const step = (canvas.width - padX * 2) / (N_STOPS - 1);
+  const stop = clamp(Math.round((x - padX) / step), 0, N_STOPS - 1);
+  if (clickPhase === 0) {
+    B = Math.min(stop, C - 1);
+    $('sl-b').value = B;
+    clickPhase = 1;
+  } else {
+    C = Math.max(stop, B + 1);
+    $('sl-c').value = C;
+    clickPhase = 0;
+  }
+  update();
+});
+
+// ── slider listeners ──
+$('sl-b').addEventListener('input', function() {
+  B = +this.value; if (B >= C) { C = B + 1; $('sl-c').value = C; } update();
+});
+$('sl-c').addEventListener('input', function() {
+  C = +this.value; if (C <= B) { B = C - 1; $('sl-b').value = B; } update();
+});
+['sl-n','sl-mu0','sl-lamn','sl-lambc','sl-k'].forEach(id => {
+  $(id).addEventListener('input', update);
+});
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+update();
+</script>
+</body>
+</html>
