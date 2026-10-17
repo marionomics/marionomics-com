@@ -62,10 +62,12 @@ def rewrite_internal_links(soup, slug: str, known_slugs: set[str], known_tags: s
         if not segments or segments[0] in ("content", "tools"):
             continue
         fragment = f"#{parts.fragment}" if parts.fragment else ""
-        if len(segments) == 1 and segments[0] in known_slugs:
-            a["href"] = f"/{segments[0]}/{fragment}"
-        elif len(segments) == 2 and segments[0] == "tag" and segments[1] in known_tags:
-            a["href"] = f"/tag/{segments[1]}/"
+        # Ghost matched slugs case-insensitively; anything after a known slug is pasted junk.
+        first = segments[0].lower()
+        if first in known_slugs:
+            a["href"] = f"/{first}/{fragment}"
+        elif len(segments) == 2 and first == "tag" and segments[1].lower() in known_tags:
+            a["href"] = f"/tag/{segments[1].lower()}/"
         else:
             report.add(slug, "link_rewritten", href)
             a["href"] = "/"

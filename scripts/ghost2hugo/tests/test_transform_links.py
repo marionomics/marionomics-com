@@ -64,3 +64,15 @@ def test_membership_cards_become_substack_note():
     assert notes[0]["href"] == "https://marionomics.substack.com"
     assert notes[0].get_text() == "Escribo cada semana en Substack →"
     assert not soup.select(".kg-signup-card, .kg-product-card")
+
+
+def test_internal_links_ignore_case_and_trailing_junk():
+    report = Report()
+    soup = parse(
+        '<a href="/IA-Puede-Reducir/">1</a>'
+        '<a href="/conocido/https://marionomics.com/conocido/">2</a>'
+        '<a href="/Conocido/#parte">3</a>'
+    )
+    rewrite_internal_links(soup, "este-post", {"ia-puede-reducir", "conocido"}, set(), report)
+    assert [a["href"] for a in soup.find_all("a")] == ["/ia-puede-reducir/", "/conocido/", "/conocido/#parte"]
+    assert "este-post" not in report.entries

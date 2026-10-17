@@ -11,7 +11,7 @@
 |---|---|
 | Removed (file not in backup) | 346 |
 | Feature image dropped (file not in backup) | 119 |
-| Link to non-migrated page rewritten to / | 29 |
+| Link to non-migrated page rewritten to / | 27 |
 | $…$ left as text | 0 |
 | Unexpected code injection dropped | 1 |
 | Inline script kept | 1 |
@@ -134,9 +134,6 @@
 - `__GHOST_URL__/content/images/image/fetch/w_1200,h_600,c_limit,f_jpg,q_auto:good,fl_progressive:steep/https-3a-2f-2fsubstack-post-media.s3.amazonaws.com-2fpublic-2fimages-2f2df14646-befa-4530-8226-d949819b2fa6_768x512.jpg`
 
 ### chatgpt-haz-mi-plan-de-negocios
-
-**Link to non-migrated page rewritten to /**
-- `/IA-puede-reducir-desigualdad`
 
 **Removed (file not in backup)**
 - `/content/images/2023/06/Captura-de-Pantalla-2023-06-27-a-la-s--12.24.00.png`
@@ -1352,11 +1349,6 @@
 
 **Removed (file not in backup)**
 - `/favicon.png`
-
-### tu-base-de-datos-de-referencias
-
-**Link to non-migrated page rewritten to /**
-- `/de-donde-sacar-fuentes-relevantes-y-de-calidad/https://marionomics.com/de-donde-sacar-fuentes-relevantes-y-de-calidad/https://marionomics.com/de-donde-sacar-fuentes-relevantes-y-de-calidad/https://marionomics.com/de-donde-sacar-fuentes-relevantes-y-de-calidad/https://marionomics.com/de-donde-sacar-fuentes-relevantes-y-de-calidad/https://marionomics.com/de-donde-sacar-fuentes-relevantes-y-de-calidad/https://marionomics.com/de-donde-sacar-fuentes-relevantes-y-de-calidad/`
 
 ### tu-cliente
 
