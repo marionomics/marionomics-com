@@ -1,0 +1,2 @@
+{{- $meses := slice "enero" "febrero" "marzo" "abril" "mayo" "junio" "julio" "agosto" "septiembre" "octubre" "noviembre" "diciembre" -}}
+{{- printf "%d de %s de %d" .Day (index $meses (sub (int .Month) 1)) .Year -}}

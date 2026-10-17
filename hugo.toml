@@ -1,3 +1,21 @@
 baseURL = "https://blog.marionomics.com/"
 locale = "es-MX"
 title = "Marionomics"
+disableKinds = ["rss", "taxonomy", "section"]
+
+[taxonomies]
+  tag = "tags"
+
+[permalinks.page]
+  posts = "/:slug/"
+  pages = "/:slug/"
+
+[permalinks.term]
+  tags = "/tag/:slug/"
+
+[markup.goldmark.renderer]
+  unsafe = true
+
+[params]
+  gtm = "GTM-5WJS5ZWD"
+  substack = "https://marionomics.substack.com"

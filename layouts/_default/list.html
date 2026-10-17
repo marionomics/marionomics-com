@@ -1,7 +1,4 @@
 {{ define "main" }}
-<ul>
-  {{ range .Pages }}
-  <li><a href="{{ .Permalink }}">{{ .Title }}</a></li>
-  {{ end }}
-</ul>
+<h1 class="title">{{ .Title }}</h1>
+{{ partial "archive.html" .Pages }}
 {{ end }}
