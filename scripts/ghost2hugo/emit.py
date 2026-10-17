@@ -8,7 +8,7 @@ from zoneinfo import ZoneInfo
 
 import yaml
 
-from scope import BLOG_URL, DROPPED_PAGE_TARGETS
+from scope import BLOG_URL, DROPPED_PAGE_TARGETS, SLUG_ALIASES
 
 MEXICO = ZoneInfo("America/Mexico_City")
 GENERATED = ("content/posts", "content/pages", "content/tags", "static/content")
@@ -81,6 +81,7 @@ def redirect_lines(items, tags) -> list[str]:
     lines += [f"/tag/{tag.slug}/\t{BLOG_URL}/tag/{tag.slug}/" for tag in tags]
     for slug, target in DROPPED_PAGE_TARGETS.items():
         lines.append(f"/{slug}/\t{BLOG_URL}/" if target == "/" else f"/{slug}/\t{target}")
+    lines += [f"/{old}/\t{BLOG_URL}/{new}/" for old, new in SLUG_ALIASES.items()]
     return lines
 
 

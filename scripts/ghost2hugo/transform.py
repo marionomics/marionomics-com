@@ -8,7 +8,7 @@ from urllib.parse import urlsplit
 from bs4 import BeautifulSoup, Comment, NavigableString
 
 from report import Report
-from scope import SUBSTACK_SUBSCRIBE_URL, SUBSTACK_URL
+from scope import SLUG_ALIASES, SUBSTACK_SUBSCRIBE_URL, SUBSTACK_URL
 
 GHOST_ORIGIN = re.compile(r"^(?:__GHOST_URL__|https?://(?:www\.)?marionomics\.com)(?=/|$|[?#])")
 URL_ATTRS = ("href", "src", "poster")
@@ -64,6 +64,7 @@ def rewrite_internal_links(soup, slug: str, known_slugs: set[str], known_tags: s
         fragment = f"#{parts.fragment}" if parts.fragment else ""
         # Ghost matched slugs case-insensitively; anything after a known slug is pasted junk.
         first = segments[0].lower()
+        first = SLUG_ALIASES.get(first, first)
         if first in known_slugs:
             a["href"] = f"/{first}/{fragment}"
         elif len(segments) == 2 and first == "tag" and segments[1].lower() in known_tags:
@@ -160,10 +161,9 @@ KNOWN_CARDS = {
 def handle_scripts(soup, slug: str, report: Report) -> None:
     for script in soup.find_all("script"):
         src = script.get("src") or ""
-        if "platform.twitter.com/widgets.js" in src:
-            script.decompose()
-        else:
+        if "platform.twitter.com/widgets.js" not in src:  # the layout loads Twitter's script itself
             report.add(slug, "inline_script", src or (script.string or "")[:80])
+        script.decompose()
 
 
 def check_code_injection(code: str, slug: str, report: Report) -> None:

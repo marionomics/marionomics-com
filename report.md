@@ -11,10 +11,10 @@
 |---|---|
 | Removed (file not in backup) | 346 |
 | Feature image dropped (file not in backup) | 119 |
-| Link to non-migrated page rewritten to / | 27 |
+| Link to non-migrated page rewritten to / | 26 |
 | $…$ left as text | 0 |
 | Unexpected code injection dropped | 1 |
-| Inline script kept | 1 |
+| Inline script removed | 1 |
 | Unknown Ghost card type | 0 |
 
 ## By post
@@ -567,9 +567,6 @@
 
 ### el-poder-de-la-pildora
 
-**Link to non-migrated page rewritten to /**
-- `/quien-ganara-el-nobel-de-economia-2/`
-
 **Removed (file not in backup)**
 - `/content/images/2023/10/IMG_0735.JPG`
 - `/content/images/2023/10/Captura-de-Pantalla-2023-10-09-a-la-s--17.34.34.png`
@@ -613,7 +610,7 @@
 **Removed (file not in backup)**
 - `/content/files/2022/08/La_Gua_Definitiva_de_Estadstica_con_Python.pdf`
 
-**Inline script kept**
+**Inline script removed**
 - `https://gumroad.com/js/gumroad-embed.js`
 
 **Feature image dropped (file not in backup)**

@@ -66,17 +66,19 @@ def test_code_languages_normalized():
     ]
 
 
-def test_twitter_script_removed_other_scripts_reported():
+def test_all_body_scripts_removed_third_party_ones_reported():
     r = Report()
     soup = parse(
         '<figure class="kg-card kg-embed-card"><blockquote class="twitter-tweet">'
         '<a href="https://twitter.com/x">t</a></blockquote>'
         '<script async src="https://platform.twitter.com/widgets.js"></script></figure>'
-        '<script src="https://example.com/e.js"></script>'
+        '<a class="gumroad-button" href="https://gum.co/x">Comprar</a>'
+        '<script src="https://gumroad.com/js/gumroad-embed.js"></script>'
     )
     handle_scripts(soup, "p", r)
-    assert [s.get("src") for s in soup.find_all("script")] == ["https://example.com/e.js"]
-    assert r.entries["p"]["inline_script"] == ["https://example.com/e.js"]
+    assert soup.find_all("script") == []
+    assert soup.select_one("a.gumroad-button")["href"] == "https://gum.co/x"
+    assert r.entries["p"]["inline_script"] == ["https://gumroad.com/js/gumroad-embed.js"]
     assert detect_flags(soup) == {"math": False, "twitter": True}
 
 

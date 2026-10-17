@@ -70,6 +70,8 @@ def test_run_end_to_end(tmp_path):
     assert "/about-2/\thttps://blog.marionomics.com/about-2/" in redirects
     assert "/tag/econometria/\thttps://blog.marionomics.com/tag/econometria/" in redirects
     assert "/cripto/\thttps://blog.marionomics.com/" in redirects
+    assert ("/quien-ganara-el-nobel-de-economia-2/\t"
+            "https://blog.marionomics.com/quien-ganara-el-nobel-de-economia/") in redirects
     assert any(line.startswith("/50-recursos-para-econometria/\thttps://marionomics.notion.site/")
                for line in redirects)
 

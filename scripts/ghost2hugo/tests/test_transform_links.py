@@ -76,3 +76,14 @@ def test_internal_links_ignore_case_and_trailing_junk():
     rewrite_internal_links(soup, "este-post", {"ia-puede-reducir", "conocido"}, set(), report)
     assert [a["href"] for a in soup.find_all("a")] == ["/ia-puede-reducir/", "/conocido/", "/conocido/#parte"]
     assert "este-post" not in report.entries
+
+
+def test_renamed_slug_alias_points_to_current_post():
+    from scope import SLUG_ALIASES
+
+    report = Report()
+    soup = parse('<a href="/quien-ganara-el-nobel-de-economia-2/">nobel</a>')
+    rewrite_internal_links(soup, "el-poder-de-la-pildora", {"quien-ganara-el-nobel-de-economia"}, set(), report)
+    assert SLUG_ALIASES["quien-ganara-el-nobel-de-economia-2"] == "quien-ganara-el-nobel-de-economia"
+    assert soup.a["href"] == "/quien-ganara-el-nobel-de-economia/"
+    assert "el-poder-de-la-pildora" not in report.entries

@@ -27,3 +27,8 @@ DROPPED_PAGE_TARGETS = {
     "condiciones": "/",
     "50-recursos-para-econometria": NOTION_50_RECURSOS,
 }
+
+# Old Ghost slugs that still appear in links, mapped to the post they now live at.
+SLUG_ALIASES = {
+    "quien-ganara-el-nobel-de-economia-2": "quien-ganara-el-nobel-de-economia",
+}

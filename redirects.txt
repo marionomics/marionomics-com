@@ -426,3 +426,4 @@
 /privacidad/	https://blog.marionomics.com/
 /condiciones/	https://blog.marionomics.com/
 /50-recursos-para-econometria/	https://marionomics.notion.site/b7b39346e68d44f298f045c1a045eae7?v=edc6541f06cd4621a33049b93760e8ca
+/quien-ganara-el-nobel-de-economia-2/	https://blog.marionomics.com/quien-ganara-el-nobel-de-economia/

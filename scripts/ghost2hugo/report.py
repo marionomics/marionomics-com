@@ -9,7 +9,7 @@ class Report:
         "link_rewritten": "Link to non-migrated page rewritten to /",
         "math_left_as_text": "$…$ left as text",
         "code_injection": "Unexpected code injection dropped",
-        "inline_script": "Inline script kept",
+        "inline_script": "Inline script removed",
         "unknown_card": "Unknown Ghost card type",
     }
 
