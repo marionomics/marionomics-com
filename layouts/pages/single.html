@@ -1,0 +1,15 @@
+{{ define "main" }}
+<div data-pagefind-body>
+  <h1 class="title">{{ .Title }}</h1>
+  {{ with .Params.subtitle }}<p class="sub">{{ . }}</p>{{ end }}
+  <article>
+    {{ with .Params.feature_image }}
+    <figure class="feature">
+      <img src="{{ . }}" alt="{{ $.Params.feature_image_alt }}">
+      {{ with $.Params.feature_image_caption }}<figcaption>{{ . | safeHTML }}</figcaption>{{ end }}
+    </figure>
+    {{ end }}
+    {{ .Content }}
+  </article>
+</div>
+{{ end }}
