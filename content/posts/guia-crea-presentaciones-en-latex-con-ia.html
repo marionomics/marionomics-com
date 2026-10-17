@@ -1,0 +1,77 @@
+---
+title: '[Guía] Crea presentaciones en LaTeX con IA'
+slug: guia-crea-presentaciones-en-latex-con-ia
+date: '2024-11-25T09:00:37-06:00'
+lastmod: '2025-11-21T13:59:59-06:00'
+subtitle: Un prompt para diseñar 25 diapositivas en menos de 5 minutos.
+description: Un prompt para diseñar 25 diapositivas en menos de 5 minutos.
+tags:
+- mexico
+- inteligencia-artificial
+- visualizacion
+- desigualdad
+feature_image: /content/images/2024/11/DALL-E-2024-11-24-22.12.28---A-modern-minimalist-black-and-white-unfinished-ink-sketch-depicting-a-relaxed-economist-in-casual-clothing-giving-a-lecture.-The-economist-stands-in-f.webp
+math: true
+twitter: false
+ghost_id: 6743f889c589e30001e76d90
+---
+<p>Cuando estaba en el doctorado, hacía todo con LaTeX.</p><p>LaTeX es un lenguaje de programación que permite hacer textos de matemáticas. Lo importante de escribir matemáticas es que los símbolos son complicados de hacer caber bien dentro del texto y Word hace un trabajo mediocre incluyendo ecuaciones.</p><p>Pero mira esta maravilla (si estás leyendo esto en el correo, tendrás que entrar en la página para apreciarlo correctamente).</p><p>$$ \frac{\partial C}{\partial t} + rS \frac{\partial C}{\partial S} + \frac{1}{2} \sigma^2 S^2 \frac{\partial^2 C}{\partial S^2} - rC = 0 $$</p><p>Esa es la ecuación de derivadas parciales de Black y Scholes. Y para que se cargue bien en la pantalla, es necesario usar LaTeX.</p><p>Yo pasé meses enteros practicando diario para escribir usando LaTeX, pero tú no necesitas hacerlo.</p><h2 id="vamos-a-hacer-una-presentaci%C3%B3n-usando-latex">Vamos a hacer una presentación usando LaTeX</h2><p>Hacer presentaciones es una de las tareas constantes de un investigador.</p><p>Vale mucho la pena participar en congresos y presentar los resultados de tu investigación. Cuando haces presentaciones:</p><ul><li><strong>Puedes aclarar tu mente al preparar la presentación sobre los problemas que quieres resolver</strong>.</li><li><strong>Practicar la presentación te ayuda a identificar posibles errores que estás cometiendo.</strong></li><li><strong>La retroalimentación de otras personas te puede ayudar a mejorar.</strong></li></ul><p>Y eso es sólo durante la presentación. También podrías encontrarte con colaboraciones interesantes que están haciendo cosas similares a lo tuyo dentro de las presentaciones. No lo descartes.</p><p>Ok, ya fue mucha introducción… comencemos.</p><h2 id="paso-1-descarga-o-actualiza-tu-compilador-de-beamer-latex">Paso #1: Descarga o actualiza tu compilador de Beamer (LaTeX)</h2><p>El código de LaTeX se <strong>compila</strong> con un programa especial.</p><p>Hay para todos los sistemas operativos:</p><ul><li><a href="https://miktex.org/">MiKTeX</a> para Windows.</li><li>En Mac está <a href="https://www.tug.org/mactex/">MacTeX</a>, o <a href="https://www.texstudio.org/">TeXStudio</a>.</li><li>Linux tiene <a href="https://www.tug.org/texlive/">Tex Live</a>, pero si sabes linux, tu sabes mejor que yo.</li></ul><p>O puedes usar servicios en la nube como OverLeaf para compilar tu código de LaTeX.</p><h3 id="esp%C3%A9rame-tantito%E2%80%A6-%C2%BFqu%C3%A9-significa-eso-de-compilar-el-c%C3%B3digo">Espérame tantito… ¿Qué significa eso de compilar el código?</h3><p>Significa que lo que vas a escribir se va a ver diferente que la página final.</p><p>Mientras que en LaTeX escribes <code>\\int_a^b f(x) \\, dx = F(b) - F(a)</code>, en la pantalla debes ver la ecuación completa:</p><p>$$ \int_a^b f(x) \, dx = F(b) - F(a) $$</p><p>LaTeX es todo un lenguaje, y tiene sus complejidades, pero eso no es algo que nos va a preocupar de momento. Sobre todo porque la IA nos va a apoyar.</p><h2 id="paso-2-prepara-tu-paper-en-el-que-se-basar%C3%A1-tu-presentaci%C3%B3n">Paso #2: Prepara tu paper en el que se basará tu presentación</h2><p>Estoy asumiendo que ya tienes un texto que usarás para tu presentación.</p><p>No importa si tu texto está en Word o en LaTeX. La única diferencia entre estas dos opciones son la forma en la que le daremos a conocer las ecuaciones a chatGPT. En este paso hay que preparar la información que le vamos a pasar.</p><p>Con el prompt que te daré en adelante el proceso será simple: Le vas a copiar y pegar tu paper para que te haga la presentación.</p><p>Lo único que necesitas es hacer una lista con las figuras y/o gráficas que estás incluyendo y guárdala.</p><p>O bien, te voy a facilitar el trabajo de conjuntar esta información con el siguiente prompt.</p><!--members-only--><p>Copia y pega en chatGPT:</p><pre><code>Elabora una lista con las figuras, tablas y gráficas que conforman el siguiente documento de investigación.
+
+Llena la lista únicamente con las figuras, tablas o gráficas que encuentres en el documento. Si no encuentras nada de algún tipo, no pongas nada.
+
+{COPIA Y PEGA EL TEXTO AQUÍ}
+
+Ejemplo:
+## Figuras
+1. Figura 1. Porcentaje de personas desocupadas en el Estado de Durango. Fuente: Elaboración propia con datos de la ENOE del INEGI.
+2. Figura 2. Flujo de remesas por estado en México de 1990 a 2022. Fuente: Elaboración propia con datos del Banco de México.
+</code></pre><p>El resultado debe ser algo así</p><pre><code>## Figuras
+1. **Figura 1.** Porcentaje de población sin acceso a electricidad por municipio en México.  
+   Fuente: Elaboración propia con datos del censo de 2020 del INEGI, usando QGIS.  
+
+## Tablas
+(No se identificaron tablas en el documento).
+
+## Gráficas
+1. **Gráfico de barras a nivel estatal que muestra la pobreza energética.**  
+2. **Mapa coroplético con la pobreza energética a nivel municipal.**  
+
+Esto es lo que se menciona explícitamente en el documento proporcionado. Si necesitas más detalles o algo adicional, házmelo saber.
+</code></pre><h2 id="paso-4-%C2%BFcu%C3%A1les-son-las-caracter%C3%ADsticas-de-la-presentaci%C3%B3n">Paso #4: ¿Cuáles son las características de la presentación?</h2><p>En este paso le darás la pauta específica de lo que quieres decir en tu presentación.</p><p>Lo importante aquí es que, como le daremos el paper completo, no le vamos a dejar que la IA elija lo que piense que es más importante (generalmente su elección es demasiado genérica como para representar lo que nosotros diríamos).</p><p>Este paso requiere claridad de mente sobre lo que piensas que quieres decir.</p><p>Usa este prompt. Lo puedes modificar para que se adapte mejor a tu estilo de presentación.</p><pre><code>Eres mi asistente en la elaboración de una presentación en beamer (LaTeX).
+
+Te daré las pautas de la presentación. Luego te daré la información general del artículo en el que se basa la presentación, y tú me darás un esquema general (outline) de la misma, que yo revisaré y aprobaré. Una vez la apruebe, me debes dar el código completo para que lo ejecute en mi compilador de LaTeX.
+
+## Pautas
+* Público: {investigadores académicos / estudiantes}
+* Número de slides: {25 + las diapositivas de referencias y el título.}
+* Estilo: {minimalista / visual / didáctico}
+* Tema: default
+* Elige la plantilla de diapositiva que mejor se adapte a cada slide.
+
+## Estructura de la presentación
+1. Inicia con la motivación de la presentación. Si existe dentro del texto, presenta un ejemplo o una historia que permita ilustrar.
+2. Continúa con un contraste de la literatura a profundidad.
+3. Plantea el modelo o la idea principal.
+4. Presenta los resultados. Si los hay, presenta las gráficas y tablas principales que muestren los resultados de forma convincente.
+5. Sintetiza las conclusiones.
+6. Finaliza con las implicaciones de la investigación.
+7. Presenta la literatura más relevante de la investigación.
+
+## Plantillas
+* Diapositiva de 3 a 7 viñetas.
+* Diapositiva que muestra únicamente la imagen o la tabla.
+* Diapositiva que muestra en conjunto viñetas y figura.
+* Diapositiva con una cita corta con ideas centrales de la investigación.
+* Diapositiva con tabla o cuadro.
+
+Si estás listo, a continuación te proporcionaré el texto completo de la investigación para que me des el esquema.
+</code></pre><p>Nota que incluí el tema de la presentación como <code>default</code>. Esto define la estética de la presentación, pero puedes elegir la que más te guste. Aquí te dejo una <a href="https://deic.uab.es/~iblanes/beamer_gallery/index_by_theme.html">galería</a> de temas, pero hay muchos otros que puedes usar para tu presentación (mi favorita se llama <a href="https://github.com/matze/mtheme">metropolis</a>).</p><p>Pero más importante, nota la estructura de la presentación que te incluí.</p><ul><li><strong>Una presentación es diferente al paper.</strong> Si le dejamos elegir a la IA, hará lo más perezoso: seguir la misma lógica que el paper.</li><li>Queremos que la lógica de la presentación mantenga un hilo y que la diapositiva sea un apoyo visual.</li><li>Queremos que siempre que sea posible, la diapositiva se mantenga como una síntesis, y la IA no nos genere muros de texto que nadie leerá.</li></ul><p>Piensa en chatGPT como tu asistente perezoso, que si no le das indicaciones claras, simplemente hará lo que le cueste menos energía.</p><p>Copia y pega el prompt de arriba (con tus modificaciones, si piensas que es necesario) y luego le proporcionas el texto del paper.</p><h2 id="paso-4-corrrige-y-elabora-la-presentaci%C3%B3n">Paso #4: Corrrige y elabora la presentación</h2><p>Una vez que le des el texto, chatGPT te dará un esquema de cómo planea hacer la presentación.</p><p>Este es el momento de hacerle correcciones y especificaciones de lo que deseas.</p><p>Le puedes:</p><ul><li>Pedir que cambie el orden y el contenido de las diapositivas.</li><li>Corregir errores</li><li>Pedir que incluya gráficas o tablas específicas en diapositivas específicas.</li></ul><p>Entre otras cosas.</p><p>Usa este prompt cuando ya le hayas hecho todas las correcciones (o puedes pedir las correcciones y el código en una misma orden).</p><pre><code>Dame el código de LaTeX para copiar.
+
+Coloca las imágenes como comentario, para que el código se ejecute sin problema.
+</code></pre><h2 id="paso-5-agrega-im%C3%A1genes-y-ecuaciones">Paso #5: Agrega imágenes y ecuaciones</h2><p>Nota que le pedí que pusiera las imágenes como comentario.</p><p>El código que te dará, lo vas a copiar y pegar en tu compilador de LaTeX, que te debe dar como resultado un archivo PDF con las diapositivas.</p><p>Cada diapositiva viene en código como este:</p><pre><code>% Slide 13: Gráfico de barras
+\\begin{frame}{Gráfico de barras por estado}
+    % \\includegraphics[width=\\textwidth]{grafico_barras.png} % Gráfico de barras
+    \\centering
+    \\textit{Gráfico de barras mostrando pobreza energética por estado (comentado).}
+\\end{frame}
+</code></pre><p>Donde lo que viene entre <code>\\begin{frame}</code> y <code>\\end{frame}</code> define la diapositiva. LaTeX ya tiene una sintaxis bien definida para incluir lo que necesitas para las diapositivas, pero las imágenes y gráficas son complicadas de incluir con código (no imposible, pero aquí no nos gusta batallar).</p><p>La línea que inicia con <code>% \\includegraphics</code> está como comentario. Es decir, el compilador ignora esta línea y todas las líneas que comienzan con <code>%</code>. Le pedimos que hiciera esto porque chatGPT no sabe en dónde está el archivo de la imagen.</p><p>Sigue los siguientes pasos para incluir una imagen en tu diapositiva:</p><ul><li>Guarda el archivo. En la carpeta donde está el archivo <code>.tex</code> que estás editando, crea una carpeta y ponle de nombre <code>img</code>.</li><li>Coloca dentro de esa carpeta el archivo png del gráfico y ponle un nombre sencillo (<code>grafico_barras.png</code>).</li><li>Modifica la línea para que quede sin el <code>%</code> y con la ubicación del archivo correcta: <code>\\includegraphics[width=\\textwidth]{img/grafico_barras.png}</code>.</li><li>Compila el archivo dos veces para que aparezca la imagen.</li></ul><h2 id="paso-6-corrige-errores">Paso #6: Corrige errores</h2><p>Muchas cosas pueden salir mal en este proceso. Este es el primer tutorial que hacemos aquí sobre LaTeX, así que si te sale cualquier problema, no dudes en mandarme correo y te apoyo.</p><p>En general, le puedes mandar los códigos de errores a chatGPT y te podrá guiar paso a paso para que corrijas y logres hacer tu presentación con éxito.</p>

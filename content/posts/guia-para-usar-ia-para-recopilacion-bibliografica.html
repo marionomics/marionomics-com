@@ -1,0 +1,40 @@
+---
+title: Guía para usar IA para recopilación bibliográfica
+slug: guia-para-usar-ia-para-recopilacion-bibliografica
+date: '2024-09-25T09:00:41-06:00'
+lastmod: '2026-02-22T11:45:03-06:00'
+subtitle: Prompt para buscar usando chatGPT
+description: Prompt para buscar usando chatGPT
+tags:
+- inteligencia-artificial
+- desigualdad
+feature_image: /content/images/2024/09/DALL-E-2024-09-23-10.24.52---A-refined-black-and-white-ink-sketch-of-a-cute-little-robot-in-an-old-library-located-in-a-castle-basement.-The-sketch-should-have-a-polished-look--wi.webp
+math: false
+twitter: false
+ghost_id: 66f1923c53d0de000154e342
+---
+<p>La mejor forma de pensar en la IA en el contexto de la investigación es como un asistente de investigación.</p><p>La idea es delegar las tareas que te consumen tiempo, pero aportan poco a tu entendimiento de un problema y su solución. Regularmente esas tareas caían en el asistente de investigación (si fuiste uno alguna vez, sabes de lo que te hablo).</p><p>La recopilación bibliográfica es una de esas tareas.</p><h2 id="mis-intentos-fallidos-de-usar-la-ia-como-asistente-de-investigaci%C3%B3n">Mis intentos (fallidos) de usar la IA como asistente de investigación</h2><p>Estuve intentando hacer que una IA hiciera esa recopilación desde que Bing habilitó GPT-4 en su buscador.</p><p>En ese momento, chatGPT aún no tenía acceso al internet y no podía pedirle que hiciera búsquedas. Hoy en día si puede, pero me da la impresión de que son búsquedas muy superficiales y tiende mucho a alucinar (se inventa cosas).</p><p>Lo que cambió: acaba de salir el modelo o1, o Strawberry.</p><p>Aparentemente, el nombre viene de un detalle curioso de los modelos anteriores, que cuando le preguntabas cuántas “r” tiene la palabra “Strawberry”, contaba 2. OpenAI lanzó este nuevo modelo, presumiendo que puede resolver problemas <a href="https://openai.com/index/learning-to-reason-with-llms/">mejor que expertos en física con doctorado</a>. No es que hayan hecho un nuevo modelo con más parámetros, sino que hicieron una versión más especializada. Aparentemente, GPT4o escribe mejor que o1 en general, pero cuando se trata de hacer razonamientos complejos, o1 es mejor.</p><p>En otras palabras, Strawberry si cuenta tres “r”.</p><p>Básicamente, lo que nos están ahorrando es a hacer mucho prompt-engineering, así no tenemos que estarlo guiando paso por paso para que haga un razonamiento apropiado.</p><figure class="kg-card kg-image-card"><img alt="" class="kg-image" height="514" loading="lazy" sizes="(min-width: 720px) 720px" src="/content/images/2024/09/2c9b0191-59ef-48ea-a48c-238d2695e607_1318x514.jpg" srcset="/content/images/size/w600/2024/09/2c9b0191-59ef-48ea-a48c-238d2695e607_1318x514.jpg 600w, /content/images/size/w1000/2024/09/2c9b0191-59ef-48ea-a48c-238d2695e607_1318x514.jpg 1000w, /content/images/2024/09/2c9b0191-59ef-48ea-a48c-238d2695e607_1318x514.jpg 1318w" width="1318"/></figure><p>Le pedí a o1 que me ayudara a hacer una recopilación bibliográfica sobre la pobreza energética, que es un tema en el que estoy colaborando en una investigación.</p><p>Después de casi un minuto de razonamiento, me entregó el resultado en una tabla con todo lo que le pedí.</p><figure class="kg-card kg-image-card"><img alt="" class="kg-image" height="706" loading="lazy" sizes="(min-width: 720px) 720px" src="/content/images/2024/09/Captura-de-Pantalla-2024-09-16-a-la-s--11.31.08.png" srcset="/content/images/size/w600/2024/09/Captura-de-Pantalla-2024-09-16-a-la-s--11.31.08.png 600w, /content/images/size/w1000/2024/09/Captura-de-Pantalla-2024-09-16-a-la-s--11.31.08.png 1000w, /content/images/2024/09/Captura-de-Pantalla-2024-09-16-a-la-s--11.31.08.png 1162w" width="1162"/></figure><p>El problema: la mitad de las referencias tenían enlaces inventados que no llevaban a ninguna parte. Otras cuantas fueron de plano inventadas.</p><p>El problema es que Strawberry aún no tiene acceso a internet. Con el mismo prompt que te comparto abajo, GPT-4 logró hace un mejor trabajo.</p><p class="substack-note"><a href="https://marionomics.substack.com">Escribo cada semana en Substack →</a></p><h2 id="advertencia-esto-no-es-para-completos-principiantes">Advertencia: Esto no es para completos principiantes</h2><p>No hagas esto si nunca has hecho una recopilación bibliográfica por tu cuenta.</p><p>La <strong>razón #1</strong> es que no sabrás identificar los buenos resultados de los malos. Tienes que haber hecho recopilaciones bibliográficas por tu cuenta para identificar los resultados que son útiles para tu investigación y los que no.</p><p>La <strong>razón #2</strong> es que la IA es muy buena para inventar datos que parecen reales. Entre los resultados que me arrojó en esa búsqueda, había un “paper” de Esther Duflo y Abihit Banerjee que medía el impacto de la pobreza energética en la educación en India. Excepto que Duflo y Banerjee jamás han hecho ningún estudio de ese tipo. El nombre y todas las características sonaban muy convincentes y me habrían engañado fácilmente.</p><p>Esto no quiere decir que tengas que ya ser un experto SNI 2000 para comenzar a usar la IA. Sólo digo que es mucho más fácil hacer experiencia para supervisar un buen resultado si ya lo has hecho a si nunca te has puesto a recolectar bibliografía por tu cuenta.</p><p>Lo que significa es que antes de lanzar la orden, tienes que tener algunas cosas preparadas. Básicamente, necesitas saber:</p><ul><li>Qué argumento estás buscando hacer en tu investigación.</li><li>Cuál es el problema que estás solucionando.</li><li>Y si conoces ya algunos resultados o autores, puedes pedirle que los utilice para su búsqueda (pero que no se limite a ellos).</li></ul><h2 id="este-es-el-prompt">Este es el prompt</h2><p>Copia y pega este prompt en tu inteligencia artificial favorita:</p><!--members-only--><pre><code class="language-none">You will act as an {subject} researcher.
+I want you to browse the internet and find a list of at least 10 relevant research papers on {subject} in {country or region} in {time frame}.
+
+I want to build an argument for a very comprehensive theoretical framework.
+
+It must include:
+
+* Reasons why {subject} is important
+* Counterarguments
+* Evidence from other studies.
+
+Consider (optionally, but without limiting yourself to) the work of the following authors:
+
+* [THOUGHT LEADER]
+* [THOUGHT LEADER]
+
+and their sources.
+
+Give me the results from your analysis in a table which includes:
+
+* Author(s)
+* Citation
+* Article
+* URL
+* Main arguments</code></pre><h3 id="instrucciones">Instrucciones</h3><ol><li>Copia el prompt de arriba y pégalo en chatGPT, Bing o Claude. Asegúrate de estar usando un modelo que tenga acceso a internet. Esto es muy importante, porque si no, estarías trabajando únicamente con los datos de entrenamiento hasta la fecha de corte del modelo.</li><li>Modifica donde dice <code>{subject}</code> e incluye el tema sobre el que quieres que investigue. No es necesario que lo escribas en inglés, puede ser en español.</li><li>En donde dice <code>[THOUGHT LEADER]</code> modifícalo por los autores que consideres importantes.</li><li>Verifica los artículos. En muchos casos vas a notar que las URL están totalmente inventadas y tendrás que buscar los artículos en google.</li><li>Descarta los artículos que se inventó la IA y pídele que los elimine de la tabla, si la piensas usar como parte del proceso.</li></ol><p>Una buena idea es ahondar sobre temas específicos, una vez que pasas los superficial. Por ejemplo, puedes cambiar de buscar sobre pobreza energética únicamente, a pobreza energética en Latinoamérica.</p><p>Recuerda que el objetivo es que ahorres tiempo para lo que de verdad es importante: tu investigación.</p>

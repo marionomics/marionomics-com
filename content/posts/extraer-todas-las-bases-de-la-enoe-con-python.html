@@ -1,0 +1,47 @@
+---
+title: Extraer todos los microdatos de la ENOE con Python
+slug: extraer-todas-las-bases-de-la-enoe-con-python
+date: '2022-06-30T07:10:00-05:00'
+lastmod: '2026-02-22T11:45:25-06:00'
+subtitle: Tutorial para extraer los microdatos de la ENOE usando Python.
+description: Tutorial para extraer los microdatos de la ENOE usando Python.
+tags:
+- mercado-laboral
+- python
+- salud
+- mexico
+feature_image: https://images.unsplash.com/photo-1494059980473-813e73ee784b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxMTc3M3wwfDF8c2VhcmNofDR8fHNjcmFwaW5nfGVufDB8fHx8MTY1NjQzMzg2Nw&ixlib=rb-1.2.1&q=80&w=2000
+feature_image_alt: Las piezas del rompecabezas representan una base de datos de la ENOE cada una
+feature_image_caption: Photo by <a href="https://unsplash.com/@sloppyperfectionist?utm_source=ghost&utm_medium=referral&utm_campaign=api-credit">Hans-Peter Gauster</a> / <a href="https://unsplash.com/?utm_source=ghost&utm_medium=referral&utm_campaign=api-credit">Unsplash</a>
+math: false
+twitter: false
+ghost_id: 66affcc0f6ade40001729cd2
+---
+<p>Para un proyecto que estoy trabajando se me ocurrió que necesitaría extraer todas las bases de datos de la ENOE. No quería pasarme una hora descargando bases de datos, por lo que me dediqué dos horas a hacer un script en python que las acomoda por mi.</p><p>Usaremos <code>urllib.request</code> para usar métodos de request que nos permita extraer los datos desde la página de INEGI y las cargue directamente en nuestro disco duro. Los enlaces en INEGI son muy consistentes, por lo que podremos crear una url base que cambiará con la base y el año, siempre y cuando no cambien las url en INEGI.</p><p>Primero cargamos los módulos que necesitaremos para hacer esta carga.</p><pre><code class="language-python">import pandas as pd
+from urllib.request import urlopen
+from zipfile import ZipFile
+from io import BytesIO</code></pre><p>Ahora haremos un ciclo for que pasará por los años que nos interesan y nos ayudarán a extraer las bases de datos. La ENOE sufrió cambios antes y después de la pandemia. Lo que verás como cambio es que ENOE N es la encuesta <em>post</em> pandemia. Este código importa los datos a partir del tercer trimestre de 2022. Recordemos que el primer trimestre aún fue con la versión anterior de la ENOE y el segundo se tomó la encuesta de manera telefónica (ETOE).</p><!--members-only--><pre><code class="language-python"># Extract and download from ENOE_N (post-covid)
+# Extraer los datos de la ENOE N
+
+for year in range(2020,2023):
+    for trimestre in range(1,5):
+        url = "https://www.inegi.org.mx/contenidos/programas/enoe/15ymas/microdatos/enoe_n_"+str(year)+"_trim"+str(trimestre)+"_csv.zip"
+        
+        try:
+            resp = urlopen(url)
+            zipfile = ZipFile(BytesIO(resp.read()))
+            zipfile.extractall("../data/ENOE_N")
+        except:
+            print("Oops, something went wrong while loading dataset of quarter " + str(trimestre)+ " in year " + str(year))
+</code></pre><p>Puse una excepción para manejar el error de aquellos datos que no se encuentran aún disponibles. Esto hace que te genere un mensaje de error personalizado al cargar</p><p>En realidad, podríamos usar un if para diferenciar cuando es ENOE y cuándo es ENOE_N y así usar un sólo script. Como tenía que diferenciar a partir del año y el trimestre, me pareció más problema del necesario hacerlo así. Por eso repetí el código para extraer los datos desde 2010. El código no presentó errores más que en los trimestres 2 al 4 de 2020, como es de esperarse.</p><pre><code>
+for year in range(2010,2021):
+    for trimestre in range(1,5):
+        url = "https://www.inegi.org.mx/contenidos/programas/enoe/15ymas/microdatos/"+str(year)+"trim"+str(trimestre)+"_csv.zip"
+        
+        try:
+            resp = urlopen(url)
+            zipfile = ZipFile(BytesIO(resp.read()))
+            zipfile.extractall("../data/ENOE")
+        except:
+            print("Oops, something went wrong while loading dataset of quarter " + str(trimestre)+ " in year " + str(year))
+</code></pre>

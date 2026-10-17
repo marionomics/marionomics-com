@@ -1,0 +1,91 @@
+---
+title: 'Tutorial: Diferencias en Diferencias básico en R'
+slug: tutorial-diferencias-en-diferencias-basico-en-r
+date: '2024-10-05T09:00:32-06:00'
+lastmod: '2026-02-22T11:45:02-06:00'
+subtitle: Código para obtener un análisis de diferencias de medias convincente
+description: Código para obtener un análisis de diferencias de medias convincente
+tags:
+- diferencias-en-diferencias
+- r
+- impuestos
+- visualizacion
+feature_image: /content/images/2024/10/cambio_precio_junio_vs_diciembre-1.png
+math: false
+twitter: false
+ghost_id: 6700b1bae6aece0001af47e2
+---
+<p>Imagina que deseas conocer el efecto de una política pública en la población.</p><p>Siempre que sea posible, lo mejor que puedes hacer es hacer un experimento. Pero hay dos problemas:</p><ol><li>Los experimentos son caros y difíciles de implementar, pues implican tener un control sobre todas las variables que podrían alterar el resultado.</li><li>Los resultados de un experimento rara vez son escalables a nivel de una población.</li></ol><p>Para colmo, de cualquier manera tendrás que evaluar la efectividad de la política cuando se hace a nivel de una población.</p><p>En este post haremos un tutorial para aplicar el modelo de Diferencias en Diferencias usando R.</p><p>El ejemplo que usaremos para este tutorial lo puedes encontrar también en el libro Doing Economics del Core Project. Se trata sobre los efectos de un impuesto a las bebidas azucaradas.</p><h2 id="los-economistas-no-prohibimos-le-ponemos-impuestos-a-las-cosas">Los economistas no prohibimos, le ponemos impuestos a las cosas</h2><p>A finales de 2014, la ciudad de Berkeley, California votó que le pusieran un nuevo impuesto a las bebidas azucaradas.</p><p>El objetivo del impuesto era disminuir el consumo de bebidas que sabemos tienen efectos negativos en la salud de la población. Cuando queremos hacer que el compotamiento de las personas cambie, no ponemos leyes para prohibirlas, les subimos los impuestos con la esperanza de que el aumento de precio haga su trabajo.</p><p>Se le llaman<a href="/el-otro-costo-social-oculto-de-tener-auto/" rel="noreferrer"> impuestos al pecado</a>.</p><p>Hay muchos ejemplos de este tipo de impuestos. Hay impuesto a los autos para reducir la contaminación. Impuesto al alcohol y al tabaco, porque también tienen efectos en la salud. Y naturalmente, impuestos a las bebidas azucaradas. Casi todos los países tienen algún impuesto de este tipo, en parte porque es relativamente fácil de aprobar (no siempre tan fácil de implementar).</p><h2 id="para-saber-si-el-impuesto-funcion%C3%B3-necesitamos-conocer-tres-cosas">Para saber si el impuesto funcionó, necesitamos conocer tres cosas</h2><ol><li>Si el aumento de los impuestos hizo que los precios subieran. En ocasiones, los precios no se trasladan al consumidor. Las empresas prefieren absorberlo, haciendo que el impuesto no tenga efecto sobre el comportamiento de los consumidores.</li><li>Si los precios subieron, queremos saber si los usuarios redujeron su consumo y qué tanto. En lenguaje de economistas, queremos conocer la <em>elasticidad</em> de los precios.</li><li>Si los consumidores dejaron de tomar estas bebidas, queremos saber si su salud mejoró.</li></ol><p>En este tutorial nos quedaremos con el análisis del primer punto.</p><h2 id="paso-1-descarga-y-explora-la-base-de-datos">Paso #1: Descarga y explora la base de datos</h2><p>Te dejo la base de datos en el siguiente enlace.</p><figure class="kg-card kg-bookmark-card"><a class="kg-bookmark-container" href="https://docs.google.com/spreadsheets/u/3/d/1QDV03sP5OjhqchHyovdHyTRckLHMPfnH/edit?usp=share_link&amp;ouid=106047706227480807706&amp;rtpof=true&amp;sd=true"><div class="kg-bookmark-content"><div class="kg-bookmark-title">Dataset Project 3.xlsx</div><div class="kg-bookmark-description"></div><div class="kg-bookmark-metadata"><img alt="" class="kg-bookmark-icon" src="/content/images/icon/spreadsheets_2023q4-1.ico"/><span class="kg-bookmark-author">Google Docs</span></div></div><div class="kg-bookmark-thumbnail"><img alt="" onerror="this.style.display = 'none'" src="/content/images/thumbnail/AHkbwyJEA1HJ6p_FaypmfLoMga4ulkn4Ef3QB3tvrOevZNXDhfkuFctYmuWNcpbofKRm0HmunRMBg7Plp57ZgdutZhkoruYLSfFE4jeE-w1200-h630-p-1"/></div></a></figure><p>Usa el siguiente código para cargar la base de datos y mostrar su estructura.</p><pre><code class="language-r"># Cargar las bibliotecas necesarias
+library(readxl)
+library(dplyr)
+
+# Definir la ruta del archivo
+file_path &lt;- "data/Dataset Project 3.xlsx"
+
+# Cargar la hoja del diccionario de datos
+data_dictionary &lt;- read_excel(file_path, sheet = "Data Dictionary")
+
+# Cargar la hoja de datos y mostrar las primeras filas
+df &lt;- read_excel(file_path, sheet = "Data")
+
+# Imprimir el diccionario de datos y el encabezado de los datos
+print("Data Dictionary:")  # Imprimir el diccionario de datos
+print(data_dictionary)
+
+print("Data Header:")  # Imprimir el encabezado (primeras filas) de los datos
+head(df)  # Mostrar las primeras filas del conjunto de datos
+
+</code></pre><p>Alternativamente, puedes usar las funciones de RStudio para cargarlo de manera manual. Si tienes dudas, consulta <a href="/curso-de-r-basico-1/">este curso</a> gratuito que tengo en mi página.</p><p>Nota que:</p><ul><li>La variable <code>taxed</code> es una variable <em>dummy</em> con valores de 0 y 1. Cuando <code>taxed</code> es igual a 1, significa que el producto si es sujeto a impuesto. Incluso aunque en el periodo del registro sea antes de la implementación.</li><li>El tipo de tienda se muestra en <code>store_type</code>. Hay 4 tipos de tiendas de las que se recolectó la información: Supermercados grandes, supermercados pequeños, farmacias y estaciones de gas.</li><li>La variable <code>time</code> muestra el momento en que se recolectó el dato. De acuerdo al paper original, los datos se tomaron en Diciembre de 2014, en Marzo de 2015 y en Junio de 2016.</li></ul><pre><code class="language-r">unique(df$time)
+</code></pre><ul><li>Los productos y las tiendas se registran por un identificador que se muestra en las variables <code>store_id</code> y <code>product_id</code>. También tenemos un poco más de detalles del tipo de producto detallado en <code>type</code> y <code>type2</code>.</li></ul><p>Usa este código y nota que los registros no están balanceados (y también que Junio de 2016 está mal registrado). Esto quiere decir que hay productos que tal vez se registraron antes del impuesto y que desaparecieron después de él. O al contrario, podrían haber productos que aparecieron después del impuesto.</p><p>Usa este código para mostrar una tabla de frecuencia que muestra las observaciones por fecha y por tipo de tienda.</p><pre><code class="language-r"># Crear una tabla de contingencia con store_type y time
+summary_table &lt;- table(df$store_type, df$time)
+
+# Convertir la tabla a data frame para añadir la columna de Total
+summary_table_df &lt;- as.data.frame.matrix(summary_table)
+
+# Añadir una columna 'Total' que suma los valores de cada fila
+summary_table_df$Total &lt;- rowSums(summary_table_df)
+
+# Añadir una fila 'Total' que suma todas las filas
+summary_table_df["Total", ] &lt;- colSums(summary_table_df)
+
+# Mostrar la tabla resumen
+print(summary_table_df)
+</code></pre><figure class="kg-card kg-image-card"><img alt="" class="kg-image" height="254" loading="lazy" sizes="(min-width: 720px) 720px" src="/content/images/2024/10/Captura-de-Pantalla-2024-10-04-a-la-s--20.09.59.png" srcset="/content/images/size/w600/2024/10/Captura-de-Pantalla-2024-10-04-a-la-s--20.09.59.png 600w, /content/images/2024/10/Captura-de-Pantalla-2024-10-04-a-la-s--20.09.59.png 720w" width="720"/></figure><h2 id="medias-condicionales">Medias condicionales</h2><p>Esta es la versión más sencilla de un modelo de diferencias en diferencias.</p><p>Se trata de identificar las medias condicionales de los grupos tratados y sin tratamiento antes y después de la intervención. La idea es que el grupo que no fue tratado funcione como grupo de control en un experimento.</p><p>Para que un grupo se pueda considerar de control, las circunstancias del evento tienen que ser muy especiales.</p><ul><li>Tiene que ser muy similar al grupo de tratamiento. En el caso de este impuesto, estamos comparando los productos que están en la misma tienda y que aparecen en los mismos periodos.</li><li>Las circunstancias no deben de dar tiempo para sospechar de algún sesgo de selección. Generalmente, los mejores “experimentos naturales” ocurren de repente. Un <a href="/los-beneficios-economicos-de-que-un-volcan-te-destruya-la-casa/">accidente natural</a>, o una <a href="/un-medico-del-siglo-xix-revelo-la-causa-del-colera-usando-este-mapa-antes-de-que-se-descubrieran-las-bacterias/">implementación repentina</a> son ideales, porque no dan tiempo para adaptarse.</li></ul><p>Comencemos modificando los datos un poco para cumplir con estos puntos.</p><!--members-only--><p>La base de datos incluye algunos registros de productos que no aparecen en todos los periodos de registro.</p><p>Vamos a filtrarlos.</p><pre><code class="language-r"># Primero, vamos a corregir un error: Debería decir Marzo de 2016 y no de 2015.
+df &lt;- df %&gt;%
+  mutate(time = ifelse(time == "MAR2015", "MAR2016", time))  # Cambiar 'MAR2015' a 'MAR2016'
+
+# Crear la variable 'period_test' indicando si el producto está presente en los tres periodos
+dat &lt;- df %&gt;%
+  group_by(store_id, product_id) %&gt;%
+  mutate(period_test = all(c("DEC2014", "JUN2015", "MAR2016") %in% time)) %&gt;%
+  ungroup()
+
+# Mostrar las primeras filas para verificar
+table(dat$time)
+
+# Filtrar el conjunto de datos donde period_test es TRUE y supp es 0
+dat_c &lt;- subset(dat, period_test == TRUE &amp; supp == 0)
+
+# Mostrar el conjunto de datos filtrado
+head(dat_filtered)
+table(dat_filtered$time)
+</code></pre><p>Ahora si, estamos listos para calcular las medias condicionales.</p><p>El siguiente código crea una tabla con los precios promedio de los productos con impuesto y sin impuesto en los diferentes periodos de tiempo y en los diferentes tipos de tienda.</p><p>Lo que estamos buscando en esta tabla es que los precios sean en promedio más altos para los productos con impuesto <strong>después</strong> de la implementación.</p><pre><code class="language-r"># Calcular la media condicional por taxed, store_type, y time
+table_res &lt;- dat_c %&gt;%
+  group_by(taxed, store_type, time) %&gt;%
+  summarise(n = n(), avg.price = mean(price_per_oz, na.rm = TRUE), .groups = "drop") %&gt;%
+  spread(key = time, value = avg.price)
+
+# Mostrar la tabla
+print(table_res)
+</code></pre><figure class="kg-card kg-image-card"><img alt="" class="kg-image" height="412" loading="lazy" sizes="(min-width: 720px) 720px" src="/content/images/2024/10/Captura-de-Pantalla-2024-10-04-a-la-s--21.03.15-1.png" srcset="/content/images/size/w600/2024/10/Captura-de-Pantalla-2024-10-04-a-la-s--21.03.15-1.png 600w, /content/images/2024/10/Captura-de-Pantalla-2024-10-04-a-la-s--21.03.15-1.png 994w" width="994"/></figure><p>Nuestro grupo de control son las bebidas a las que no se les aplica el impuesto (los que en <code>taxed</code> tienen 0). Si el incremento en los precios se debe al impuesto, entonces el grupo de control no debería de ver un aumento significativo.</p><p>Veamos de manera gráfica.</p><p>El siguiente código crea columnas adicionales con las diferencias en diferentes periodos en el tiempo. De Diciembre de 2014 a Junio de 2014 y de Diciembre de 2014 a Marzo de 2016.</p><pre><code class="language-r">table_res$D1 &lt;- table_res$JUN2015 - table_res$DEC2014
+table_res$D2 &lt;- table_res$MAR2016 - table_res$DEC2014
+</code></pre><h2 id="lo-mejor-es-mostrarlo-de-forma-gr%C3%A1fica">Lo mejor es mostrarlo de forma gráfica</h2><p>El siguiente código crea un gráfico de barras con la diferencia en el promedio en los precios de Diciembre a 2014 a Junio de 2015.</p><pre><code class="language-r"># Crear la gráfica para el cambio de precio entre Junio 2015 y Diciembre 2014
+ggplot(table_res, 
+       aes(fill = factor(taxed), y = D1, x = factor(store_type))) +  # Especificar la variable para el color (fill) y los ejes
+  geom_bar(position = "dodge", stat = "identity") +  # Gráfico de barras con las barras separadas
+  labs(y = "Cambio en el precio (US$/oz)", x = "Tipo de tienda") +  # Etiquetas de los ejes
+  scale_fill_discrete(name = "Impuestos", 
+                      labels = c("No gravado", "Gravado")) +  # Etiquetas para la leyenda
+  ggtitle("Cambio promedio en el precio de Dic 2014 a Jun 2015")  # Título de la gráfica
+
+</code></pre><figure class="kg-card kg-image-card"><img alt="" class="kg-image" height="1500" loading="lazy" sizes="(min-width: 720px) 720px" src="/content/images/2024/10/cambio_precio_junio_vs_diciembre.png" srcset="/content/images/size/w600/2024/10/cambio_precio_junio_vs_diciembre.png 600w, /content/images/size/w1000/2024/10/cambio_precio_junio_vs_diciembre.png 1000w, /content/images/size/w1600/2024/10/cambio_precio_junio_vs_diciembre.png 1600w, /content/images/2024/10/cambio_precio_junio_vs_diciembre.png 2400w" width="2000"/></figure><p>Nota que</p><ul><li>En los supermercados grandes (<code>store_type = 1</code>) la diferencia en los precios entre los productos gravados y los que no tienen impuesto es muy grande. Lo mismo para las estaciones de gas.</li><li>Pero en los supermercados pequeños y las farmacias, el cambio no parece ser significativo.</li></ul><p>La forma de ver esto es por la diferencia que hay en las barras. ¿Lo notas? Es la diferencia que hay entre grupos de la diferencia en el tiempo.</p><p>Por eso se le llama a la técnica diferencias en diferencias.</p><h2 id="%C2%BFapoco-as%C3%AD-de-f%C3%A1cil">¿Apoco así de fácil?</h2><p>En concepto, si.</p><p>Realmente las diferencias en diferencias se complican más en cuanto a encontrar los casos comparables. Cuando las condiciones son favorables, se trata de una simple diferencia de medias.</p><p>Pero hay casos un poco más complejos que requieren más interesantes de estadística y causalidad.</p>

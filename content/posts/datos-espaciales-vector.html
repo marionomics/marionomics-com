@@ -1,0 +1,34 @@
+---
+title: 'Datos espaciales: Vector'
+slug: datos-espaciales-vector
+date: '2022-09-20T07:00:10-05:00'
+lastmod: '2022-09-20T07:00:10-05:00'
+subtitle: Puntos, Líneas y Polígonos. Características y ventajas
+description: Puntos, Líneas y Polígonos. Características y ventajas
+tags: []
+math: false
+twitter: false
+ghost_id: 66affcc0f6ade40001729cfe
+---
+<p>Los datos vector son un tipo de datos geoespaciales que se componen de localizaciones geométricas discretas conocidos como vértices que definen puntos, líneas o polígonos en un mapa. Aquí una representación visual de los diferentes tipos de datos vector.</p><h2 id="caracter%C3%ADsticas-de-los-vector">Características de los vector</h2><p>Los datos de tipo vector representan la geometría de un objeto. Pueden ayudar a guardar de una manera muy simple las distancias entre diferentes puntos o crear una ruta en un mapa. La geometría de un vector se conecta con uno o múltiples vértices, que describen una posición con coordenadas.</p><h2 id="ventajas-de-los-datos-vector">Ventajas de los datos vector</h2><p>Una de las ventajas más importantes es que ocupa menos espacio de almacenamiento que los datos tipo raster. Al ser coordenadas y sus conexiones sólo indicadores numéricos, toma solo algunos bytes de información su almacenamiento. En contraste, los objetos de tipo raster son imágenes que pueden requerir más detalle.</p><p>Los datos de tipo vector son ideales para la representación de puntos, líneas o polígonos en un mapa. Si deseas hacer un mapa coroplético donde indicas, digamos, la percepción de inseguridad, cada municipio puede ser representado por un polígono, que toma una intensidad de color según el porcentaje de personas que perciben algo en una encuesta. Un mapa de ese estilo se vería algo así.</p><p>Para hacer un mapa como este, es posible mantener tanto los polígonos como los datos que representan en una tabla de atributos. Eso facilita mucho el trabajo con datos geográficos. Además, los objetos de tipo vector mantienen sus relaciones topológicas, lo cual evita que cambien las distancias de manera arbitraria.</p><h2 id="formatos">Formatos</h2><p>Los dos formatos más importantes de geodatos son los archivos de tipo geopackage y los Shapefile de ESRI. En la tabla siguiente resumo algunas de sus características</p><!--kg-card-begin: markdown--><table>
+<thead>
+<tr>
+<th>Nombre</th>
+<th>Extensión</th>
+<th>Licencia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Geopackage</td>
+<td>.gpkg</td>
+<td>Software Libre</td>
+</tr>
+<tr>
+<td>Shapefile</td>
+<td>.shp</td>
+<td>Propietary de la empresa ESRI</td>
+</tr>
+</tbody>
+</table>
+<!--kg-card-end: markdown--><p>Ningún formato es mejor que el otro en sí. Al igual que con las diferencias de los archivos tipo vector en comparación de los tipo raster, ambos son importantes y pueden servir diferentes propósitos.</p>

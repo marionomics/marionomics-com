@@ -1,0 +1,26 @@
+---
+title: Cómo transformar PDF a CSV usando Python y tabula
+slug: como-transformar-pdf-a-csv
+date: '2021-12-20T02:00:00-06:00'
+lastmod: '2021-12-20T02:00:00-06:00'
+description: En ocasiones la información nos llega en una tabla en PDF. Imaginando que la tabla está en un buen formato, no es una imagen y la información está bien, tenemo…
+tags:
+- python
+feature_image: https://images.unsplash.com/photo-1529078155058-5d716f45d604?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxMTc3M3wwfDF8c2VhcmNofDF8fGNzdnxlbnwwfHx8fDE2Mzk4Njk3MjQ&ixlib=rb-1.2.1&q=80&w=2000
+feature_image_caption: Photo by <a href="https://unsplash.com/@mbaumi?utm_source=ghost&utm_medium=referral&utm_campaign=api-credit">Mika Baumeister</a> / <a href="https://unsplash.com/?utm_source=ghost&utm_medium=referral&utm_campaign=api-credit">Unsplash</a>
+math: false
+twitter: false
+ghost_id: 66affcc0f6ade40001729c95
+---
+<p>En ocasiones la información nos llega en una tabla en PDF. Imaginando que la tabla está en un buen formato, no es una imagen y la información está bien, tenemos la posibilidad de pasar lo que nos entrega esta tabla haciendo lo siguiente.</p><p>Ubica tu archivo PDF y crea un script de python con extensión .py. Antes de comenzar a hacer el script, vamos a necesitar la librería <code>tabula-py</code>, que es la que extraerá la tabla del PDF y la pasará a csv. Para descargar la libería sólo tienes que ir a la consola y teclear</p><pre><code class="language-bash">pip install tabula-py</code></pre><p>Si tienes python3, sólo cambia el comando <code>pip</code> por <code>pip3</code> y todo debe de funcionar bien. Una vez esté instalado tabula, crea el siguiente script en python.</p><pre><code class="language-python">import tabula
+
+def run():
+	'''Transformar PDF a csv'''
+
+	tabula.convert_into("ruta/del_archivo.pdf",
+		"ruta/del_archivo.csv",
+		output_format="csv", pages="all")
+
+
+if __name__ == '__main__':
+	run()</code></pre><p>También puedes hacer esto usando una Jupyter Notebook sin la necesidad de darle el formato de función.</p>

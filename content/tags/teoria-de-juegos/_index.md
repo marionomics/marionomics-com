@@ -1,0 +1,3 @@
+---
+title: Teoría de Juegos
+---

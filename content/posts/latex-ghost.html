@@ -1,0 +1,18 @@
+---
+title: Cómo escribir matemáticas en un blog con Ghost
+slug: latex-ghost
+date: '2021-12-10T13:21:35-06:00'
+lastmod: '2021-12-10T13:27:59-06:00'
+subtitle: Una guía para publicar matemáticas con Ghost
+description: Una guía para publicar matemáticas con Ghost
+tags: []
+feature_image: https://images.unsplash.com/photo-1509228468518-180dd4864904?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxMTc3M3wwfDF8c2VhcmNofDF8fGVxdWF0aW9ufGVufDB8fHx8MTYzOTE2MzYwNQ&ixlib=rb-1.2.1&q=80&w=2000
+feature_image_alt: Ecuaciones
+feature_image_caption: Photo by <a href="https://unsplash.com/@antoine1003?utm_source=ghost&utm_medium=referral&utm_campaign=api-credit">Antoine Dautry</a> / <a href="https://unsplash.com/?utm_source=ghost&utm_medium=referral&utm_campaign=api-credit">Unsplash</a>
+math: true
+twitter: false
+ghost_id: 66affcc0f6ade40001729c8f
+---
+<p>Si tu tienes tu blog alojado en <strong>Ghost</strong> como este que estás viendo, tal vez desees incluir bloques de matemáticas como éste:</p><p>\[ e^{i \pi} +1 = 0\]</p><p>Si tu tienes la configuración completa, puedes instalar los plugins necesarios con Node JS. Pero hay una manera mucho más sencilla. Lo único que tienes que hacer es incluir <strong>code injection</strong> en el post que vas a publicar. </p><p>Ve a la sección de configuración del post y buscas al final <strong>code injection</strong>. En el bloque de header vas a pegar el siguiente código</p><pre><code class="language-markup">&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.css" crossorigin="anonymous"&gt;
+&lt;script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.js" crossorigin="anonymous"&gt;&lt;/script&gt;
+&lt;script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/contrib/auto-render.min.js" crossorigin="anonymous" onload="renderMathInElement(document.body);"&gt;&lt;/script&gt;</code></pre><p>Y listo.</p><p>Ahora, dentro del texto usarás <code>\(</code> para abrir un bloque de ecuación dentro de un párrafo y <code>\)</code> para cerrarlo. Por ejemplo <code>\(e = mc^2\)</code> mostrará como resultado \(e =mc^2\) en el post. </p><p>Para crear un bloque resaltado con ecuación, sólo debes abrirlo con <code>\[</code> y cerrarlo con <code>\]</code>. Por ejemplo <code>\[e^{i\pi} + 1 = 0\]</code> da como resultado la ecuación que viste allá arriba. </p>

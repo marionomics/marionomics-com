@@ -1,0 +1,228 @@
+---
+title: '[Tutorial] Hacer una pirámide de población en R y Python'
+slug: tutorial-hacer-una-piramide-de-poblacion-en-r-y-python
+date: '2024-11-05T09:00:10-06:00'
+lastmod: '2025-11-21T14:00:09-06:00'
+subtitle: Con el censo 2020 de México de Inegi
+description: Con el censo 2020 de México de Inegi
+tags:
+- python
+- mexico
+- r
+- visualizacion
+feature_image: /content/images/2024/11/DALL-E-2024-11-04-18.01.13---A-minimalist-black-and-white-lineart-sketch-of-a-short-robot-carrying-blocks-to-build-a-pyramid.-The-robot-is-compact-and-sturdy--with-simple-geometri.webp
+math: false
+twitter: false
+ghost_id: 67295e449a29060001888265
+---
+<p><em>La mejor forma de mostrar la dinámica de una población es con un gráfico de pirámide.</em></p><p><em>Se le llama así porque por años esa es la forma que ha tomado, cuando ponemos dos gráficos de barras contiguos. Cada barra es la suma de todas las personas en un rango de edades.</em></p><p><em>En este tutorial:</em></p><ul><li><em>Te daré el código para hacer tus pirámides de población en R y Python.</em></li><li><em>Luego veremos un ejemplo real descargando datos del INEGI</em></li><li><em>Y finamente personalizaremos el gráfico.</em></li></ul><p><em>Comencemos.</em></p><h2 id="%C2%BFpara-qu%C3%A9-se-usan-las-pir%C3%A1mides-de-poblaci%C3%B3n">¿Para qué se usan las pirámides de población?</h2><p>Es la forma más sencilla de entender la dinámica de la población de un lugar.</p><p>Es un vistazo al presente y al futuro de la población. Los jóvenes de ahora son los adultos del mañana, que a su vez serán los adultos mayores después. Entender esto de un vistazo te ayuda a proyectar la fuerza laboral, el estado de las pensiones y el futuro de las finanzas públicas.</p><p>Entre muchas otras cosas.</p><h2 id="este-es-el-c%C3%B3digo-para-hacer-una-pir%C3%A1mide-de-poblaci%C3%B3n">Este es el código para hacer una pirámide de población</h2><p>Esta vez comenzaremos con el código.</p><p>Los scripts que te daré te harán el gráfico que buscas en python y R. Sólo tienes que modificar las cifras y los rangos, si es necesario.</p><p>Copia este código y úsalo en un script de python. También puedes usarlo en Google Colab.</p><p>El único módulo que necesitamos es matplotlib.</p><pre><code class="language-python"># Importamos las librerías necesarias
+import matplotlib.pyplot as plt
+
+# Definimos los datos manualmente
+rangos_edades = ['0 - 5', '6 - 10', '11 - 15', '16 - 20', '21 - 25', '26 - 30', '31 - 35', '36 - 40', '41 - 45', '46 - 50', '51 - 55', '56 - 60', '61 - 65', '66 - 70', '71 - 75', '76 - 80', '81+']
+hombres = [-30320, -24326, -20658, -19694, -16580, -13560, -10634, -8900, -7386, -6094, -4984, -4084, -3284, -2504, -1824, -1284, -896]
+mujeres = [29144, 22493, 19878, 21686, 16947, 14374, 12220, 10800, 9634, 8056, 6804, 5634, 4512, 3500, 2642, 1904, 1208]
+
+# Creamos la figura y los ejes
+plt.figure(figsize=(10, 8))
+
+# Graficamos la población masculina (lado izquierdo) y femenina (lado derecho)
+plt.barh(rangos_edades, hombres, label='Hombres', color="#154957")
+plt.barh(rangos_edades, mujeres, label='Mujeres', color="#05cd86")
+
+# Añadimos etiquetas y título en español
+plt.xlabel('Población')
+plt.ylabel('Rango de Edad')
+plt.title('Pirámide Poblacional para el año 1900')
+plt.legend(loc='upper right')
+
+# Mostramos el gráfico
+plt.show()
+</code></pre><p>Para hacer lo mismo en R, usamos este código. Nota que, como le estamos dando las cifras directamente en el código, no es necesario cargar ninguna base de datos (eso lo haremos más adelante con los datos del INEGI).</p><pre><code class="language-r"># Instalamos (si es necesario) y cargamos la librería ggplot2
+if (!require(ggplot2)) install.packages("ggplot2")
+library(ggplot2)
+
+# Definimos los datos manualmente
+rangos_edades &lt;- c("0 - 5", "6 - 10", "11 - 15", "16 - 20", "21 - 25", 
+                   "26 - 30", "31 - 35", "36 - 40", "41 - 45", "46 - 50", 
+                   "51 - 55", "56 - 60", "61 - 65", "66 - 70", "71 - 75", 
+                   "76 - 80", "81+")
+hombres &lt;- c(-30320, -24326, -20658, -19694, -16580, -13560, -10634, -8900, -7386, 
+             -6094, -4984, -4084, -3284, -2504, -1824, -1284, -896)
+mujeres &lt;- c(29144, 22493, 19878, 21686, 16947, 14374, 12220, 10800, 9634, 
+             8056, 6804, 5634, 4512, 3500, 2642, 1904, 1208)
+
+# Creamos un data frame con los datos
+datos &lt;- data.frame(
+  RangoEdad = factor(rangos_edades, levels = rev(rangos_edades)),  # Invertimos los niveles
+  Hombres = hombres,
+  Mujeres = mujeres
+)
+
+# Transformamos los datos a un formato largo para ggplot
+datos_largo &lt;- reshape2::melt(datos, id.vars = "RangoEdad", variable.name = "Genero", value.name = "Poblacion")
+
+# Creamos la pirámide poblacional
+ggplot(datos_largo, aes(x = Poblacion, y = RangoEdad, fill = Genero)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  scale_x_continuous(labels = abs, name = "Población") +  # Etiquetas del eje x como valores absolutos
+  labs(y = "Rango de Edad", title = "Pirámide Poblacional para el año 1900") +
+  scale_fill_manual(values = c("Hombres" = "#154957", "Mujeres" = "#05cd86")) +  # Colores para cada género
+  theme_minimal() +
+  theme(legend.position = "top") +
+  guides(fill = guide_legend(title = "Género"))
+
+</code></pre><p>Debes de obtener como resultado un gráfico como este:</p><figure class="kg-card kg-image-card"><img alt="" class="kg-image" height="2000" loading="lazy" sizes="(min-width: 720px) 720px" src="/content/images/2024/11/pyramid.png" srcset="/content/images/size/w600/2024/11/pyramid.png 600w, /content/images/size/w1000/2024/11/pyramid.png 1000w, /content/images/size/w1600/2024/11/pyramid.png 1600w, /content/images/size/w2400/2024/11/pyramid.png 2400w" width="2000"/></figure><p>El truco en ambos casos es proporcionar los datos de un género en positivo y los otros en negativo.</p><p>Si ya tienes los datos y ya organizaste las sumas, basta con que cambies los números en el código y ya tienes el gráfico listo para usar.</p><p>Pero ¿qué hacer con los datos como vienen en el censo?</p><p>Hagámoslo.</p><h2 id="tutorial-para-hacer-una-pir%C3%A1mide-de-poblaci%C3%B3n-con-los-datos-del-inegi-en-r-y-python">Tutorial para hacer una pirámide de población con los datos del INEGI en R y Python</h2><p>Normalmente no nos vamos a encontrar los datos listos para hacer nuestra gráfica.</p><p>Generalmente es necesario ordenar los datos y limpiarlos antes de comenzar a hacer los gráficos. Afortunadamente, tanto R como Python tienen funciones que facilitan mucho el trabajo. El código que te voy a pasar funciona sin cambios para el censo 2020 de México en Inegi. Si deseas usarlo en otras bases de datos, lo puedes hacer con cambios ligeros.</p><p>No te preocupes, te guiaré en el camino.</p><p>Si ya estás listo, comienza por aquí.</p><h3 id="paso-1-descarga-la-base-de-datos">Paso #1: Descarga la base de datos</h3><p>Para este ejemplo usaremos el censo 2020 de Inegi.</p><p>Entra el la siguiente página y descarga los tabulados del cuestionario básico de población.</p><figure class="kg-card kg-bookmark-card"><a class="kg-bookmark-container" href="https://www.inegi.org.mx/programas/ccpv/2020/#tabulados"><div class="kg-bookmark-content"><div class="kg-bookmark-title">Censo de Población y Vivienda 2020</div><div class="kg-bookmark-description">Enumeración exhaustiva de la población y las viviendas existentes en el país, brinda características de ambas. Datos de 2020.</div><div class="kg-bookmark-metadata"><img alt="" class="kg-bookmark-icon" src="https://static.ghost.org/v5.0.0/images/link-icon.svg"/><span class="kg-bookmark-publisher">Instituto Nacional de Estadística y Geografía(INEGI)</span></div></div></a></figure><p>La hoja 03 contiene los datos que buscamos. Los únicos detalles son que hay que filtrar el estado que queremos que nos muestre y que nos arroja todas las edades. Para hacer una pirámide que sea fácil de leer, necesitamos dividir estos datos en rangos.</p><p>Así se ve la pantalla de los datos en Excel.</p><figure class="kg-card kg-image-card"><img alt="" class="kg-image" height="1286" loading="lazy" sizes="(min-width: 720px) 720px" src="/content/images/2024/11/pantalla_excel_inegi.png" srcset="/content/images/size/w600/2024/11/pantalla_excel_inegi.png 600w, /content/images/size/w1000/2024/11/pantalla_excel_inegi.png 1000w, /content/images/size/w1600/2024/11/pantalla_excel_inegi.png 1600w, /content/images/size/w2400/2024/11/pantalla_excel_inegi.png 2400w" width="2000"/></figure><div class="kg-card kg-callout-card kg-callout-card-blue"><div class="kg-callout-emoji">💡</div><div class="kg-callout-text">En esa misma página puedes encontrar una pirámide poblacional ya hecha por INEGI en formato PDF. Puedes usarla para comparar tus resultados.</div></div><h3 id="paso-2-carga-la-base-de-datos-en-pythonr">Paso #2: Carga la base de datos en Python/R</h3><p>Ahora que tienes el archivo descargado, es momento de cargarlo en tu entorno de trabajo. Te mostraré cómo hacerlo tanto en Python como en R, y te explicaré cada paso para que entiendas lo que estamos haciendo y cómo puedes adaptar el código a tus necesidades.</p><h3 id="cargando-los-datos-en-python">Cargando los datos en Python</h3><p>Primero, asegúrate de tener instaladas las librerías necesarias. En este caso, usaremos <code>pandas</code> para manejar los datos y <code>matplotlib</code> para las gráficas.</p><pre><code class="language-python"># Importamos las librerías necesarias
+import pandas as pd
+import matplotlib.pyplot as plt
+
+</code></pre><p>Ahora, especifica la ruta al archivo que descargaste y el nombre de la hoja que contiene los datos que necesitamos (en este caso, la hoja "03").</p><pre><code class="language-python"># Especifica la ruta al archivo y el nombre de la hoja
+file_path = 'ruta/a/tu/archivo.xlsx'  # Reemplaza con la ruta real de tu archivo
+sheet_name = '03'  # Nombre de la hoja que contiene los datos
+
+</code></pre><p>Leemos los datos del archivo Excel, omitiendo las primeras filas que contienen metadatos y no nos sirven para el análisis.</p><pre><code class="language-python"># Leemos la hoja de Excel, omitiendo las primeras 5 filas de metadatos
+data = pd.read_excel(file_path, sheet_name=sheet_name, skiprows=5)
+
+</code></pre><p>Renombramos las columnas para facilitar su manejo.</p><pre><code class="language-python"># Renombramos las columnas para mayor claridad
+data.columns = ["Entidad", "Edad", "Poblacion_Total", "Hombres", "Mujeres", "Relacion_H_M"]
+
+</code></pre><h3 id="cargando-los-datos-en-r">Cargando los datos en R</h3><p>En R, utilizaremos el paquete <code>readxl</code> para leer archivos Excel y <code>ggplot2</code> para las gráficas. Asegúrate de tenerlos instalados.</p><pre><code class="language-r"># Instalamos y cargamos los paquetes necesarios
+if (!require("readxl")) install.packages("readxl")
+if (!require("ggplot2")) install.packages("ggplot2")
+
+library(readxl)
+library(ggplot2)
+
+</code></pre><p>Especifica la ruta al archivo y el nombre de la hoja.</p><pre><code class="language-r"># Especifica la ruta al archivo y el nombre de la hoja
+file_path &lt;- "ruta/a/tu/archivo.xlsx"  # Reemplaza con la ruta real de tu archivo
+sheet_name &lt;- "03"  # Nombre de la hoja que contiene los datos
+
+</code></pre><p>Leemos los datos, omitiendo las primeras filas innecesarias.</p><pre><code class="language-r"># Leemos la hoja de Excel, omitiendo las primeras 5 filas de metadatos
+data &lt;- read_excel(file_path, sheet = sheet_name, skip = 5)
+
+</code></pre><p>Renombramos las columnas.</p><pre><code class="language-r"># Renombramos las columnas para mayor claridad
+colnames(data) &lt;- c("Entidad", "Edad", "Poblacion_Total", "Hombres", "Mujeres", "Relacion_H_M")
+
+</code></pre><h3 id="paso-3-filtra-y-limpia-los-datos">Paso #3: Filtra y limpia los datos</h3><p>Los datos que hemos cargado incluyen información de todas las entidades federativas y edades individuales. Para nuestra pirámide poblacional, vamos a enfocarnos en el nivel nacional. Pero si deseas analizar un estado específico, como Durango, te mostraré cómo hacerlo.</p><h3 id="filtrando-los-datos-en-python">Filtrando los datos en Python</h3><p>Primero, filtramos los datos para quedarnos solo con la entidad que nos interesa. Para el nivel nacional, la entidad se llama "Estados Unidos Mexicanos".</p><!--members-only--><pre><code class="language-python"># Filtramos para quedarnos solo con los datos nacionales
+filtered_data = data[data["Entidad"] == "Estados Unidos Mexicanos"]
+
+</code></pre><p>Si quisieras analizar los datos de Durango, simplemente cambia el nombre de la entidad:</p><pre><code class="language-python"># Para filtrar los datos de Durango
+filtered_data = data[data["Entidad"] == "Durango"]
+
+</code></pre><p>Luego, eliminamos filas innecesarias y limpiamos la columna de edad.</p><pre><code class="language-python"># Eliminamos filas con valores NaN en 'Edad'
+filtered_data = filtered_data.dropna(subset=["Edad"])
+
+# Excluimos la fila que contiene el 'Total' de la población
+filtered_data = filtered_data[filtered_data["Edad"] != "Total"]
+
+# Eliminamos el texto ' años' de la columna 'Edad' para poder convertirla a numérico
+filtered_data["Edad"] = filtered_data["Edad"].str.replace(" años", "", regex=False)
+
+</code></pre><p>Ahora, convertimos las columnas a tipo numérico para poder trabajar con ellas.</p><pre><code class="language-python"># Convertimos las columnas a numérico
+filtered_data["Edad"] = pd.to_numeric(filtered_data["Edad"], errors='coerce')
+filtered_data["Hombres"] = pd.to_numeric(filtered_data["Hombres"], errors='coerce')
+filtered_data["Mujeres"] = pd.to_numeric(filtered_data["Mujeres"], errors='coerce')
+
+# Eliminamos filas con valores NaN resultantes de la conversión
+filtered_data = filtered_data.dropna(subset=["Edad", "Hombres", "Mujeres"])
+
+</code></pre><h3 id="filtrando-los-datos-en-r">Filtrando los datos en R</h3><p>Al igual que en Python, filtramos los datos para quedarnos con la entidad deseada.</p><pre><code class="language-r"># Filtramos para quedarnos solo con los datos nacionales
+filtered_data &lt;- subset(data, Entidad == "Estados Unidos Mexicanos")
+
+# Si deseas los datos de Durango
+filtered_data &lt;- subset(data, Entidad == "Durango")
+
+</code></pre><p>Eliminamos filas innecesarias y limpiamos la columna de edad.</p><pre><code class="language-r"># Eliminamos filas con NA en 'Edad'
+filtered_data &lt;- filtered_data[!is.na(filtered_data$Edad), ]
+
+# Excluimos la fila que contiene el 'Total' de la población
+filtered_data &lt;- subset(filtered_data, Edad != "Total")
+
+# Eliminamos el texto ' años' de la columna 'Edad' para poder convertirla a numérico
+filtered_data$Edad &lt;- gsub(" años", "", filtered_data$Edad)
+
+</code></pre><p>Convertimos las columnas a numérico.</p><pre><code class="language-r"># Convertimos las columnas a numérico
+filtered_data$Edad &lt;- as.numeric(filtered_data$Edad)
+filtered_data$Hombres &lt;- as.numeric(filtered_data$Hombres)
+filtered_data$Mujeres &lt;- as.numeric(filtered_data$Mujeres)
+
+# Eliminamos filas con valores NA resultantes de la conversión
+filtered_data &lt;- na.omit(filtered_data[, c("Edad", "Hombres", "Mujeres")])
+
+</code></pre><div class="kg-card kg-callout-card kg-callout-card-blue"><div class="kg-callout-emoji">💡</div><div class="kg-callout-text"><b><strong style="white-space: pre-wrap;">Nota:</strong></b> Convertir las columnas a numérico es esencial para poder realizar operaciones matemáticas y generar el gráfico. Si tus datos vienen en un formato diferente o contienen caracteres adicionales, es posible que necesites ajustar las funciones de limpieza.</div></div><h3 id="paso-4-agrupa-las-edades-en-intervalos">Paso #4: Agrupa las edades en intervalos</h3><p>Para hacer más legible la pirámide, agruparemos las edades en intervalos de 5 años. Si deseas usar un intervalo diferente, puedes modificar este valor.</p><h3 id="agrupando-en-python">Agrupando en Python</h3><p>Creamos una nueva columna que indica el grupo de edad al que pertenece cada registro.</p><pre><code class="language-python"># Definimos el intervalo de agrupación
+intervalo = 5  # Puedes cambiar este valor para intervalos diferentes
+
+# Creamos la columna 'Grupo_Edad' con intervalos de 5 años
+filtered_data["Grupo_Edad"] = (filtered_data["Edad"] // intervalo) * intervalo
+
+</code></pre><p>Agrupamos los datos sumando las poblaciones por grupo de edad.</p><pre><code class="language-python"># Agrupamos y sumamos las poblaciones por grupo de edad
+pyramid_data = filtered_data.groupby("Grupo_Edad")[["Hombres", "Mujeres"]].sum().reset_index()
+
+</code></pre><h3 id="agrupando-en-r">Agrupando en R</h3><p>Creamos la columna del grupo de edad.</p><pre><code class="language-r"># Definimos el intervalo de agrupación
+intervalo &lt;- 5  # Puedes cambiar este valor para intervalos diferentes
+
+# Creamos la columna 'Grupo_Edad' con intervalos de 5 años
+filtered_data$Grupo_Edad &lt;- floor(filtered_data$Edad / intervalo) * intervalo
+
+</code></pre><p>Agrupamos y sumamos.</p><pre><code class="language-r"># Agrupamos y sumamos las poblaciones por grupo de edad
+library(dplyr)
+pyramid_data &lt;- filtered_data %&gt;%
+  group_by(Grupo_Edad) %&gt;%
+  summarise(Hombres = sum(Hombres), Mujeres = sum(Mujeres))
+
+</code></pre><div class="kg-card kg-callout-card kg-callout-card-blue"><div class="kg-callout-emoji">💡</div><div class="kg-callout-text"><b><strong style="white-space: pre-wrap;">Tip:</strong></b> Si deseas agrupar en intervalos de 10 años, simplemente cambia el valor de <code spellcheck="false" style="white-space: pre-wrap;">intervalo</code> a 10 en el código anterior. Esto te dará grupos como 0-9, 10-19, etc.</div></div><h3 id="paso-5-ordena-los-datos-para-el-gr%C3%A1fico">Paso #5: Ordena los datos para el gráfico</h3><p>Queremos que las edades más jóvenes aparezcan en la parte inferior de la pirámide.</p><h3 id="ordenando-en-python">Ordenando en Python</h3><pre><code class="language-python"># Ordenamos los datos de mayor a menor edad para que las edades más jóvenes queden abajo
+pyramid_data_sorted = pyramid_data.sort_values(by="Grupo_Edad", ascending=False)
+
+</code></pre><h3 id="ordenando-en-r">Ordenando en R</h3><pre><code class="language-r"># Ordenamos los datos de mayor a menor edad
+pyramid_data &lt;- pyramid_data %&gt;%
+  arrange(desc(Grupo_Edad))
+
+</code></pre><h3 id="paso-6-grafica-la-pir%C3%A1mide-poblacional">Paso #6: Grafica la pirámide poblacional</h3><p>Ahora, vamos a visualizar los datos. Te mostraré cómo personalizar el gráfico y qué aspectos puedes modificar.</p><h3 id="graficando-en-python">Graficando en Python</h3><p>Configuramos el tamaño de la figura y graficamos las barras para hombres y mujeres.</p><pre><code class="language-python">import matplotlib.pyplot as plt
+
+# Configuramos el tamaño de la figura
+plt.figure(figsize=(10, 8))
+
+# Graficamos las barras horizontales para Hombres y Mujeres
+plt.barh(pyramid_data_sorted["Grupo_Edad"], -pyramid_data_sorted["Hombres"], label="Hombres", color="#154957")
+plt.barh(pyramid_data_sorted["Grupo_Edad"], pyramid_data_sorted["Mujeres"], label="Mujeres", color="#05cd86")
+
+</code></pre><p>Personalizamos las etiquetas del eje Y para mostrar los intervalos de edad.</p><pre><code class="language-python"># Creamos etiquetas de grupo de edad
+etiquetas_edad = [f"{int(edad)}-{int(edad + intervalo - 1)}" for edad in pyramid_data_sorted["Grupo_Edad"]]
+plt.yticks(pyramid_data_sorted["Grupo_Edad"], etiquetas_edad)
+
+</code></pre><p>Añadimos etiquetas y título al gráfico.</p><pre><code class="language-python"># Añadimos etiquetas y título
+plt.xlabel("Población")
+plt.ylabel("Grupo de Edad")
+plt.title("Pirámide Poblacional")
+plt.legend()
+
+# Mostramos el gráfico
+plt.tight_layout()
+plt.show()
+
+</code></pre><p><strong>Personalización:</strong></p><ul><li><strong>Colores:</strong> Puedes cambiar los colores modificando los valores en <code>color</code>. Por ejemplo, <code>color="skyblue"</code> para Hombres y <code>color="pink"</code> para Mujeres.</li><li><strong>Título y etiquetas:</strong> Modifica el texto dentro de <code>plt.title()</code>, <code>plt.xlabel()</code>, y <code>plt.ylabel()</code> para reflejar tu análisis.</li><li><strong>Tamaño de la figura:</strong> Cambia el tamaño en <code>plt.figure(figsize=(ancho, alto))</code> si quieres un gráfico más grande o más pequeño.</li></ul><h3 id="graficando-en-r">Graficando en R</h3><p>Usamos <code>ggplot2</code> para crear el gráfico.</p><pre><code class="language-r">library(ggplot2)
+
+# Creamos el gráfico de la pirámide poblacional
+ggplot(pyramid_data, aes(x = Grupo_Edad)) +
+  # Barras para Hombres (valores negativos para orientarlas a la izquierda)
+  geom_bar(aes(y = -Hombres), stat = "identity", fill = "#154957", width = intervalo - 1) +
+  # Barras para Mujeres
+  geom_bar(aes(y = Mujeres), stat = "identity", fill = "#05cd86", width = intervalo - 1) +
+  # Configura las etiquetas de los grupos de edad
+  scale_x_continuous(breaks = pyramid_data$Grupo_Edad, labels = paste0(pyramid_data$Grupo_Edad, "-", pyramid_data$Grupo_Edad + intervalo - 1)) +
+  # Ajusta las etiquetas del eje Y para mostrar valores absolutos
+  scale_y_continuous(labels = abs, name = "Población") +
+  # Añade título y etiquetas
+  labs(title = "Pirámide Poblacional", x = "Grupo de Edad") +
+  # Invierte los ejes para que las edades más jóvenes estén abajo
+  coord_flip() +
+  theme_minimal() +
+  theme(legend.position = "top")
+
+</code></pre><p><strong>Personalización:</strong></p><ul><li><strong>Colores:</strong> Cambia los colores en <code>fill</code> dentro de <code>geom_bar()</code>. Por ejemplo, <code>fill = "blue"</code> para Hombres y <code>fill = "red"</code> para Mujeres.</li><li><strong>Título y etiquetas:</strong> Modifica <code>labs(title = "Tu Título", x = "Eje X", y = "Eje Y")</code> para personalizar.</li><li><strong>Tema del gráfico:</strong> Puedes cambiar el tema con <code>theme_classic()</code>, <code>theme_bw()</code>, etc.</li></ul><div class="kg-card kg-callout-card kg-callout-card-blue"><div class="kg-callout-emoji">💡</div><div class="kg-callout-text"><b><strong style="white-space: pre-wrap;">Tip:</strong></b> Si deseas añadir una leyenda para identificar Hombres y Mujeres, puedes modificar el código para incluir <code spellcheck="false" style="white-space: pre-wrap;">fill</code> en <code spellcheck="false" style="white-space: pre-wrap;">aes()</code> y ajustar la leyenda con <code spellcheck="false" style="white-space: pre-wrap;">scale_fill_manual()</code>.</div></div><h3 id="paso-7-personaliza-y-analiza-tu-pir%C3%A1mide">Paso #7: Personaliza y analiza tu pirámide</h3><p>¡Felicidades! Ahora tienes una pirámide poblacional basada en los datos del INEGI.</p><p><strong>¿Qué más puedes hacer?</strong></p><ul><li><strong>Cambiar el intervalo de edad:</strong> Si deseas grupos más amplios o más específicos, modifica el valor de <code>intervalo</code>en el paso de agrupación. Por ejemplo, para intervalos de 10 años, establece <code>intervalo = 10</code>.</li><li><strong>Seleccionar otra entidad o región:</strong> Puedes filtrar los datos para cualquier estado o municipio cambiando el nombre en el filtro inicial. Asegúrate de que el nombre coincida exactamente con el que aparece en la columna "Entidad".</li><li><strong>Agregar proyecciones o datos históricos:</strong> Si tienes acceso a datos de diferentes años, puedes crear pirámides para cada año y compararlas para analizar tendencias demográficas. (Si te interesa más sobre esto, me dices y podemos expander este tutorial)</li><li><strong>Personalizar el diseño del gráfico:</strong> Explora más opciones de personalización en <code>matplotlib</code> y <code>ggplot2</code>. Puedes cambiar fuentes, agregar anotaciones, ajustar escalas, entre otros.</li></ul><p><strong>Ejemplos de modificaciones:</strong></p><p><strong>En R:</strong> Cambiar el tema del gráfico.</p><pre><code class="language-r"># Cambiar el tema a clásico
+theme_set(theme_classic())
+
+</code></pre><p><strong>En Python:</strong> Añadir una cuadrícula al gráfico.</p><pre><code class="language-python"># Añadir cuadrícula al gráfico
+plt.grid(axis='x', linestyle='--', alpha=0.7)
+
+</code></pre><h3 id="es-tu-turno-de-ponerlo-en-pr%C3%A1ctica">Es tu turno de ponerlo en práctica</h3><p>Las pirámides poblacionales son herramientas poderosas para entender la estructura y dinámica de una población.</p><p>Ahora puedes explorar diferentes escenarios y adaptar el análisis a lo que necesitas hacer.</p><p>Recuerda que los datos pueden venir en diferentes formatos y es posible que necesites ajustar el código para manejarlos correctamente. Experimenta y explora más funciones de las librerías que hemos usado.</p><p>Si te encuentras con algún problema o tienes dudas, contesta este post y te puedo guiar.</p>

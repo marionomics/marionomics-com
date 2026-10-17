@@ -1,0 +1,19 @@
+---
+title: Tu primera función en Python
+slug: tu-primera-funcion-en-python
+date: '2022-03-09T11:04:26-06:00'
+lastmod: '2022-03-09T11:04:26-06:00'
+subtitle: Aprende funciones en python creando funciones en Python
+description: Aprende funciones en python creando funciones en Python
+tags:
+- python
+- educacion
+feature_image: https://images.unsplash.com/photo-1517694712202-14dd9538aa97?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxMTc3M3wwfDF8c2VhcmNofDV8fHB5dGhvbnxlbnwwfHx8fDE2NDY4NDQ5MDM&ixlib=rb-1.2.1&q=80&w=2000
+feature_image_alt: Python el lenguaje de programación.
+feature_image_caption: Photo by <a href="https://unsplash.com/@clemhlrdt?utm_source=ghost&utm_medium=referral&utm_campaign=api-credit">Clément Hélardot</a> / <a href="https://unsplash.com/?utm_source=ghost&utm_medium=referral&utm_campaign=api-credit">Unsplash</a>
+math: false
+twitter: false
+ghost_id: 66affcc0f6ade40001729caf
+---
+<p>Hagamos primero una función y después explicamos lo que hicimos.</p><pre><code class="language-python">def cuadrado(numero = 2):
+	return numero ** 2</code></pre><p>El comando para crear una función en Python es <code>def</code>. Lo que siga de esto es el nombre de la función, que debe de tener un paréntesis justo enfrente (y sin espacios antes). </p><p>Los argumentos de la función vienen entre paréntesis y son lo que esta usa para realizar la operación para la que la hemos creado. En el caso de nuestro ejemplo, la función pide como argumento un número, para mostrarnos como resultado el número al cuadrado. En Python no es necesario decirle qué tipo de objeto es el argumento (entero, booleano, cadena de texto, etc.) y es posible asignar un valor por defecto. En nuestro ejemplo, si llamamos la función <code>cuadrado()</code> así sin argumentos, esta nos regresará <code>4</code>, porque asume que el argumento número es <code>2</code>, pero esto puede ser cambiado.</p><p>Podrías crear una función sin la necesidad de argumentos dentro. Aunque suena un poco raro (¿por qué hacer que algo sea función de nada?) hay motivos prácticos para hacerlo. Por ejemplo, tal vez existen bloques de código que se repiten mucho y que quieres poder llamar a tu programa sin  hacerlo redundante.</p>

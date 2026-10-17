@@ -1,0 +1,37 @@
+---
+title: Cómo hacer una regresión lineal en Python
+slug: como-hacer-una-regresion-lineal-en-python
+date: '2022-09-14T07:00:23-05:00'
+lastmod: '2026-02-22T11:45:15-06:00'
+subtitle: Código en python para hacer una regresión lineal por mínimos cuadrados ordinarios
+description: Código en python para hacer una regresión lineal por mínimos cuadrados ordinarios
+tags:
+- econometria
+- python
+- estadistica
+- visualizacion
+math: true
+twitter: false
+ghost_id: 66affcc0f6ade40001729cf7
+---
+<p>Comencemos por crear una base de datos. Hagamos que sea con 1000 observaciones, donde los valores de \(x\) vienen de una distribución normal y los valores de \(y\) dependen linealmente de \(x\):</p><p>$$ y = \alpha + \beta x + \varepsilon $$</p><p>Digamos que \(\alpha = 1\) y \(\beta = 1.5\). Entonces el siguiente código nos puede crear nuestra base de datos:</p><pre><code class="language-python">from numpy import random
+import pandas as pd
+
+n = 1000
+random.seed(42)
+
+df = pd.DataFrame({"x": random.normal(size = n)})
+
+df['y'] = 1 + 1.5 * df['x'] + random.normal(size = n)
+
+print(df.head())
+</code></pre><p>En el caso de que hayas cargado tu base de datos a partir de un archivo con pandas, el resto del código sería exactamente igual en adelante.</p><div class="kg-card kg-button-card kg-align-center"><a class="kg-btn kg-btn-accent" href="/python/">Guía para comenzar con python</a></div><p>Veamos en un gráfico cómo se ven nuestros datos. Escribe el código siguiente</p><pre><code class="language-python">import matplotlib.pyplot as plt
+
+plt.scatter(df['x'], df['y'], color = "#154957", alpha = 0.2)
+plt.show()
+</code></pre><p>Este código genera el siguiente gráfico de dispersión.</p><p>El código es muy simple y su interpretación es directa. En la primera línea estamos llamando el submódulo <code>matplotlib.pyplot</code> con el alias <code>plt</code>. La segunda línea llama a la función <code>scatter</code>, con <code>x</code> y  <code>y</code> como primeros argumentos. La función debería funcionar únicamente así, pero hemos agregado algunos argumentos adicionales para mejorar el diseño del gráfico, como el nivel de transparencia y el color de los puntos. La tercera línea debe imprimir el gráfico en tu pantalla.</p><div class="kg-card kg-button-card kg-align-center"><a class="kg-btn kg-btn-accent" href="/estadistica-con-python/">Guía de estadística con Python</a></div><h2 id="m%C3%ADnimos-cuadrados-ordinarios">Mínimos Cuadrados Ordinarios</h2><p>Este es el paso final. Haremos un modelo de Mínimos Cuadrados Ordinarios. Hay muchos módulos con los que se puede hacer esto. Algunos de los más populares incluyen <code>scikit-learn</code> y <code>tensorflow</code>. Para este ejemplo usaremos <code>statsmodels</code>, pues el reporte que arroja es el mas útil para hacer inferencia estadística.</p><!--members-only--><pre><code class="language-python">import statsmodels.api as sm
+
+modelo = sm.OLS(df.y, df.x).fit()
+
+print(modelo.summary())
+</code></pre><p>Nuevamente, el código es bastante transparente. En la primera línea hemos llamado al módulo con un alias, en la segunda línea hemos llamado un modelo de mínimos cuadrados ordinarios con la función <code>OLS</code>, y en la tercera línea imprimimos en pantalla el reporte del modelo.</p><p>El resultado debe verse así:</p><p>Es un modelo sencillo, pero podemos identificar fácilmente que el coeficiente que nos arroja de \(1.48\) es muy cercano al \(1.5\) que planteamos en la primera parte de este tutorial.</p>

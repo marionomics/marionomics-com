@@ -1,0 +1,44 @@
+---
+title: Un mal tamaño de muestra puede matar tu investigación
+slug: un-mal-tamano-de-muestra-puede-matar-tu-investigacion
+date: '2025-11-04T13:31:24-06:00'
+lastmod: '2026-02-25T19:04:37-06:00'
+subtitle: Así lo evitas
+description: Así lo evitas
+tags:
+- estadistica
+- econometria
+- divulgacion-cientifica
+feature_image: /content/images/2025/11/Gemini_Generated_Image_524xq4524xq4524x.png
+math: true
+twitter: false
+ghost_id: 690a52e89f6e6a00017c3338
+---
+<p>Demasiados economistas jóvenes cometen el mismo error.</p><p>Pasan 6 meses limpiando datos. Construyen un modelo econométrico ELEGANTÍSIMO. Corren la regresión...</p><p>Y obtienen un p-value de 0.2.</p><p>¿La conclusión? "No encontramos un efecto significativo".</p><p>FALSO.</p><p>La conclusión REAL es que probablemente NUNCA TUVISTE EL PODER para encontrar un efecto, incluso si existía.</p><p>Acabas de quemar 6 meses de trabajo. Felicitaciones.</p><p>Esto se llama "Análisis de Poder" o "Estimación del Tamaño de Muestra". Y es la habilidad MÁS infravalorada en la econometría.</p><p>No es sexy. No es "big data". Pero es lo que separa a los amateurs de los profesionales.</p><h3 id="es-crucial-porque-odio-desperdiciar-tiempo-y-dinero">Es crucial porque ODIO desperdiciar tiempo y DINERO</h3><p>Y tú también deberías.</p><p>Calcular tu tamaño de muestra no es un ejercicio académico. Es un ejercicio de GESTIÓN DE RIESGO.</p><ul><li><strong>Muestra muy pequeña:</strong> Es como comprar un boleto de lotería. Estás apostando a la suerte. Si no encuentras nada, no sabes si es porque no hay nada o porque tu "red" era demasiado pequeña. INÚTIL.</li><li><strong>Muestra muy grande:</strong> Es como quemar dinero para calentar tu casa. Ineficiente. Gastaste recursos (tiempo, dinero de la encuesta, poder computacional) que no necesitabas.</li></ul><p>Tu objetivo es la EFICIENCIA. El tamaño de muestra MÍNIMO VIABLE para obtener una respuesta CONFIABLE.</p><h3 id="los-5-errores-que-est%C3%A1s-cometiendo">Los 5 errores que estás cometiendo</h3><p>Veo estos errores todos los días. Están matando tus resultados.</p><ol><li><strong>El error de "ya veremos" (Hacerlo al final).</strong> Este es el más tonto. Corres tu análisis, obtienes p=0.15 y <em>luego</em>corres un "análisis de poder post-hoc" para justificar tu fracaso. NO. El poder se calcula ANTES. Es un plan, no una autopsia.</li><li><strong>Paralizarse con las fórmulas.</strong> Te pones a ver esto: \(n_i = \frac{2\sigma^2 \cdot (Z_{\alpha/2} + Z_{1-\beta})^2}{(\mu_1 - \mu_2)^2}\). Y tu cerebro se apaga. BASURA. No necesitas la fórmula. Necesitas el CONCEPTO. La computadora hace la matemática. Tú tomas las decisiones.</li><li><strong>Adivinar mal el "Tamaño del Efecto".</strong> Este es el error más común. El "tamaño del efecto" (effect size) es simplemente <strong>la diferencia mínima que te importa detectar</strong>. Si copias "d=0.5" de un paper sin pensar, estás jugando. ¿Una política que aumenta el ingreso en $1 te importa? No. ¿Y en $100? Sí. ESA es tu decisión.</li><li><strong>Seguir ciegamente el "80% de poder".</strong> Todos usan 80% de poder (\(\beta = 0.2\)) porque "es la convención". Piénsalo. ¿Estás cómodo con una probabilidad de 1 en 5 de FRACASAR en encontrar un efecto que SÍ existe? Yo no. A veces necesitas 90% o 95%. Deja de seguir a la manada.</li><li><strong>Creer que "más datos" siempre es la solución.</strong> "Solo necesito más datos". Falso. 'Más datos' puede ser más caro e igual de inútil si no sabes lo que buscas. Un plan mediocre con 1 millón de observaciones sigue siendo un plan mediocre.</li></ol><h3 id="c%C3%B3mo-hacerlo-en-r-el-m%C3%A9todo-anti-matem%C3%A1ticas">Cómo hacerlo en R (El método anti-matemáticas)</h3><p>Basta de teoría. Vamos a la acción.</p><!--members-only--><p>No necesitas 50 paquetes. Necesitas UNO. Se llama <code>pwr</code>.</p><p>Tu trabajo no es ser una calculadora. Tu trabajo es tomar 4 DECISIONES.</p><ol><li><strong>Decisión 1: ¿Qué tipo de test usarás?</strong> (La función)<ul><li>¿Comparas dos promedios (ej. ingreso grupo A vs B)? Usa <code>pwr.t.test()</code>.</li><li>¿Comparas dos porcentajes (ej. % conversión A vs B)? Usa <code>pwr.2p.test()</code>.</li><li>¿Comparas ANTES y DESPUÉS (ej. ingreso pre vs post)? Usa <code>pwr.t.test(type = "paired")</code>.</li></ul></li><li><strong>Decisión 2: ¿Qué tan seguro quieres estar de no cometer un 'falso positivo'?</strong> (Alpha / <code>sig.level</code>)<ul><li>Es tu p-value. Casi siempre es 0.05. Listo. Siguiente.</li></ul></li><li><strong>Decisión 3: ¿Qué tan seguro quieres estar de ENCONTRAR un efecto real?</strong> (Poder / <code>power</code>)<ul><li>Es tu probabilidad de éxito. El estándar es 0.8 (80%). Si eres serio, usa 0.9.</li></ul></li><li><strong>Decisión 4: ¿Cuál es la diferencia MÁS PEQUEÑA que te importa?</strong> (Tamaño del Efecto / <code>d</code> o <code>h</code>)<ul><li>Este es el NÚMERO MÁS IMPORTANTE. Es tu "suposición educada".</li></ul></li></ol><h3 id="ejemplo-pr%C3%A1ctico-el-test-ab-de-ingresos">EJEMPLO PRÁCTICO: El Test A/B de Ingresos</h3><p>Quieres probar si un nuevo programa de capacitación (Grupo 1) aumenta el ingreso promedio más que el programa viejo (Grupo 2).</p><p><strong>Tus 4 Decisiones:</strong></p><ol><li><strong>Test:</strong> Comparamos dos promedios. Usaremos <code>pwr.t.test</code>.</li><li><strong>Alpha:</strong> <code>sig.level = 0.05</code>.</li><li><strong>Poder:</strong> <code>power = 0.8</code> (vamos a usar el estándar por ahora).</li><li><strong>Tamaño del Efecto (<code>d</code>):</strong> Aquí es donde piensas.<ul><li>Revisas un paper viejo. Dice que la desviación estándar (\(\sigma\)) del ingreso en este grupo es $5,000.</li><li>Tú decides (como jefe) que si el programa nuevo no aumenta el ingreso en al menos <strong>$500</strong> (la diferencia, \(\mu_1 - \mu_2\)), NO VALE LA PENA implementarlo.</li><li>Tu 'd' de Cohen es: (Diferencia que te importa) / (Desviación estándar).</li><li>\(d = 500 / 5000 = 0.1\)</li><li><code>d = 0.1</code> (Esto es un efecto "pequeño". Es difícil de encontrar. Perfecto).</li></ul></li></ol><p><strong>El Código (La parte fácil):</strong></p><p>Deja de ver las fórmulas raras. Solo escribe esto en R.</p><pre><code class="language-r"># Instala el paquete (solo una vez)
+# install.packages("pwr")
+library(pwr)
+
+# Tus 4 decisiones puestas en el código
+mi_diferencia_minima &lt;- 0.1  # El 'd' que calculamos
+mi_poder_deseado &lt;- 0.8
+mi_alpha &lt;- 0.05
+
+# La magia. Pon 'n = NULL' porque es lo que queremos averiguar
+calculo &lt;- pwr.t.test(d = mi_diferencia_minima,
+                     power = mi_poder_deseado,
+                     sig.level = mi_alpha,
+                     n = NULL, # Déjalo nulo
+                     type = "two.sample") # Comparando dos grupos
+
+# El resultado
+print(calculo)
+</code></pre><h2 id="los-resultados">Los resultados</h2><p>R te dará algo así:</p><pre><code>Two-sample t test power calculation 
+
+              n = 1570.733  &lt;---- ESTE ES TU NÚMERO
+              d = 0.1
+      sig.level = 0.05
+          power = 0.8
+    alternative = two.sided
+
+NOTE: n is number in *each* group
+</code></pre><p>BOOM. ¿Ves? <code>n = 1570.7</code>. Redondea a 1571.</p><p><strong>Tu respuesta final (la que le das a tu jefe):</strong></p><p>"Necesitamos <strong>1,571 personas en el Grupo 1</strong> y <strong>1,571 personas en el Grupo 2</strong> para tener un 80% de probabilidad de detectar un aumento de $500 en el ingreso."</p><p>Ahora tienes un PLAN. No una esperanza.</p><p>Deja de quemar tiempo y dinero en estudios sin poder. Deja de adivinar.</p><p>Haz el trabajo difícil AL PRINCIPIO. Te toma 10 minutos.</p><p>Esos 10 minutos te pueden salvar 6 meses de trabajo inútil.</p>

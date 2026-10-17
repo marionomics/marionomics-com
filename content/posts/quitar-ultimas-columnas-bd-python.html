@@ -1,0 +1,23 @@
+---
+title: Cómo quitar las últimas 2 columnas en una base de datos en Python con Pandas
+slug: quitar-ultimas-columnas-bd-python
+date: '2022-03-21T12:37:00-06:00'
+lastmod: '2022-03-21T12:37:00-06:00'
+subtitle: Tutorial con el código para eliminar las últimas columnas con Pandas
+description: Tutorial con el código para eliminar las últimas columnas con Pandas
+tags:
+- python
+- econometria
+feature_image: https://images.unsplash.com/photo-1540126034813-121bf29033d2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxMTc3M3wwfDF8c2VhcmNofDJ8fHBhbmRhc3xlbnwwfHx8fDE2NDc3MTM4MTA&ixlib=rb-1.2.1&q=80&w=2000
+feature_image_alt: Son pandas de verdad, no los de Python
+feature_image_caption: Photo by <a href="https://unsplash.com/@millerthachiller?utm_source=ghost&utm_medium=referral&utm_campaign=api-credit">Pascal Müller</a> / <a href="https://unsplash.com/?utm_source=ghost&utm_medium=referral&utm_campaign=api-credit">Unsplash</a>
+math: false
+twitter: false
+ghost_id: 66affcc0f6ade40001729cb5
+---
+<p>De manera general, si quieres eliminar las últimas n columnas en tu base de datos, sólo tienes que usar el siguiente código.</p><pre><code>df = df.iloc[:,:-n]</code></pre><p>donde n podría ser 2 si quieres eliminar las últimas dos columnas de tu base de datos. Hagamos un ejemplo en el que creamos una base de datos con tres columnas y queremos eliminar la última. </p><pre><code class="language-python">import pandas as pd
+
+df = pd.DataFrame({'nombres':['Mario', 'Maria', 'Jose', 'Cipriano'], 'edades':[34,30,57,61], 'sexo':['H','M','M','H']})
+print(df)
+df = df.iloc[:,:-1]
+df.head()</code></pre><p>En la primera línea hemos creado un objeto de tipo Data Frame con Pandas a partir de un diccionario. La segunda línea sólo nos muestra este Data Frame y en el tercero eliminamos la última columna.</p><p>Nota que este código podría servir perfectamente para eliminar también las primeras columnas. El signo negativo nos sirve para recorrer los indicadores de las columnas hacia atrás. </p><p class="substack-note"><a href="https://marionomics.substack.com">Escribo cada semana en Substack →</a></p>

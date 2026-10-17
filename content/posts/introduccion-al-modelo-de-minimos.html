@@ -1,0 +1,53 @@
+---
+title: Introducción al Modelo de Mínimos Cuadrados (Parte 1)
+slug: introduccion-al-modelo-de-minimos
+date: '2023-01-24T17:08:48-06:00'
+lastmod: '2024-09-23T09:16:59-06:00'
+subtitle: Introducción al modelo más poderoso y la base de la econometría aplicada
+description: Introducción al modelo más poderoso y la base de la econometría aplicada
+tags:
+- estadistica
+- econometria
+- python
+- ciencia-de-datos
+- divulgacion-cientifica
+math: true
+twitter: false
+ghost_id: 66affcc0f6ade40001729d2d
+---
+<p>Tenemos una variable <strong>dicotómica</strong> D, que puede tomar valores de 0 y 1 y proponemos la hipótesis de que esta variable afecta de alguna manera a nuestra variable de interés Y. Digamos que D_i es la exposición que tuvieron o no las personas a una campaña de marketing. Por lo tanto</p><p>La variable \(Y_i\) es un indicador de las ventas que se generaron en la empresa en una observación.</p><p>Cuando decimos “una observación” es lo mismo a indicar una fila en la tabla. Por eso cuando tenemos \(n\) observaciones, se dice que \(i = {1,2,…, n}\), puede tomar cualquier valor del 1 a \(n\).</p><p>Entonces, si deseamos conocer el efecto de nuestra campaña en las ventas, buscamos</p><p>Es decir, ¿cuál es el valor promedio de las ventas <em>ceteris paribus</em>, dada la exposición a nuestro anuncio?</p><p>El <em>ceteris paribus</em> (dejar todo lo demás constante) lo logramos incluyendo un vector de variables <strong>de control</strong>, representadas por \(X\). Más adelante explicaremos cómo funciona.</p><div class="kg-card kg-button-card kg-align-center"><a class="kg-btn kg-btn-accent" href="https://marionomics.substack.com/subscribe">Suscríbete</a></div><p>También hemos incluido una variable que captura la aleatoriedad.</p><h2 id="el-modelo-lineal">El modelo lineal</h2><p>Nuestra mejor opción es comenzar con un modelo lineal como el siguiente:</p><p>En esta ecuación incluimos tres letras griegas. Por tradición, las letras griegas suelen representar <strong>parámetros</strong>, que son lo que deseamos calcular y son las que nos darán la respuesta a nuestras interrogantes.</p><p>Los parámetros en este modelo son \(\beta_0\) (beta cero) y \(\beta_1\) (beta uno). Nuestro objetivo es usar estos dos números para dibujar una línea en el plano cartesiano. Aquí, \(\beta_0\) es el intercepto en el origen y \(\beta_1\) la pendiente. La línea que dibujemos debería de ser la que mejor describe el comportamiento de nuestros datos.</p><p>Pero nuestros datos no vienen de una función matemática. No podemos esperar que se comporten como nuestro modelo dicta. Entonces cualquier línea que tracemos no cae directamente en los puntos. Para solventar este detalle definimos \(\varepsilon\) (epsilon), que es un elemento <strong>estocástico</strong> o aleatorio. También se le conoce como <strong>término de error</strong>, y ayuda a explicar esa diferencia entre el punto de nuestros datos y la línea de regresión.</p><h3 id="haciendo-regresi%C3%B3n-sobre-una-muestra">Haciendo regresión sobre una muestra</h3><p>Normalmente los datos que tenemos a nuestra disposición son una <strong>muestra</strong> de la información existente. Por consecuencia, nuestra estimación no será <strong>exactamente</strong> aquella que obtendríamos si tuviéramos acceso a todos los datos. Esto es algo que tenemos que aceptar.</p><p>Este detalle genera un poco de notación adicional. Usamos el <strong>circunflejo</strong> para denotar cuando un parámetro viene de una estimación hecha sobre una muestra. Los parámetros de una muestra son entonces \(\hat\beta_0\) y \(\hat\beta_1\). Otro detalle es que usamos letras minúsculas para denotar cuando una variable es una muestra, por lo que usamos \(x\) en lugar de \(X\).</p><p>El siguiente código genera una base de datos con 10,000 observaciones y corre una regresión sobre ella. Luego genera 1000 simulaciones que toman una muestra de un 5% de los datos, corren una regresión y registran los parámetros. Por el momento no te preocupes por el código y solo correo completo. Más adelante haremos ejercicios de regresión paso a paso.</p><pre><code>import numpy as np
+import pandas as pd
+import statsmodels.api as sm
+
+# Número de simulaciones
+num_simulaciones = 1000
+
+# Crear el conjunto de datos completo
+n = 10000
+X = np.random.normal(0,1,n)
+df = pd.DataFrame({"X": X})
+df['Y'] = 1 + 2.5 * df['X'] + np.random.normal(0,1.5,n)
+
+# Realizar la regresión en el conjunto de datos completo
+X = sm.add_constant(df[['X']])
+reg = sm.OLS(df['Y'], X).fit()
+params_completo = reg.params
+
+# Crear listas vacías para almacenar los parámetros simulados
+params_sim = []
+
+# Realizar las simulaciones
+for i in range(num_simulaciones):
+    # Tomar una muestra de los datos
+    df_muestra = df.sample(frac=0.05, replace=True)
+    # Realizar la regresión en la muestra
+    X_muestra = sm.add_constant(df_muestra[['X']])
+    reg_muestra = sm.OLS(df_muestra['Y'], X_muestra).fit()
+    params_sim.append(reg_muestra.params)
+
+# Calcular el promedio de los parámetros simulados
+params_promedio = np.mean(params_sim, axis=0)
+
+# Comparar con la regresión del conjunto de datos completo
+print("Parámetros del conjunto de datos completo: ", params_completo)
+print("Parámetros promedio simulados: ", params_promedio)</code></pre><p>Si tomas esta simulación y la corres en python (puedes usar <a href="https://colab.research.google.com/drive/1B7DC1CwB9VxVJwHVnGzyBgK1_xKQt7By?usp=sharing">Google colab</a>) observarás que los parámetros que se generan en la regresión con todos los datos son muy similares a la media de las muestras.</p><div class="kg-card kg-button-card kg-align-center"><a class="kg-btn kg-btn-accent" href="https://marionomics.substack.com/subscribe">Suscríbete ahora</a></div><p>Tal vez la simulación individual de una muestra podría acabar un poco alejada de la que generan los datos completos, pero cuando las líneas de regresión se promedian, los parámetros se acercan a la línea de regresión “verdadera”, o bien</p><p>La ecuación de arriba se lee como “el valor esperado de los parámetros muestrales se aproxima a los parámetros poblacionales”. Esta afirmación se vuelve verdadera conforme aumenta el número de simulaciones aumenta el tamaño de muestra de las mismas.</p><p>De manera más concreta</p><p>Es decir, nuestro estimador \(\hat\beta\) es una variable aleatoria con distribución normal. Su media es \(\beta\) y su desviación estándar es una fracción que depende de la desviación estándar de la población y del tamaño de la muestra.</p><p>Entre más grande sea el tamaño de la muestra en comparación con la varianza de la población (que no conocemos, en realidad) más pequeña será la variación de nuestra muestra. Esta recibe el nombre especial de <strong>error estándar.</strong></p><p>Para comprobarlo puedes jugar con el número de simulaciones (<code>num_simulaciones</code>) y el tamaño de la muestra <code>df.sample(frac=0.05</code>. Cambia el valor de las simulaciones a <code>1</code> o a <code>10</code> y revisa si el resultado de las simulaciones cambia.</p><p>Read Marionomics: Economía y Ciencia de Datos in the Substack appAvailable for iOS and Android<a href="https://substack.com/app/app-store-redirect?utm_campaign=app-marketing&amp;utm_context=author-post-insert">Get the app</a></p><p>Esta simulación particular requiere un número muy bajo de simulaciones o un tamaño muy pequeño demuestra para tener el resultado correcto, pero por lo general se requiere de tamaño de muestra más grande para comenzar a tener confianza en que los resultados sean significativos.</p>

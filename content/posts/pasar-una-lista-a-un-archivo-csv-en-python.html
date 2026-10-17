@@ -1,0 +1,22 @@
+---
+title: Pasar una lista a un archivo csv en Python
+slug: pasar-una-lista-a-un-archivo-csv-en-python
+date: '2022-07-06T11:01:20-05:00'
+lastmod: '2026-02-22T11:45:24-06:00'
+subtitle: Tutorial para pasar una lista a csv
+description: Tutorial para pasar una lista a csv
+tags:
+- python
+feature_image: https://images.unsplash.com/photo-1529078155058-5d716f45d604?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxMTc3M3wwfDF8c2VhcmNofDF8fGNzdnxlbnwwfHx8fDE2NTcwNDEzMzQ&ixlib=rb-1.2.1&q=80&w=2000
+feature_image_alt: Muchos números en un archivo csv
+feature_image_caption: Photo by <a href="https://unsplash.com/@mbaumi?utm_source=ghost&utm_medium=referral&utm_campaign=api-credit">Mika Baumeister</a> / <a href="https://unsplash.com/?utm_source=ghost&utm_medium=referral&utm_campaign=api-credit">Unsplash</a>
+math: false
+twitter: false
+ghost_id: 66affcc0f6ade40001729cd7
+---
+<p>Veamos primero el código y después explicamos.</p><pre><code class="language-python">list = ['never', 'gonna', 'give','you', 'up']
+
+with open('path/rick.csv', 'w') as f:
+	f.write('letra\n')
+        for palabra in cancion:
+            f.write(palabra + '\n')</code></pre><!--members-only--><p>Este código no requiere de ningún módulo adicional, con las funciones <em>built-in</em> de Python es suficiente. La primera línea es una simple lista de Python con strings que nosotros queremos que sume a un archivo csv, cada uno de los elementos en una línea. En la línea <code>f.write('letra \n')</code> estamos incluyendo un título a la columna única de nuestro archivo.</p><p>El siguiente bloque es más interesante. Es el que permite escribir en tu computadora el archivo. No necesitas que el csv esté ya creado: python creará el archivo <code>rick.csv</code>. En la primera línea se especifica que python va a estar trabajando en este documento, y en las otras dos líneas se crea un ciclo.</p><p>El ciclo es que por cada uno de los elementos en la lista, python escribirá una palabra, seguida de un salto de línea. El resultado final es un csv con una sola columna que incluye tu lista.</p>

@@ -1,0 +1,22 @@
+---
+title: Prepárate para el taller de econometría
+slug: como-prepararte-para-el-taller-de-econometria
+date: '2022-07-01T07:25:00-05:00'
+lastmod: '2026-02-22T11:45:25-06:00'
+subtitle: Instrucciones para ver el código y cargar los datos que usaremos.
+description: Instrucciones para ver el código y cargar los datos que usaremos.
+tags:
+- python
+- econometria
+feature_image: https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxMTc3M3wwfDF8c2VhcmNofDExfHxzdHVkZW50fGVufDB8fHx8MTY1NjUyODAwMQ&ixlib=rb-1.2.1&q=80&w=2000
+feature_image_alt: Persona en la biblioteca
+feature_image_caption: Photo by <a href="https://unsplash.com/@reddalec?utm_source=ghost&utm_medium=referral&utm_campaign=api-credit">Redd</a> / <a href="https://unsplash.com/?utm_source=ghost&utm_medium=referral&utm_campaign=api-credit">Unsplash</a>
+math: false
+twitter: false
+ghost_id: 66affcc0f6ade40001729cd3
+---
+<p>Lo que hay detrás de está página es un esfuerzo para mejorar de manera contínua las habilidades de economistas hispanohablantes. Para eso, estoy incluyendo en la suscripción premium talleres. Hoy tendremos el <a href="/">taller de Econometría con Python</a>, donde veremos en cuatro horas todo lo importante para hacer tu primer modelo econométrico usando Python.</p><h2 id="c%C3%B3mo-ver-el-c%C3%B3digo">Cómo ver el código</h2><p>Para comenzar no necesitas instalar ningún software. Todo lo podrás hacer con <a href="https://colab.research.google.com">Google Colab</a>. Tenemos un <a href="https://github.com/marionomics/econometria">repositorio</a> del curso al que puedes acceder desde Colab. Al entrar a la página te aparecerá una pantalla de inicio con múltiples pestañas que podrás seleccionar para elegir una forma de entrar a <a href="https://www.instagram.com/p/CfchcVtOhOu/?igshid=YmMyMTA2M2Y=">Colab</a>. La pestaña por defecto es Recientes, que te ayuda a abrir notebooks que ya hayas trabajado, pero también puedes cargar  notebooks desde Google Drive o en Github. Haremos lo segundo.</p><!--members-only--><p>Selecciona la pestaña de GitHub y coloca el enlace del repositorio como se muestra en la imagen. Si das enter te mostrará los notebooks que el repositorio tiene disponibles. Puedes comenzar con el primero. Al dar click en él se abrirá tu notebook de jupyter en línea que podrás copiar o editar directamente. Ese notebook ya es tuyo y lo que en él anotes no afectará al documento del repositorio.</p><h2 id="los-datos">Los datos</h2><p>En el repositorio hay una carpeta que se llama data. En ocasiones haremos alguna carga de datos de este repositorio. Yo trabajo los datos en local, porque el repositorio está ubicado en mi computadora, pero tal vez tengas que cargar los datos tu en el notebook desde Colab. Recuerda que Colab es una computadora remota y no tiene relación con los archivos en tu computadora. Usa el siguiente código para cargar las bases de datos.</p><pre><code class="language-python">import pandas as pd
+
+url = "https://raw.githubusercontent.com/marionomics/econometria/main/data/Student_Behaviour.csv"
+
+df = pd.read_csv(url)</code></pre><p>La única diferencia es en la URL, si usarás una base de datos diferente. En tal caso debes de buscar el archivo en el repositorio y bucar el archivo en bruto (raw). Cuando estés en ese archivo, copia y pega la URL en el código de arriba.</p><h2 id="la-m%C3%BAsica">La Música</h2><p>El taller son varias horas. Hay descansos de diez minutos cada 50. Si te da curiosidad de la música que les puse, toda está en esta playlist.</p><figure class="kg-card kg-embed-card"><iframe allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" allowfullscreen="" frameborder="0" height="380" src="https://open.spotify.com/embed/playlist/1mO8WFbTIwitnNTguf2KEU?si=194cb165e66c4f41&amp;utm_source=oembed" style="border-radius: 12px" title="Spotify Embed: Econometría con Python" width="100%"></iframe></figure><h2 id="la-grabaci%C3%B3n">La grabación</h2><p>Me tardo un par de días, pero en los días posteriores al evento subiré el archivo del video por zoom para todos los suscriptores premium. Regresa a esta página en un par de días y estará aquí el enlace.</p>

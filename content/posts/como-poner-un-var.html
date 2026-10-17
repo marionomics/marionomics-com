@@ -1,0 +1,21 @@
+---
+title: Cómo poner un VAR
+slug: como-poner-un-var
+date: '2021-06-25T08:00:54-05:00'
+lastmod: '2026-02-25T19:05:09-06:00'
+subtitle: Segunda parte del tutorial y algo sobre la tasa de interés y Banxico
+description: Segunda parte del tutorial y algo sobre la tasa de interés y Banxico
+tags:
+- politica-monetaria
+- mexico
+- macroeconomia
+- divulgacion-cientifica
+math: false
+twitter: false
+ghost_id: 66affcc0f6ade40001729d73
+---
+<p>Curiosamente, si podría haber hecho un post sobre cómo poner un BAR. No muchos saben esto, pero tuve esa experiencia cuando era joven. Eso lo contaré en otra ocasión, porque no quiero dejar este tutorial a medias.</p><p>Lo que verás en este boletín:</p><ul><li>Como implementar el modelo VAR para series de tiempo.</li><li>Cómo hacer proyecciones a futuro con el modelo VAR.</li><li>La decisión de Banxico de subir la tasa de interés y que significa</li></ul><p>En esta ocasión quisiera terminar el <a href="https://marionomics.substack.com">tutorial que hicimos la semana pasada</a>, usando los mismos datos y las mismas pruebas. A este punto ya nos aseguramos que las variables tienen una relación entre sí y que habrá un modelo interesante que podremos trabajar entre ellas. También hicimos una prueba para verificar que la serie fuera estacionaria y tuvimos que usar la segunda diferencia al sistema para poder trabajar con ella. La serie ya diferenciada se ve así:</p><p>Usaremos la función VAR de la librería vars para hacer este modelo. La función VAR acepta como argumento el número de rezagos que usaremos en el modelo. Recuerda que puedes ver el <a href="/var-1/">tutorial pasado</a> para descargar los datos y hacer los diagnósticos requeridos.</p><p>Para hacer una serie de modelos VAR y evaluarlos por medio de su AIC, usa el siguiente código:</p><pre><code>for (rezago in 1:11) {
+  modelo &lt;- vars::VAR(diff_train, p = rezago)
+  print(paste("Rezagos:", rezago," AIC:",round(AIC(modelo),0)))
+}</code></pre><p>Esto te debe de mostrar los resultados de la prueba de Akaike. Recuerda que Akaike es una prueba que se hace comparando los resultados. En este caso, nos muestra que 11 rezagos son los que dan mejor resultado. Podemos corroborar este resultado usando</p><pre><code>vars::VARselect(diff_train, lag.max = 11)</code></pre><p>que nos muestra además otros criterios de selección. En todos los criterios nos aparece 11 como nuestra mejor opción, así que es la que usaremos para nuestro modelo de proyección.</p><p>El código para hacer proyecciones una vez que ya tenemos el modelo listo y mostrar un gráfico con todas las variables es simplemente</p><pre><code>prediccion &lt;- predict(modelo, n.ahead = 4)
+plot(predict(modelo, n.ahead = 4))</code></pre><h2 id="m-s-sobre-la-inflaci-n">Más sobre la inflación</h2><p>Las preocupaciones por la inflación siguen creciendo. Ante esto, Banxico decidió incrementar en 25 puntos base el objetivo de la tasa de interés interbancaria a 4.25%. Esto ante la inflación del primer trimestre de 2021, que se revela en 0.34% (más de 6% anual). Esto contrasta con la decisión de la Fed de mantener las tasas y sólo anunciar que subirán en algún momento en el futuro.</p><p>Recordemos que parte de esta subida de precios puede sólo ser el rebote de la baja en los precios del año pasado, pero no está de más ser cuidadosos. El problema de la endogeneidad es que jamás podremos saber si la medida fue la adecuada en el momento correcto. Sólo podemos ser precavidos.</p><p><strong>Pero</strong> el anuncio de Banxico si sorprendió mucho a muchos expertos y analistas. La razón no es sólo que fuera en una dirección distinta a la de la Fed. También los motivos que Banxico expresó fueron un tanto desconcertantes, en el sentido de que están todos enfocados en la oferta pero no hay mucho sobre los efectos del lado de la demanda.</p><p>En un contexto en el que México no ha tenido la misma recuperación económica que Estados Unidos, a muchos inversionistas les pareció un poco apresuradas las medidas que se tomaron.</p><p>Pero probablemente esa sea la idea. Había especulaciones sobre el tipo de cambio en reacción a las noticias, pero no parecieron ser realmente tan fuertes como algunos presagiaron.</p>

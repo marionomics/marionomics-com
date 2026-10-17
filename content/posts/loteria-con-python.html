@@ -1,0 +1,50 @@
+---
+title: Lotería con Python
+slug: loteria-con-python
+date: '2023-11-24T22:13:19-06:00'
+lastmod: '2024-09-23T09:09:22-06:00'
+subtitle: La mejor forma de aprender a usar datos con python es haciendo un juego.
+description: La mejor forma de aprender a usar datos con python es haciendo un juego.
+tags:
+- python
+- teoria-de-juegos
+math: false
+twitter: false
+ghost_id: 66affcc0f6ade40001729db8
+---
+<p>La Lotería es un juego tradicional mexicano parecido al juego de Bingo.</p><p>En este juego, en lugar de números se sacan tarjetas con diferentes personajes u objetos como una campana, la muerte o un borracho.</p><p>Al inicio del juego se reparten cartas con pictogramas distribuidos de manera aleatoria. El jugador debe marcar lo que aparece en su carta. Gana el jugador que marca su carta completa.</p><p>Algunos conceptos importantes:</p><ul><li><strong>Mazo</strong>. Es el conjunto de todas las cartas individuales.</li><li><strong>Carta</strong>. Cada carta tiene una imagen y su nombre. Por ejemplo: El valiente.</li><li><strong>Tabla</strong>. Cada jugador tiene una tabla con 16 cartas aleatorias que debe de llenar conforme el gritón las menciona.</li><li><strong>El gritón.</strong> Es la persona encargada de dar a conocer la siguiente carta a todos los jugadores.</li></ul><p>Para comenzar, invocamos los módulos.</p><pre><code class="language-python">import pandas as pd
+import random</code></pre><p>Con <code>pandas</code> ahora tienes el poder de crear y manipular bases de datos.</p><p>Con <code>pandas</code> puedes cargar datos desde archivos <code>csv</code> o Excel, visualizarlo, quitar filas, cambiar columnas y hacer lo que sea con tus datos. Como nuestro proyecto es una lotería, vamos a necesitar números aleatorios, que son la especialidad del módulo <code>random</code>.</p><p>Comencemos a incluir las cartas en una lista.</p><pre><code class="language-python">cartas = ["La maceta", "El borracho", "La campana", "El catrin", "El violoncello","La sandia", "La chalupa", "El gorrito", "El arpa", "El camaron", "El barril", "La dama", "La bota", "El pajaro", "El melon", "El cotorro", "La palma", "El mundo", "El apache", "El pescado", "La muerte", "El alacran", "El gallo", "La calavera"]</code></pre><p>Los conocedores de la lotería se podrán dar cuenta de que me faltó poner algunas cartas.</p><p>No es problema. Podemos incluír las cartas que nos faltan más adelante. Usemos la función <code>append()</code> para agregar la carte de "El diablito" a nuestro mazo de cartas. También podemos usar <code>extend()</code> para agregar más elementos al mazo desde otra lista.</p><pre><code class="language-python"># Con append podemos agregar un elemento adicional que nos faltaba
+cartas.append("El diablito")
+# Con extend podemos agregar los elementos de una lista a otra
+cartas.extend(["El valiente", "La corona", "El barril"])
+# Con print() mostramos 
+print(cartas)</code></pre><h3 id="con-esta-lista-ya-podemos-repartir-las-tablas">Con esta lista ya podemos repartir las tablas.</h3><p>Una tabla de lotería tiene 16 cartas: cuatro a lo ancho y cuatro a lo largo. Usa <code>pandas</code> para crear un DataFrame para la tabla de cada jugador. Este DataFrame tendrá 16 cartas únicas del mazo y una columna adicional para marcar las cartas.</p><pre><code class="language-python">deck_df = pd.DataFrame(cartas, columns=['Carta'])</code></pre><pre><code class="language-python">def crear_tabla(deck_df):
+    tabla = deck_df.sample(16).reset_index(drop=True)
+    tabla['Marcada'] = False  # Add a new column for marking the cards
+    return tabla
+
+# Example of creating a table for a player
+tabla_jugador = crear_tabla(deck_df)
+print("Tabla del Jugador:")
+print(tabla_jugador)</code></pre><p>Esta función crear_tabla toma la lista de cartas y utiliza random.sample para seleccionar 16 cartas únicas de esa lista. random.sample es útil porque automáticamente se asegura de que no haya duplicados en la selección.</p><!--members-only--><h3 id="cantar-las-cartas">Cantar las cartas</h3><p>Ahora que tenemos las tablas, necesitamos una forma de "cantar" las cartas y que los jugadores revisen sus tablas.</p><p>Podemos hacer esto con otra función muy sencilla. Hemos creado <code>canta_carta()</code>, que selecciona una carta del mazo de forma aleatoria.</p><p>Este código tiene un error. Normalmente cuando el “gritón” canta las cartas de lotería, ya no las reemplaza en el mazo y no volverán a salir. Para solucionar esto tendríamos que hacer que se elimine el elemento de la carta, pero dejaremos esto como ejercicio al lector.</p><pre><code class="language-python">def cantar_carta(deck_df):
+    return deck_df.sample().iloc[0]['Carta']
+
+# Example of drawing a card
+carta_cantada = cantar_carta(deck_df)
+print("Carta Cantada:", carta_cantada)</code></pre><p>Esta función selecciona una carta al azar de la lista de cartas. Cada vez que se llama a la función, simula al "gritón" cantando una nueva carta.</p><h3 id="marcando-las-cartas"><strong>Marcando las Cartas</strong></h3><p>El Data Frame <code>tabla_jugador</code> tiene dos columnas. La primera tiene nuestras cartas y la segunda nos ayuda a marcar si el gritón ya dijo nuestra carta. Es nuestra columna de frijolitos.</p><p>En la siguiente función primero se verifica si la carta cantada está en nuestra tabla. Lo hacemos con la palabra clave <code>if</code> , que cambia el elemento de la segunda columna a <code>True</code> si la tenemos.</p><pre><code class="language-python">def marcar_carta(tabla, carta_cantada):
+    if carta_cantada in tabla['Carta'].values:
+        tabla.loc[tabla['Carta'] == carta_cantada, 'Marcada'] = True
+        print("¡Carta marcada!")
+    else:
+        print("Esta carta no está en tu tabla.")
+
+# Example of marking a card
+marcar_carta(tabla_jugador, carta_cantada)
+print(tabla_jugador)</code></pre><p>De lo contrario, el sistema simplemente nos dirá que la carta no está en nuestra tabla y podemos volver a pedir al gritón que cante.</p><h3 id="verificando-el-ganador"><strong>Verificando el Ganador</strong></h3><p>La función <code>all()</code> verifica si todos los valores en la columna “Marcada” tiene valor verdadero.</p><pre><code>def verificar_ganador(tabla):
+    return all(tabla['Marcada'])
+
+# Example of checking for a winner
+if verificar_ganador(tabla_jugador):
+    print("¡Felicidades, has ganado!")
+else:
+    print("Sigue jugando.")</code></pre><p>Cuando tu tabla tiene todas las cartas marcadas, haz ganado.</p><h2 id="el-programa-completo">El programa completo</h2><p>Intenta hacer este ejercicio por tu cuenta. </p><p>Hazlo a conciencia y trata de ponerle tus propias modificaciones. Este ejercicio está diseñado para practicar el uso de <code>pandas</code> para hacer y manipular tablas con python.</p><p>Aquí te dejo el notebook con el código completo que puedes correr directamente en Google Colab.</p><div class="kg-card kg-button-card kg-align-center"><a class="kg-btn kg-btn-accent" href="https://colab.research.google.com/drive/1Na8EcW8yuVP_mmVowlTy4XCouvTTd-vi?usp=sharing">Ver el código</a></div>

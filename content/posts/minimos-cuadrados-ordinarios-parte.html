@@ -1,0 +1,54 @@
+---
+title: Mínimos Cuadrados Ordinarios (parte 2)
+slug: minimos-cuadrados-ordinarios-parte
+date: '2023-01-25T07:22:09-06:00'
+lastmod: '2026-02-25T19:04:58-06:00'
+subtitle: Cómo usar la regresión para cerrar puertas traseras
+description: Cómo usar la regresión para cerrar puertas traseras
+tags:
+- econometria
+- python
+- educacion
+- estadistica
+- divulgacion-cientifica
+math: true
+twitter: false
+ghost_id: 66affcc0f6ade40001729d2c
+---
+<h3 id="el-objetivo-minimizar-los-errores-al-cuadrado">El objetivo: minimizar los errores al cuadrado</h3><p>Asumimos que el error es una variable aleatoria con distribución normal</p><p>La ecuación de arriba se lee como que \(\varepsilon\) se <strong>distribuye normalmente</strong> con una media \(0\) y <strong>desviación estándar</strong> constante. Si esto es verdad, entonces el valor esperado de \(\varepsilon\) es \(0\) y los valores por encima de la línea cancelan a los valores por abajo de ella. Por este motivo, no podemos tener como objetivo minimizar la suma de los errores.</p><p>Un truco es elevar los errores al cuadrado y así buscar la línea que los minimice. Si tomamos la ecuación inicial y despejamos \(\varepsilon_i\) tenemos</p><p>Entonces nuestro objetivo es minimizar la suma de todos los errores al cuadrado, o bien</p><p>Este es un problema clásico de optimización. Hay varios métodos para resolverlo, pero el más ilustrativo es usar las <strong>condiciones de primer orden</strong>. Para esto, el primer paso es combinar las dos ecuaciones de arriba para obtener</p><p>Ahora sólo tenemos que igualar la primera derivada con respecto a cada uno de los parámetros con cero. Haciendo esto, obtenemos dos ecuaciones, una para \(\beta_0\) y otra para \(\beta_1\), que son las ecuaciones normales.</p><p>Estas ecuaciones son sistemas lineales de ecuaciones que se pueden resolver mediante diversos métodos, como la <strong>eliminación gaussiana</strong> o la <strong>inversión de matrices</strong>. Una vez resueltas estas ecuaciones, obtendremos los valores óptimos de los parámetros \(\beta_0\) y \(\beta_1\) que minimizan la suma de los errores al cuadrado.</p><p>y</p><p>Donde \(\bar x\) y \(\bar y\) representan la media de las respectivas columnas.</p><p>¿Es verdad que este es el cálculo? Veamos con un ejemplo de una simulación en python. En primer lugar generamos una base de datos en pandas con los parámetros que nosotros deseamos y generamos el numerador y el denominador que usaremos para calcular \(\hat\beta_1\).</p><pre><code>import pandas as pd
+import numpy as np
+
+n = 1000
+
+np.random.seed()
+
+df = pd.DataFrame({'x': np.random.normal(0,1,n)})
+df['y'] = 1.5 + 2 * df['x'] + np.random.normal(0,1,n)
+
+df['xi - barx'] = df['x'] - df['x'].mean()
+df['yi - bary'] = df['y'] - df['y'].mean()
+df['(xi-barx)(yi-bary)'] = df['xi - barx'] * df['yi - bary']
+df['(xi - barx)^2'] = df['xi - barx']**2
+print(df)</code></pre><p>Ahora sólo queda calcular los parámetros</p><pre><code>beta1 = df['(xi-barx)(yi-bary)'].sum()/df['(xi - barx)^2'].sum()
+beta0 = df['y'].mean() - beta1 * df['x'].mean()
+print(beta1)
+# 2.0321031515496335
+print(beta0)
+# 1.4751020302599238</code></pre><p>Las estimaciones que nos generan estos cálculos son muy cercanos al número real que generamos por métodos de simulación. Puedes jugar con los números que se generan al definir <code>df['y']</code> y generar nuevos valores de la regresión.</p><h2 id="c-mo-se-usa-la-regresi-n-para-cerrar-puertas-traseras">Cómo se usa la regresión para cerrar puertas traseras</h2><p>Una de las razones que hacen más atractiva a la regresión es lo fácil que hace enfrentar a los problemas de selección. Siempre que nos enfrentamos a la situación en que una variable \(X\) causa tanto \(D\) como \(Y\), basta incluir la variable en la regresión para solucionar el problema.</p><p>A este proceso se le llama <strong>controlar</strong> y las variables que se incluyen con esta intención se llaman <strong>variables de control</strong>. Entonces una regresión de</p><p>ya registra el efecto de \(D\) en \(Y\) considerando a \(X\). También se puede decir que se deja a \(X\) constante y que la regresión controla \(X\).</p><p>Un ejemplo podría ser el estudio del impacto del ingreso familiar y la educación de los padres en el rendimiento académico de los estudiantes. Supongamos que queremos medir el impacto del ingreso familiar en el rendimiento académico de los estudiantes y controlar el efecto de la educación de sus padres. Podemos utilizar la regresión lineal para modelar el rendimiento académico (Y) en función del ingreso familiar (X) y la educación de los padres(D).</p><pre><code>import pandas as pd
+import statsmodels.formula.api as smf
+
+# Crear un ejemplo de datos
+df = pd.DataFrame({'Rendimiento': [80, 85, 90, 95, 100],
+                   'Ingreso': [50000, 60000, 70000, 80000, 90000],
+                   'Educacion': ['Primaria', 'Secundaria', 'Bachillerato', 'Licenciatura', 'Maestria']})
+
+# Crear la regresión
+model1 = smf.ols(formula='Rendimiento ~ Ingreso + Educacion', data=df)
+model2 = smf.ols(formula='Rendimiento ~ Ingreso', data=df)
+
+# Ajustar el modelo y ver los resultados
+results1 = model1.fit()
+results2 = model2.fit()
+
+print(results1.summary())
+print(results2.summary())</code></pre><p>Los resultados de estas dos regresiones son muy reveladores. En primer lugar, nota que la variable educación genera muchos coeficientes. Este aspecto lo vamos a tocar más a fondo más adelante, pero de momento observa cómo el coeficiente de los ingresos <strong>cambia</strong> cuando se incluye la educación. ¿Por qué sucede esto?</p><p>Read Marionomics: Economía y Ciencia de Datos in the Substack appAvailable for iOS and Android<a href="https://substack.com/app/app-store-redirect?utm_campaign=app-marketing&amp;utm_context=author-post-insert">Get the app</a></p><p>En este modelo la educación nos sirve como una <strong>variable de control.</strong> La regresión que no la incluye podría estar mostrando un efecto interesante, pero incompleto. Es sólo cuando incluimos a la educación de los padres cuando podemos identificar el <strong>efecto real</strong> que genera el ingreso. Libre de sesgos.</p><p>En el siguiente post veremos una guía para hacer regresiones, para verificas sus supuestos y para interpretar el resultado que nos arrojan la mayoría de los softwares estadísticos.</p>

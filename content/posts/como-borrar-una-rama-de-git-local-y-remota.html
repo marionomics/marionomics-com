@@ -1,0 +1,18 @@
+---
+title: Cómo borrar una rama de Git local y remota
+slug: como-borrar-una-rama-de-git-local-y-remota
+date: '2022-07-23T15:19:09-05:00'
+lastmod: '2026-02-22T11:45:21-06:00'
+subtitle: Usa git branch -d NombreDeLaRama para borrar una rama de manera local.
+description: Usa git branch -d NombreDeLaRama para borrar una rama de manera local.
+tags: []
+feature_image: https://images.unsplash.com/photo-1542034890068-a100eb40a269?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxMTc3M3wwfDF8c2VhcmNofDE2fHxnaXQlMjBicmFuY2h8ZW58MHx8fHwxNjU4NjA1MzM4&ixlib=rb-1.2.1&q=80&w=2000
+feature_image_alt: Son ramas. No tiene nada que ver con Git.
+feature_image_caption: Photo by <a href="https://unsplash.com/@michaelheld?utm_source=ghost&utm_medium=referral&utm_campaign=api-credit">Michael Held</a> / <a href="https://unsplash.com/?utm_source=ghost&utm_medium=referral&utm_campaign=api-credit">Unsplash</a>
+math: false
+twitter: false
+ghost_id: 66affcc0f6ade40001729ce0
+---
+<h2 id="versi%C3%B3n-tldr">Versión TL:DR</h2><pre><code class="language-bash">// Borrar de manera local
+git branch -d NombreDeLaRama</code></pre><pre><code class="language-bash">// Borrar de manera remota
+git push origin --delete NombreDeLaRama</code></pre><h2 id="cu%C3%A1ndo-borrar-ramas">Cuándo borrar ramas</h2><!--members-only--><p>Es común que un repositorio tenga varias ramas. Es una forma de hacer cambios o de mantener el orden en las modificaciones que se le hace a un programa o aplicación. Un uso de las ramas es cuando queremos hacer un experimento con los datos. En estos casos, cuando hacemos <code>merge</code> entre las ramas y el experimento se acabó es buen momento para borrar la rama.</p><p>Como buena práctica, nunca borres la rama principal y no trabajes directamente sobre ella. Haz una rama aparte para hacer modificaciones y luego la añades a la principal haciendo <code>merge</code>.</p><h2 id="borrando-la-rama-local">Borrando la rama local</h2><p>Git no te dejará borrar la rama en la que estás. Tienes que moverte a otra rama usando <code>git checkout otrarama</code> para moverte a donde quieres ir. Como sería mala idea borrar la rama principal, entonces tal vez desees borrar las ramas desde <code>main</code>.</p><p>Borra la rama usando <code>git branch -d rama</code>, donde <code>rama</code> es el nombre de la rama que quieres borrar. El <em>flag</em> <code>-d</code> le indica a git que la acción que deseas hacer es borrar la rama.</p><p>Es posible que te arroje un error si no has hecho push y merge a la rama remota. Usa el flag <code>-D</code> si eso sucede para forzar el borrado de la rama.</p><h2 id="borrando-una-rama-remota">Borrando una rama remota</h2><p>El comando es </p><pre><code class="language-bash">git push origin --delete rama</code></pre><p>donde <code>rama</code> es el nombre de la rama que quieres borrar.</p>

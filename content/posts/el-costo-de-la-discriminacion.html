@@ -1,0 +1,32 @@
+---
+title: El costo de la discriminación
+slug: el-costo-de-la-discriminacion
+date: '2022-01-19T07:35:00-06:00'
+lastmod: '2026-02-22T11:45:35-06:00'
+description: La discriminación tiene un costo que va más allá de los costos económicos, sociales y psicológicos a las personas discriminadas. Cuando las organizaciones disc…
+tags:
+- teoria-de-juegos
+- educacion
+- divulgacion-cientifica
+feature_image: https://images.unsplash.com/photo-1615564553104-47a08bbf1a0f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxMTc3M3wwfDF8c2VhcmNofDJ8fGRpc2NyaW1pbmF0aW9ufGVufDB8fHx8MTY0MjA5MDkxMg&ixlib=rb-1.2.1&q=80&w=2000
+feature_image_alt: Una persona en muchos colores
+feature_image_caption: Photo by <a href="https://unsplash.com/@divya_agrawal?utm_source=ghost&utm_medium=referral&utm_campaign=api-credit">Divya Agrawal</a> / <a href="https://unsplash.com/?utm_source=ghost&utm_medium=referral&utm_campaign=api-credit">Unsplash</a>
+math: true
+twitter: false
+ghost_id: 66affcc0f6ade40001729ca2
+---
+<p>La discriminación tiene un costo que va más allá de los costos económicos, sociales y psicológicos a las personas discriminadas. Cuando las organizaciones discriminan, ellas también tienen un costo de oportunidad que se refleja en productividad y en competitividad en el mercado.</p><p>Esa es la premisa el artículo <a href="https://www.mdpi.com/2227-7390/9/19/2419">The cost of work discrimination: A Market Capture Differential Game Model</a>, publicado en la revista Mathematics en 2021. Este es un modelo de teoría de juegos en el que se propone una forma en la que las empresas pierden oportunidades de negocio importantes cuando no pueden adaptar su mensaje de  marketing al mercado cambiante.</p><!--kg-card-begin: html--><a href="https://www.mdpi.com/2227-7390/9/19/2419/pdf" style="  
+  background-color: #4688f1;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  font-weight: 600;
+  width: 60%;
+  ">
+     Descargar artículo PDF Gratis
+</a> <!--kg-card-end: html--><p>En una tesis de una brillante alumna que próximamente saldrá a la luz, encontramos evidencia de costos por discriminación en la productividad de la empresa cuando existe discriminación por género y por edad. Sin embargo, por el tipo de datos disponible, no se puede dar una interpretación causal de esta información.</p><h2 id="un-juego-diferencial">Un juego diferencial</h2><p>Para este artículo se hace uso de modelos de teoría de juegos diferenciales. La teoría de juegos permite mostrar el comportamiento de agentes racionales en situaciones de competencia o cooperación. El uso de ecuaciones diferenciales en el modelo permite mostrar el comportamiento dinámico de las empresas y entender los incentivos que genera la interacción contínua en el tiempo.</p><p>Imagina que hay dos empresas compitiendo en un mismo mercado y podemos describir el tamaño de las ventas que tiene la empresa \(i\) usando \(x_i(t)\). Las empresas usan publicidad para incrementar sus ventas con un costo  \(u_i(t)\). La \(t\) entre paréntesis sirve para expresar que tanto \(x\) como \(u\) son variables que tienen un cierto valor en el tiempo. Siempre que veas esa notación, ten por seguro que lo que vendrá es una ecuación diferencial.</p><p>La ecuación diferencial que define la evolución del mercado capturado por la empresa \(j\) es</p><p>\[ \dot{x}_j(t) = [\alpha + \beta \ln u_j(t) + \gamma X(t)](m - X(t)) \]</p><p>En el artículo, \(X(t)\) es la suma de los bienes que se venden en el mercado por los dos competidores. Podría a esto sumarse las ventas de otros competidores si estos entraran al mercado. ¿Cómo se leen este tipo de funciones?</p><p>Siempre que encuentres una función de este tipo hay dos cosas que notar: el signo de los elementos y su forma funcional. Por ejemplo el hecho de que \u(t)\) venga con un signo positivo significa que el gasto en publicidad debe aumentar el tamaño del mercado disponible para la empresa, mientras que el logaritmo implica que los rendimientos marginales son decrecientes (entre más se gasta, el incremento en el tamaño del mercado es menor).</p><!--members-only--><p>Notamos que el lado derecho de la ecuación contiene un elemento \(m - X(t)\). Este es un indicador del resto del mercado potencial \(m\) que aún no ha sido capturado por ninguna de las dos empresas.</p><p>En realidad la empresa tiene como objetivo optimizar sus ganancias, que están descritas por el funcional</p><p>\[ J_i = \int_0_T e^{\rho t} [\pi_j\dot{x}_j(t) - u_j(t)] dt\]</p><p>En esta ecuación, \(\pi_j\) describe el margen unitario de las ventas de la empresa \(j\). El modelo de este artículo usa el principio del máximo de Pontryagin para resolver el problema e identificar el comportamiento de las empresas en el tiempo.</p><p>La solución del problema nos indica la diferencia que hace la inclusión de diversidad en las empresas. Básicamente, una empresa más inclusiva tiene la capacidad de capturar un mercado nuevo más rápido que otra empresa que no lo es.</p>
