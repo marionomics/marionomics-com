@@ -1,4 +1,83 @@
-{{ define "main" }}
-<h1 class="title">Artículos</h1>
-{{ partial "archive.html" (where site.RegularPages "Section" "posts") }}
-{{ end }}
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light only">
+  <title>{{ .Title }}</title>
+  <meta name="description" content="{{ .Description }}">
+  <link rel="canonical" href="{{ .Permalink }}">
+  <meta property="og:site_name" content="{{ .Title }}">
+  <meta property="og:title" content="{{ .Title }}">
+  <meta property="og:type" content="website">
+  <meta property="og:description" content="{{ .Description }}">
+  <meta property="og:image" content="{{ "landing/card.jpg" | absURL }}">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1280">
+  <meta property="og:image:height" content="800">
+  <meta property="og:url" content="{{ .Permalink }}">
+  <meta property="twitter:card" content="summary_large_image">
+  {{ partial "gtm-head.html" . }}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?display=swap&family=Aleo:ital,wght@0,700;1,700&family=Instrument+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Inter:ital,wght@0,400;0,700;1,400;1,700&family=Lexend:ital,wght@0,400;0,700;1,400;1,700">
+  <link rel="stylesheet" href="/css/landing.css">
+  <script>
+    (function () {
+      function showDone() {
+        var done = location.hash === "#done";
+        document.body.classList.toggle("is-done", done);
+        if (done) window.scrollTo(0, 0);
+      }
+      window.addEventListener("hashchange", showDone);
+      document.addEventListener("DOMContentLoaded", showDone);
+    })();
+  </script>
+</head>
+<body>
+  {{ partial "gtm-body.html" . }}
+  <main class="page">
+    <section id="home">
+      <h1 class="t-headline">Consigue tu primer cliente como consultor en economía (no necesitas saber vender)</h1>
+      <p class="t-sub">Una masterclass por correo de 7 días para <span class="hl">diseñar tu servicio de consultoría en economía</span>, <span class="hl">conseguir tu primer cliente</span>, y <span class="hl">llevar clientes de manera consistente</span>.</p>
+      <div>{{/* NOTIFUSE — Mario's snippet, verbatim */}}<style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');.nf-form{display:flex;flex-direction:column;gap:.9rem;width:100%;max-width:34rem;margin:0 auto;font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif}.nf-form input[type=email]{width:100%;box-sizing:border-box;height:3.6rem;padding:0 1.25rem;font:inherit;font-size:1.1rem;color:#222;background:#fff;border:1.5px solid #cfcfcf;border-radius:1rem;outline:none}.nf-form input[type=email]:focus{border-color:#4d8ff7;box-shadow:0 0 0 4px rgba(77,143,247,.18)}.nf-form button{width:100%;height:3.9rem;border:0;border-radius:1rem;cursor:pointer;background:#4d8ff7;color:#fff;font:inherit;font-size:1.5rem;font-weight:700;box-shadow:0 6px 18px rgba(77,143,247,.35)}.nf-form button:hover{background:#3b7ef0}.nf-form button:disabled{opacity:.7;cursor:wait}.nf-form .nf-msg{margin:0;text-align:center;font-size:.95rem;color:#c0392b;min-height:1.2em}.nf-form .nf-hp{position:absolute;left:-9999px;opacity:0;height:0;width:0}</style><form class="nf-form" action="javascript:void(0)" novalidate><input name="email" type="email" placeholder="Tu correo que más lees aquí" autocomplete="email" required><input name="website" class="nf-hp" type="text" tabindex="-1" autocomplete="off" aria-hidden="true"><button type="submit">Comenzar el curso</button><p class="nf-msg"></p></form><script>(function () {if (window.__nfInit) return; window.__nfInit = true;var NOTIFUSE = "https://tangerine-puma.pikapod.net",WORKSPACE = "marionomics",LIST_ID = "fullstack";document.addEventListener("submit", function (e) {var f = e.target && e.target.closest ? e.target.closest("form.nf-form") : null;if (!f) return;e.preventDefault();var msg = f.querySelector(".nf-msg"), btn = f.querySelector("button"), label = btn.textContent;if (f.querySelector("[name=website]").value) return;var email = f.querySelector("[name=email]").value.trim();if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { msg.textContent = "Revisa tu correo, parece que tiene un error."; return; }btn.disabled = true; btn.textContent = "Un momento…"; msg.textContent = "";fetch(NOTIFUSE + "/subscribe", {method: "POST",headers: { "Content-Type": "application/json" },body: JSON.stringify({ workspace_id: WORKSPACE, list_ids: [LIST_ID],contact: { email: email, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone } })}).then(function (r) { return r.json().catch(function(){return {};}).then(function (d) { if (!r.ok) throw d; }); }).then(function () { f.reset(); location.hash = "done"; }).catch(function (err) { msg.textContent = "Algo falló: " + ((err && err.error) || "intenta de nuevo"); }).finally(function () { btn.disabled = false; btn.textContent = label; });}, true);})();</script></div>
+
+      <div class="band"><div class="in author">
+        <div class="who">
+          <p>Escrito por el <span class="hl">Dr. Mario A. García Meza</span>, economista y consultor desde hace 10 años.</p>
+          <p class="cred">Profesor-investigador en la Universidad Juárez del Estado de Durango<br>Miembro del Sistema Nacional de Investigadores, Nivel I<br>Más de 7 años de experiencia en el sector público y 3 años como Ghostwriter para economistas.</p>
+        </div>
+        <img src="/landing/autor.jpg" alt="El marionomics haciendo pose mamalona" title="Mario A. García Meza">
+      </div></div>
+
+      <div class="band"><div class="in method">
+        <p>Comparte su método probado de 7 pasos para:</p>
+        <ul class="checks">
+          <li>✓ Diseñar un servicio de consultoría que las personas busquen desesperadamente.</li>
+          <li>✓ Encontrar tu primer cliente de consultoría de paga.</li>
+          <li>✓ Y hacerla crecer para comenzar a obtener ingresos recurrentes hasta llegar a usd 10k al mes.</li>
+        </ul>
+      </div></div>
+
+      <h2 class="t-h2">¿Cómo sé si esto es para mí?</h2>
+      <p class="t-sub">Si este eres tú:</p>
+      <ul class="dots">
+        <li>Eres economista y... aún no sabes qué hacen los economistas (si fuí).</li>
+        <li>Te gusta mucho tu carrera y siempre has querido hacer un negocio alrededor de ella.</li>
+        <li>Tienes mucho conocimiento especializado y no sabes cómo aplicarlo.</li>
+        <li>Quieres empezar a tener clientes de manera predecible, sin tener que convertirte en vendedor.</li>
+      </ul>
+      <p class="t-close">…Entonces el <span class="hl">plan de despegue de tu consultoría en economía</span> definitivamente es para ti</p>
+
+      <div class="cta">{{/* NOTIFUSE — same snippet again, verbatim */}}<style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');.nf-form{display:flex;flex-direction:column;gap:.9rem;width:100%;max-width:34rem;margin:0 auto;font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif}.nf-form input[type=email]{width:100%;box-sizing:border-box;height:3.6rem;padding:0 1.25rem;font:inherit;font-size:1.1rem;color:#222;background:#fff;border:1.5px solid #cfcfcf;border-radius:1rem;outline:none}.nf-form input[type=email]:focus{border-color:#4d8ff7;box-shadow:0 0 0 4px rgba(77,143,247,.18)}.nf-form button{width:100%;height:3.9rem;border:0;border-radius:1rem;cursor:pointer;background:#4d8ff7;color:#fff;font:inherit;font-size:1.5rem;font-weight:700;box-shadow:0 6px 18px rgba(77,143,247,.35)}.nf-form button:hover{background:#3b7ef0}.nf-form button:disabled{opacity:.7;cursor:wait}.nf-form .nf-msg{margin:0;text-align:center;font-size:.95rem;color:#c0392b;min-height:1.2em}.nf-form .nf-hp{position:absolute;left:-9999px;opacity:0;height:0;width:0}</style><form class="nf-form" action="javascript:void(0)" novalidate><input name="email" type="email" placeholder="Tu correo que más lees aquí" autocomplete="email" required><input name="website" class="nf-hp" type="text" tabindex="-1" autocomplete="off" aria-hidden="true"><button type="submit">Comenzar el curso</button><p class="nf-msg"></p></form><script>(function () {if (window.__nfInit) return; window.__nfInit = true;var NOTIFUSE = "https://tangerine-puma.pikapod.net",WORKSPACE = "marionomics",LIST_ID = "fullstack";document.addEventListener("submit", function (e) {var f = e.target && e.target.closest ? e.target.closest("form.nf-form") : null;if (!f) return;e.preventDefault();var msg = f.querySelector(".nf-msg"), btn = f.querySelector("button"), label = btn.textContent;if (f.querySelector("[name=website]").value) return;var email = f.querySelector("[name=email]").value.trim();if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { msg.textContent = "Revisa tu correo, parece que tiene un error."; return; }btn.disabled = true; btn.textContent = "Un momento…"; msg.textContent = "";fetch(NOTIFUSE + "/subscribe", {method: "POST",headers: { "Content-Type": "application/json" },body: JSON.stringify({ workspace_id: WORKSPACE, list_ids: [LIST_ID],contact: { email: email, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone } })}).then(function (r) { return r.json().catch(function(){return {};}).then(function (d) { if (!r.ok) throw d; }); }).then(function () { f.reset(); location.hash = "done"; }).catch(function (err) { msg.textContent = "Algo falló: " + ((err && err.error) || "intenta de nuevo"); }).finally(function () { btn.disabled = false; btn.textContent = label; });}, true);})();</script></div>
+    </section>
+
+    <section id="done">
+      <p class="t-done">¡Listo! la primera lección del <em><strong>Plan de Despegue del Economista</strong></em> ya está en camino...</p>
+      <p class="t-note"><span>Busca un correo de <strong>Mario A. García Meza</strong> en un minuto o dos.</span><span><strong>Sólo una pequeña advertencia:</strong> A veces los correos se esconden en la sección de "promociones". Si eso pasa, arrástralo a "Principal", para que te lleguen bien todas las <strong>7</strong> lecciones.</span><span>¡Ahí te veo!</span></p>
+      <hr>
+    </section>
+  </main>
+  <footer class="foot"><a href="/archivo/">archivo</a></footer>
+</body>
+</html>
