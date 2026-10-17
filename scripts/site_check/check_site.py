@@ -112,7 +112,7 @@ def check_archive(public: Path, minimum: int) -> list[str]:
     page = public / "archivo" / "index.html"
     if not page.is_file():
         return ["archive missing"]
-    count = page.read_text(encoding="utf-8", errors="replace").count("<li")
+    count = len(re.findall(r"<li[\s>]", page.read_text(encoding="utf-8", errors="replace")))
     if count < minimum:
         return [f"archive lists {count} posts, expected at least {minimum}"]
     return []

@@ -94,3 +94,5 @@ def test_archive_count(tmp_path):
     _page(public, "archivo/index.html", "<ul><li>a</li><li>b</li></ul>")
     assert check_archive(public, 2) == []
     assert check_archive(public, 3) == ["archive lists 2 posts, expected at least 3"]
+    _page(public, "archivo/index.html", "<link rel=stylesheet href=/a.css><link rel=canonical href=/><ul><li class=x>a</li></ul>")
+    assert check_archive(public, 2) == ["archive lists 1 posts, expected at least 2"]
