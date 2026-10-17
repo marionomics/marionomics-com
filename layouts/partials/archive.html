@@ -1,1 +1,10 @@
-{{ range . }}<p><a href="{{ .RelPermalink }}">{{ .Title }}</a></p>{{ end }}
+{{ range .GroupByDate "2006" }}
+<section class="year">
+  <h2>{{ .Key }}</h2>
+  <ul class="archive">
+    {{ range .Pages }}
+    <li><a href="{{ .RelPermalink }}">{{ .Title }}</a> <span class="date">{{ partial "fecha.html" .Date }}</span></li>
+    {{ end }}
+  </ul>
+</section>
+{{ end }}

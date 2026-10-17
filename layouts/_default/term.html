@@ -1,0 +1,5 @@
+{{ define "main" }}
+<h1 class="title">{{ .Title }}</h1>
+<p class="info">{{ len .Pages }} {{ if eq (len .Pages) 1 }}artículo{{ else }}artículos{{ end }}</p>
+{{ partial "archive.html" .Pages }}
+{{ end }}
