@@ -1,0 +1,93 @@
+<!doctype html><html lang=es-MX><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>8 pasos para transformar datos de panel en R — Marionomics</title><meta name=description content="Tutorial para pasar los datos de formato largo a formato ancho y viceversa"><link rel=canonical href=https://blog.marionomics.com/8-pasos-para-transformar-datos-de-panel-en-r/><script>(function(e,t,n,s,o){e[s]=e[s]||[],e[s].push({"gtm.start":(new Date).getTime(),event:"gtm.js"});var a=t.getElementsByTagName(n)[0],i=t.createElement(n),r=s!="dataLayer"?"&l="+s:"";i.async=!0,i.src="https://www.googletagmanager.com/gtm.js?id="+o+r,a.parentNode.insertBefore(i,a)})(window,document,"script","dataLayer","GTM-5WJS5ZWD")</script><link rel=preload href=/fonts/cmu/cmu-serif-500-roman.woff2 as=font type=font/woff2 crossorigin><link rel=stylesheet href=/css/site.css><link rel=stylesheet href=/vendor/prism/prism.min.css><script defer src=/vendor/prism/prism.js></script></head><body><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5WJS5ZWD" height=0 width=0 style=display:none;visibility:hidden></iframe></noscript><header class=top><div class=in><a class=brand href=/>Marionomics</a><nav><a href=/>Artículos</a><a href=/tools/>Herramientas</a><a href=/about-2/>Acerca</a><a href=/search/>Buscar</a></nav></div></header><main><div data-pagefind-body><h1 class=title>8 pasos para transformar datos de panel en R</h1><p class=sub>Tutorial para pasar los datos de formato largo a formato ancho y viceversa</p><div class=info data-pagefind-ignore>Publicado el 20 de noviembre de 2024</div><article><p>Lo más normal cuando trabajamos con datos es que no los encontramos en el formato que queremos.</p><p>Es muy común que queremos que los datos sean visuales y nos aparecen en columnas en panel o al contrario. Afortunadamente, el software estadístico viene con paqueterías que ya nos solucionan este problema.</p><p>Sólo tenemos que aprender a usar las funciones que transforman los datos.</p><p>En este tutorial, aprenderás un paso a paso para transformar un conjunto de datos en R. Usaremos un ejemplo del Producto Interno Bruto (PIB) <em>per cápita</em> y aprenderemos funciones clave como <code>reshape</code>, <code>tidyr</code> y <code>data.table</code> para reorganizar nuestros datos de formato largo a ancho y viceversa.</p><p>¿Listos? Adelante…</p><h2 id=paso-1-comprender-el-problema-y-preparar-los-datos>Paso #1: Comprender el Problema y Preparar los Datos</h2><p>Imagina que deseas analizar el crecimiento económico de varios países entre 2000 y 2020.</p><p>Tienes un conjunto de datos con tres columnas: <strong>País</strong>, <strong>Año</strong> y <strong>PIB_per_Cápita</strong>. Sin embargo, está en formato largo, lo que dificulta las comparaciones directas entre países a lo largo del tiempo. Este formato es útil para ciertos análisis estadísticos, pero no es el más intuitivo para visualizar o comparar datos rápidamente.</p><p>Necesitamos transformar este conjunto de datos al formato ancho, donde cada país tenga su propia columna de PIB per cápita para cada año.</p><p>Ejecuta el siguiente código en R para crear y mostrar los datos:</p><pre><code class=language-r># Creamos un ejemplo simulado
+countries &lt;- rep(c("Argentina", "Brasil", "Chile", "México"), each = 21)
+years &lt;- rep(2000:2020, times = 4)
+gdp_per_capita &lt;- runif(84, 8000, 20000)
+
+data_long &lt;- data.frame(
+  País = countries,
+  Año = years,
+  PIB_per_Cápita = gdp_per_capita
+)
+
+head(data_long)
+
+</code></pre><h3 id=%C2%BFpor-qu%C3%A9-necesitamos-transformar-los-datos>¿Por Qué Necesitamos Transformar los Datos?</h3><p>Los datos en formato largo pueden ser poco prácticos para ciertos análisis.</p><p>Si deseas comparar gráficamente el PIB per cápita de varios países a lo largo del tiempo, el formato largo complica el proceso. En cambio, un formato ancho facilita la creación de gráficos y comparaciones directas. Además, tener los datos reorganizados mejora la legibilidad y comprensión de la información.</p><p>Transformar nuestros datos nos permitirá visualizar tendencias y realizar análisis más efectivos.</p><h2 id=paso-2-exploraci%C3%B3n-y-limpieza-inicial-de-los-datos>Paso #2: Exploración y Limpieza Inicial de los Datos</h2><p>Antes de cualquier transformación, necesitamos explorar y limpiar nuestros datos.</p><p>Esto implica verificar si hay valores faltantes, duplicados o inconsistencias. Una base de datos limpia garantiza resultados confiables y evita errores en etapas posteriores del análisis.</p><p>Ejecuta el siguiente código para explorar tus datos:</p><pre><code class=language-r># Verificamos la estructura y posibles problemas
+str(data_long)
+summary(data_long)
+
+# Revisamos si hay valores faltantes
+sum(is.na(data_long))
+
+</code></pre><h2 id=paso-3-transformaci%C3%B3n-con-reshape>Paso #3: Transformación con <code>reshape</code></h2><p>La función <code>reshape</code> de R es una herramienta clásica para reorganizar data frames.</p><p>Nos permite cambiar entre formatos largo y ancho, adaptándose a nuestras necesidades analíticas. Aunque puede parecer intimidante al principio, su uso es bastante directo una vez que entiendes sus parámetros clave.</p><p>Utiliza este código para transformar tus datos al formato ancho:</p><pre><code class=language-r># Transformamos el data frame de formato largo a ancho
+data_wide &lt;- reshape(
+  data_long,
+  timevar = "Año",
+  idvar = "País",
+  direction = "wide"
+)
+
+head(data_wide)
+
+</code></pre><p><strong>Ahora, profundicemos en lo que acabamos de hacer.</strong></p><p>La función <code>reshape()</code> requiere especificar varios argumentos clave:</p><ol><li><code><strong>data</strong></code>: El data frame que deseas transformar (en este caso, <code>data_long</code>).</li><li><code><strong>timevar</strong></code>: La variable que identifica el tiempo o las diferentes instancias que deseas convertir en columnas. Aquí, <code>Año</code> es nuestra variable de tiempo, ya que queremos que cada año sea una columna separada.</li><li><code><strong>idvar</strong></code>: La variable que identifica las unidades únicas en tus datos. En este caso, <code>País</code> es nuestro identificador, ya que queremos que cada fila represente un país único.</li><li><code><strong>direction</strong></code>: La dirección de la transformación. Usamos <code>"wide"</code> para convertir de formato largo a ancho.</li></ol><p><strong>Indica siempre correctamente las variables <code>timevar</code> e <code>idvar</code>.</strong></p><p>Si no las especificamos adecuadamente, R no sabrá cómo reorganizar los datos. <code>timevar</code> le dice a R qué variable debe expandir en columnas (cada año en nuestro caso), mientras que <code>idvar</code> le indica cómo agrupar las filas (cada país). Al hacerlo correctamente, obtenemos un data frame donde cada país tiene una fila única y los años se despliegan como columnas con sus respectivos valores de PIB per cápita.</p><h2 id=paso-4-transformaci%C3%B3n-moderna-con-tidyr>Paso #4: Transformación Moderna con <code>tidyr</code></h2><p><code>tidyr</code> es un paquete de R que simplifica la reorganización de datos.</p><p>Con funciones intuitivas como <code>spread()</code>, puedes transformar tus datos de manera más legible y eficiente. Es una excelente alternativa moderna a <code>reshape()</code>, especialmente si prefieres código más limpio.</p><p>Prueba el siguiente código:</p><pre><code class=language-r># Instalamos tidyr si no está disponible
+if (!require(tidyr)) install.packages("tidyr")
+library(tidyr)
+
+# Usamos spread para transformar los datos
+data_wide_tidyr &lt;- spread(data_long, key = Año, value = PIB_per_Cápita)
+
+head(data_wide_tidyr)
+
+</code></pre><p><strong>Aquí, la función <code>spread()</code> simplifica el proceso.</strong></p><ul><li><code><strong>data</strong></code>: Nuestro data frame original (<code>data_long</code>).</li><li><code><strong>key</strong></code>: La variable que queremos convertir en columnas (<code>Año</code>).</li><li><code><strong>value</strong></code>: Los valores que llenarán las nuevas columnas (<code>PIB_per_Cápita</code>).</li></ul><p><strong>El resultado es similar, pero los nombres de las columnas son más limpios.</strong></p><p>Cada columna se nombra directamente con el año correspondiente, facilitando la lectura y el acceso a los datos. Esto mejora la legibilidad y hace que el código sea más intuitivo.</p><h2 id=paso-5-reorganizaci%C3%B3n-eficiente-con-datatable>Paso #5: Reorganización Eficiente con <code>data.table</code></h2><p>Cuando trabajas con grandes volúmenes de datos, la eficiencia es clave.</p><p><code>data.table</code> es un paquete optimizado para manejar grandes conjuntos de datos de manera rápida y eficiente. Su función <code>dcast()</code> es especialmente útil para transformar datos, ofreciendo un rendimiento superior.</p><p>Implementa este código para usar <code>data.table</code>:</p><pre><code class=language-r># Convertimos el data frame a data.table
+if (!require(data.table)) install.packages("data.table")
+library(data.table)
+data_long_dt &lt;- as.data.table(data_long)
+
+# Usamos dcast para transformar
+data_wide_dt &lt;- dcast(data_long_dt, País ~ Año, value.var = "PIB_per_Cápita")
+
+head(data_wide_dt)
+
+</code></pre><p><strong>Desglosemos cómo funciona <code>dcast()</code>:</strong></p><ul><li><code><strong>data</strong></code>: Nuestro data.table (<code>data_long_dt</code>).</li><li><strong>La fórmula <code>País ~ Año</code></strong>: Indica que queremos que <code>País</code> sea nuestra variable identificadora (filas) y <code>Año</code> nuestras nuevas columnas.</li><li><code><strong>value.var</strong></code>: La variable cuyos valores llenarán las nuevas celdas (<code>PIB_per_Cápita</code>).</li></ul><p><strong>La sintaxis de <code>dcast()</code> es concisa y eficiente.</strong></p><p>Es especialmente útil cuando manejas conjuntos de datos muy grandes, ya que <code>data.table</code> está optimizado para operaciones de alta velocidad y bajo consumo de memoria.</p><h2 id=paso-6-transformaci%C3%B3n-inversa-de-ancho-a-largo>Paso #6: Transformación Inversa: De Ancho a Largo</h2><p>A veces, necesitarás regresar al formato largo.</p><p>Esto es común cuando preparas datos para ciertos modelos estadísticos que requieren este formato. Saber cómo alternar entre formatos te da flexibilidad y control sobre tus análisis.</p><p>Utiliza el siguiente código para transformar de ancho a largo:</p><pre><code class=language-r># Con reshape
+data_long_again &lt;- reshape(
+  data_wide,
+  varying = names(data_wide)[-1],
+  v.names = "PIB_per_Cápita",
+  timevar = "Año",
+  times = sub("PIB_per_Cápita.", "", names(data_wide)[-1]),
+  direction = "long"
+)
+
+head(data_long_again)
+
+</code></pre><p><strong>Explicación de los argumentos:</strong></p><ul><li><code><strong>data</strong></code>: El data frame ancho que queremos transformar (<code>data_wide</code>).</li><li><code><strong>varying</strong></code>: Las columnas que varían y que queremos reunir en una sola columna. Usamos <code>names(data_wide)[-1]</code>para seleccionar todas las columnas excepto <code>País</code>.</li><li><code><strong>v.names</strong></code>: El nombre de la variable que contendrá los valores reunidos (<code>PIB_per_Cápita</code>).</li><li><code><strong>timevar</strong></code>: El nombre de la nueva variable que contendrá los tiempos (<code>Año</code>).</li><li><code><strong>times</strong></code>: Los valores que tomará <code>timevar</code>. Usamos <code>sub()</code> para extraer los años de los nombres de las columnas.</li><li><code><strong>direction</strong></code>: Especificamos <code>"long"</code> para transformar de ancho a largo.</li></ul><p><strong>Es fundamental asignar correctamente <code>varying</code>, <code>v.names</code>, <code>timevar</code> y <code>times</code>.</strong></p><p>Estos parámetros le indican a R cómo descomponer el data frame ancho en un formato largo, agrupando las columnas de años en una sola columna de valores y creando una nueva columna que indique el año correspondiente.</p><h2 id=paso-7-visualiza-los-datos-transformados>Paso #7: Visualiza los Datos Transformados</h2><p>Con los datos en formato ancho, puedes crear visualizaciones más efectivas.</p><p>Por ejemplo, un gráfico de líneas que muestre el PIB per cápita de cada país a lo largo del tiempo. Esto facilita la identificación de tendencias y comparaciones directas entre países.</p><p>Genera el siguiente gráfico:</p><pre><code class=language-r>library(ggplot2)
+
+ggplot(data_long, aes(x = Año, y = PIB_per_Cápita, color = País)) +
+  geom_line(size = 1) +
+  labs(title = "Evolución del PIB per Cápita (2000-2020)",
+       x = "Año",
+       y = "PIB per Cápita (USD)") +
+  theme_minimal()
+
+</code></pre><p><strong>Este gráfico te permite visualizar claramente las tendencias económicas.</strong></p><p>Al tener los datos correctamente organizados, crear visualizaciones como esta se vuelve mucho más sencillo. Puedes identificar fácilmente patrones, comparar el desempeño entre países y detectar anomalías o eventos económicos significativos.</p><h2 id=paso-8-automatiza-el-proceso-con-funciones>Paso #8: Automatiza el Proceso con Funciones</h2><p>Para optimizar tu flujo de trabajo, es útil crear funciones que automaticen tareas repetitivas.</p><p>Esto no solo ahorra tiempo, sino que también reduce la posibilidad de errores cuando te topes con esta tarea una y otra vez. Al encapsular tu código en funciones, puedes reutilizarlo fácilmente en futuros proyectos.</p><p>Aquí tienes cómo hacerlo:</p><pre><code class=language-r># Función para transformar de largo a ancho usando reshape
+long_to_wide &lt;- function(data, id_var, time_var, value_var) {
+  reshape(
+    data,
+    timevar = time_var,
+    idvar = id_var,
+    direction = "wide"
+  )
+}
+
+# Función para transformar de ancho a largo usando reshape
+wide_to_long &lt;- function(data, id_var, varying_vars_prefix) {
+  reshape(
+    data,
+    varying = names(data)[grep(varying_vars_prefix, names(data))],
+    v.names = sub(paste0(varying_vars_prefix, "."), "", varying_vars_prefix),
+    timevar = "Tiempo",
+    times = sub(paste0(varying_vars_prefix, "."), "", names(data)[grep(varying_vars_prefix, names(data))]),
+    direction = "long"
+  )
+}
+
+</code></pre><p><strong>Estas funciones personalizadas te permiten transformar tus datos con facilidad.</strong></p><p>Solo necesitas especificar las variables clave, y la función se encarga del resto. Esto es especialmente útil cuando trabajas con múltiples conjuntos de datos que requieren las mismas transformaciones.</p><p>Si hiciste este tutorial paso por paso, crear esta función te será más fácil. Lo mejor es que la puedes adaptar a tus necesidades.</p><h2 id=transformar-y-reorganizar-datos-es-una-habilidad-esencial-para-cualquier-economista><strong>Transformar y reorganizar datos es una habilidad esencial para cualquier economista.</strong></h2><p>Al dominar estas técnicas, puedes adaptar los datos a tus necesidades analíticas y facilitar la extracción de insights valiosos. Recuerda que entender a fondo las funciones y sus argumentos te permite utilizarlas de manera más efectiva y evita posibles errores.</p><p>¡Ahora es tu turno de explorar y descubrir el poder de la manipulación de datos en R!</p><p><strong>¡Gracias por seguir este tutorial!</strong></p><p>Si tienes preguntas o necesitas ayuda adicional, no dudes en comentar.</p><p>Tu crecimiento en estas habilidades será invaluable en tu carrera como economista e investigador.</p></article></div><div class=tags><a href=/tag/macroeconomia/>Macroeconomía</a> · <a href=/tag/estadistica/>Estadística</a> · <a href=/tag/r/>R</a></div></main><footer class=foot>© Mario Alberto García Meza · <a href=https://marionomics.substack.com>Substack</a></footer></body></html>

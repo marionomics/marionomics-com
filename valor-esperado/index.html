@@ -1,0 +1,30 @@
+<!doctype html><html lang=es-MX><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Valor Esperado — Marionomics</title><meta name=description content="Cómo calcular el valor esperado de una variable aleatoria en Python"><link rel=canonical href=https://blog.marionomics.com/valor-esperado/><script>(function(e,t,n,s,o){e[s]=e[s]||[],e[s].push({"gtm.start":(new Date).getTime(),event:"gtm.js"});var a=t.getElementsByTagName(n)[0],i=t.createElement(n),r=s!="dataLayer"?"&l="+s:"";i.async=!0,i.src="https://www.googletagmanager.com/gtm.js?id="+o+r,a.parentNode.insertBefore(i,a)})(window,document,"script","dataLayer","GTM-5WJS5ZWD")</script><link rel=preload href=/fonts/cmu/cmu-serif-500-roman.woff2 as=font type=font/woff2 crossorigin><link rel=stylesheet href=/css/site.css><link rel=stylesheet href=/vendor/katex/katex.min.css><script defer src=/vendor/katex/katex.min.js></script><script defer src=/vendor/katex/contrib/auto-render.min.js></script><script defer src=/js/math.js></script><link rel=stylesheet href=/vendor/prism/prism.min.css><script defer src=/vendor/prism/prism.js></script></head><body><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5WJS5ZWD" height=0 width=0 style=display:none;visibility:hidden></iframe></noscript><header class=top><div class=in><a class=brand href=/>Marionomics</a><nav><a href=/>Artículos</a><a href=/tools/>Herramientas</a><a href=/about-2/>Acerca</a><a href=/search/>Buscar</a></nav></div></header><main><div data-pagefind-body><h1 class=title>Valor Esperado</h1><p class=sub>Cómo calcular el valor esperado de una variable aleatoria en Python</p><div class=info data-pagefind-ignore>Publicado el 18 de octubre de 2022</div><article><figure class=feature><img src="https://images.unsplash.com/photo-1570303345338-e1f0eddf4946?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=MnwxMTc3M3wwfDF8c2VhcmNofDF8fGRpY2V8ZW58MHx8fHwxNjY2MTE3MDQ0&amp;ixlib=rb-1.2.1&amp;q=80&amp;w=2000" alt><figcaption>Photo by <a href="https://unsplash.com/es/@rihok?utm_source=ghost&utm_medium=referral&utm_campaign=api-credit">Riho Kroll</a> / <a href="https://unsplash.com/?utm_source=ghost&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></figcaption></figure><p>Una <strong>variable aleatoria</strong> es una formalización matemática de una cantidad u objeto que depende de un evento aleatorio. Por ejemplo, el lanzamiento de una moneda suele considerarse un evento aleatorio, porque no podemos predecir el lado de la moneda que este nos arrojará.</p><p>Sea entonces \(X\) una variable aleatoria. Su valor esperado se describe con</p><p>$$ E(X) = \sum_{j=1}^kx_jf(x_j) = x_1 f(x_1) + x_2 f(x_2) + \cdots + x_kf(x_k) $$</p><p>La \(f(x_j)\) indica una función que depende del valor de \(x_j\) y que toma su forma a partir de la distribución que tienen los datos. Por ejemplo, si se tratara del lanzamiento de una moneda, la distribución de Bernoulli ayuda a describir el comportamiento de los lanzamientos. En este caso, nuestra variable aleatoria \(X \sim b(1,p)\) tiene como valor esperado</p><p>$$ E(X) = 0 \cdot(1-p) + 1 \cdot p = p $$</p><p>Veamos cómo sería ese comportamiento en Python. Hagamos 10 lanzamientos de moneda con \(p=0.5\), es decir que cada cara tiene un 50% de probabilidad de salir.</p><pre><code class=language-python>import numpy as np
+
+np.random.seed(42)
+
+n = 10
+lista = [np.random.randint(2) for i in range(n)]
+print(lista)
+
+np.mean(lista)
+# [0, 1, 0, 0, 0, 1, 0, 0, 0, 1]
+# 0.3</code></pre><p>Oh. Parece que ese 0.3 está muy alejado del valor esperado que nos prometieron. Esto sucede porque hay muy pocas observaciones. Es más probable obtener nuestro valor esperado entre más observaciones tenemos. Esta es la razón por la que en los casinos “la casa siempre gana”. Aunque algunas personas puedan salir del casino con dinero en las manos, mientras el valor esperado sea suficiente para garantizar una ganancia, lo único que tiene que hacer el casino es jugar suficientes veces. Veamos nuevamente nuestro ejemplo, pero ahora con 100, 1000, y 10000 observaciones.</p><pre><code class=language-python>import numpy as np
+np.random.seed(42)
+
+# Hagamos una función que dependa únicamente del número de lanzamientos
+# La función nos regresa el valor esperado
+def valor_esperado_monedas(n):
+	lista = [np.random.randint(2) for i in range(n)]
+	return np.mean(lista)
+
+# Ahora ejecutemos esta función y mostremos el resultado
+
+print(valor_esperado_monedas(100))
+
+print(valor_esperado_monedas(1000))
+
+print(valor_esperado_monedas(10000))
+
+# 0.56
+# 0.494
+# 0.4997</code></pre><p>¿Notas cómo entre más grande sea el número de \(n\) el resultado del valor esperado se acerca más a \(0.5\)? Esto no es casualidad.</p></article></div><div class=tags><a href=/tag/python/>Python</a></div></main><footer class=foot>© Mario Alberto García Meza · <a href=https://marionomics.substack.com>Substack</a></footer></body></html>
