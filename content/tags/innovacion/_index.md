@@ -1,3 +1,4 @@
 ---
 title: Innovación
+slug: innovacion
 ---

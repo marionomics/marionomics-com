@@ -1,3 +1,4 @@
 ---
 title: semiconductores
+slug: semiconductores
 ---

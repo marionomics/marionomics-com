@@ -1,3 +1,4 @@
 ---
 title: COVID
+slug: covid
 ---

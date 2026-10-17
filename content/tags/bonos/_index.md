@@ -1,3 +1,4 @@
 ---
 title: Bonos
+slug: bonos
 ---

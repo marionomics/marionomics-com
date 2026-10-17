@@ -72,7 +72,8 @@ def write_tag_pages(out_root: Path, tags) -> None:
     for tag in tags:
         path = Path(out_root) / "content" / "tags" / tag.slug / "_index.md"
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(f"---\n{_yaml({'title': tag.name})}---\n", encoding="utf-8")
+        # slug pins /tag/<ghost slug>/; without it Hugo urlizes the title (e.g. /tag/econometría/).
+        path.write_text(f"---\n{_yaml({'title': tag.name, 'slug': tag.slug})}---\n", encoding="utf-8")
 
 
 def redirect_lines(items, tags) -> list[str]:

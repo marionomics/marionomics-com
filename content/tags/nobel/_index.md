@@ -1,3 +1,4 @@
 ---
 title: Nobel
+slug: nobel
 ---

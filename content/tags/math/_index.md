@@ -1,3 +1,4 @@
 ---
 title: math
+slug: math
 ---

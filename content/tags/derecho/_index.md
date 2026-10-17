@@ -1,3 +1,4 @@
 ---
 title: derecho
+slug: derecho
 ---

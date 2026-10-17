@@ -1,3 +1,4 @@
 ---
 title: Notion
+slug: notion
 ---

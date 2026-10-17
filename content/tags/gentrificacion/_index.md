@@ -1,3 +1,4 @@
 ---
 title: Gentrificación
+slug: gentrificacion
 ---

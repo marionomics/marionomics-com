@@ -1,3 +1,4 @@
 ---
 title: Uber
+slug: uber
 ---

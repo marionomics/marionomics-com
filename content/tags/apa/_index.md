@@ -1,3 +1,4 @@
 ---
 title: APA
+slug: apa
 ---

@@ -1,3 +1,4 @@
 ---
 title: Netflix
+slug: netflix
 ---

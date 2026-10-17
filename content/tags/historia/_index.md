@@ -1,3 +1,4 @@
 ---
 title: Historia
+slug: historia
 ---

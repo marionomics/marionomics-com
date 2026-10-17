@@ -1,3 +1,4 @@
 ---
 title: Calificadoras
+slug: calificadoras
 ---

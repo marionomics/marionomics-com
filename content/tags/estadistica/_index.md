@@ -1,3 +1,4 @@
 ---
 title: Estadística
+slug: estadistica
 ---

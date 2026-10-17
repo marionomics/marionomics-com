@@ -1,3 +1,4 @@
 ---
 title: Econometría
+slug: econometria
 ---

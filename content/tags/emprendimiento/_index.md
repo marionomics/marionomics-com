@@ -1,3 +1,4 @@
 ---
 title: Emprendimiento
+slug: emprendimiento
 ---

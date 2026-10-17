@@ -1,3 +1,4 @@
 ---
 title: Algoritmos
+slug: algoritmos
 ---

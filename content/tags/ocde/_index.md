@@ -1,3 +1,4 @@
 ---
 title: OCDE
+slug: ocde
 ---

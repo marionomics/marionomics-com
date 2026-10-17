@@ -1,3 +1,4 @@
 ---
 title: Ética
+slug: etica
 ---

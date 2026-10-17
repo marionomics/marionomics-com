@@ -1,3 +1,4 @@
 ---
 title: crianza
+slug: crianza
 ---

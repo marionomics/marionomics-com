@@ -1,3 +1,4 @@
 ---
 title: Vivienda
+slug: vivienda
 ---

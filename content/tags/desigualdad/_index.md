@@ -1,3 +1,4 @@
 ---
 title: Desigualdad
+slug: desigualdad
 ---

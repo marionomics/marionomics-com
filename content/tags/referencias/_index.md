@@ -1,3 +1,4 @@
 ---
 title: Referencias
+slug: referencias
 ---

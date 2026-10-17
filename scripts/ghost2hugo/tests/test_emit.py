@@ -61,7 +61,9 @@ def test_run_end_to_end(tmp_path):
 
     page_fm = _front_matter(repo / "content/pages/about-2.html")
     assert "tags" not in page_fm and page_fm["title"] == "La economía con manzanitas"
-    assert _front_matter(repo / "content/tags/econometria/_index.md") == {"title": "Econometría"}
+    # Hugo builds /tag/:slug/ from the term's title unless slug is set; Ghost's slug must win.
+    assert _front_matter(repo / "content/tags/econometria/_index.md") == {
+        "title": "Econometría", "slug": "econometria"}
 
     redirects = (repo / "redirects.txt").read_text(encoding="utf-8").splitlines()
     assert "/mi-post/\thttps://blog.marionomics.com/mi-post/" in redirects

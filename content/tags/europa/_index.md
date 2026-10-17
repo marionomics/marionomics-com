@@ -1,3 +1,4 @@
 ---
 title: Europa
+slug: europa
 ---

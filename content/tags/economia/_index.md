@@ -1,3 +1,4 @@
 ---
 title: Economía
+slug: economia
 ---

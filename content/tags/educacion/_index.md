@@ -1,3 +1,4 @@
 ---
 title: Educación
+slug: educacion
 ---

@@ -1,3 +1,4 @@
 ---
 title: Salud
+slug: salud
 ---

@@ -1,3 +1,4 @@
 ---
 title: Trump
+slug: trump
 ---

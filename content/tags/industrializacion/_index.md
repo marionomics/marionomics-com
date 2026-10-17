@@ -1,3 +1,4 @@
 ---
 title: Industrialización
+slug: industrializacion
 ---

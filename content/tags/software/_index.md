@@ -1,3 +1,4 @@
 ---
 title: Software
+slug: software
 ---

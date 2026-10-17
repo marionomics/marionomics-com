@@ -1,3 +1,4 @@
 ---
 title: Productividad
+slug: productividad
 ---

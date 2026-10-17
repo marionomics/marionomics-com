@@ -1,3 +1,4 @@
 ---
 title: Experimentos
+slug: experimentos
 ---

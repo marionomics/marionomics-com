@@ -1,3 +1,4 @@
 ---
 title: Durango
+slug: durango
 ---

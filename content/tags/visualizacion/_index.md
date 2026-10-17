@@ -1,3 +1,4 @@
 ---
 title: Visualización
+slug: visualizacion
 ---

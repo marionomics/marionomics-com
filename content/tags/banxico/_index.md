@@ -1,3 +1,4 @@
 ---
 title: Banxico
+slug: banxico
 ---

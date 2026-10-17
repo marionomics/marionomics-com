@@ -1,3 +1,4 @@
 ---
 title: Corea
+slug: corea
 ---

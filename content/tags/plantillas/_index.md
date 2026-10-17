@@ -1,3 +1,4 @@
 ---
 title: Plantillas
+slug: plantillas
 ---

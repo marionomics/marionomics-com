@@ -1,3 +1,4 @@
 ---
 title: Halloween
+slug: halloween
 ---

@@ -1,3 +1,4 @@
 ---
 title: Impuestos
+slug: impuestos
 ---

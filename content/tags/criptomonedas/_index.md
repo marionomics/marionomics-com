@@ -1,3 +1,4 @@
 ---
 title: Criptomonedas
+slug: criptomonedas
 ---

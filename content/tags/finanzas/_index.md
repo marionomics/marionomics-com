@@ -1,3 +1,4 @@
 ---
 title: Finanzas
+slug: finanzas
 ---
