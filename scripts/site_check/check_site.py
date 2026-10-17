@@ -1,6 +1,6 @@
 """Post-build checks for marionomics.com (spec: Testing → Build checks). Standard library only.
 
-Usage: python scripts/site_check/check_site.py public redirects.txt --min-indexed 332
+Usage: python scripts/site_check/check_site.py public redirects.txt --min-indexed 332 --min-archive 326
 """
 from __future__ import annotations
 
@@ -80,6 +80,14 @@ def check_redirect_targets(public: Path, redirects: Path) -> list[str]:
     return problems
 
 
+_REFRESH = re.compile(r"http-equiv=[\"']?refresh[\"']?\s+content=[\"']?\d+;\s*url=([^\"'>\s]+)", re.I)
+
+
+def _refresh_target(html: str) -> str | None:
+    match = _REFRESH.search(html)
+    return match.group(1) if match else None
+
+
 def check_old_paths(public: Path, redirects: Path) -> list[str]:
     if not redirects.is_file():
         return [f"redirects file missing: {redirects}"]
@@ -87,7 +95,8 @@ def check_old_paths(public: Path, redirects: Path) -> list[str]:
     for old, new in _lines(redirects):
         if not resolves(public, old):
             problems.append(f"old path missing: {old}")
-        elif new != SITE + old and new not in _page_file(public, old).read_text(encoding="utf-8", errors="replace"):
+        elif new != SITE + old and _refresh_target(
+                _page_file(public, old).read_text(encoding="utf-8", errors="replace")) != new:
             problems.append(f"old path not redirecting: {old} -> {new}")
     return problems
 

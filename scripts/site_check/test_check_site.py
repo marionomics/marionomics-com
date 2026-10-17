@@ -67,14 +67,17 @@ def test_old_paths_identity_alias_and_missing(tmp_path):
     public = tmp_path / "public"
     _page(public, "mi-post/index.html", "post")
     _page(public, "cripto/index.html", '<meta http-equiv=refresh content="0; url=https://marionomics.com/">')
-    _page(public, "pro/index.html", "<p>se quedó una página real</p>")
+    _page(public, "pro/index.html", "<link rel=canonical href=https://marionomics.com/pro/><p>se quedó una página real</p>")
+    _page(public, "cursos/index.html", '<meta http-equiv="refresh" content="0; url=https://marionomics.com/otro/">')
     redirects = tmp_path / "redirects.txt"
     redirects.write_text("/mi-post/\thttps://marionomics.com/mi-post/\n"
                          "/cripto/\thttps://marionomics.com/\n"
                          "/pro/\thttps://marionomics.com/\n"
+                         "/cursos/\thttps://marionomics.com/\n"
                          "/perdido/\thttps://marionomics.com/perdido/\n")
     assert check_old_paths(public, redirects) == [
         "old path not redirecting: /pro/ -> https://marionomics.com/",
+        "old path not redirecting: /cursos/ -> https://marionomics.com/",
         "old path missing: /perdido/",
     ]
 
