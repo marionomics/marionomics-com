@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from html.parser import HTMLParser
 from pathlib import Path
@@ -58,17 +59,63 @@ def check_links(public: Path) -> list[str]:
     return problems
 
 
+def _lines(redirects: Path):
+    for line in redirects.read_text(encoding="utf-8").splitlines():
+        if line.strip():
+            yield line.split("\t")
+
+
+def _page_file(public: Path, path: str) -> Path:
+    target = public / unquote(path).lstrip("/")
+    return target if target.is_file() else target / "index.html"
+
+
 def check_redirect_targets(public: Path, redirects: Path) -> list[str]:
     if not redirects.is_file():
         return [f"redirects file missing: {redirects}"]
     problems = []
-    for line in redirects.read_text(encoding="utf-8").splitlines():
-        if not line.strip():
-            continue
-        old, new = line.split("\t")
+    for old, new in _lines(redirects):
         if new.startswith(SITE) and not resolves(public, new[len(SITE):] or "/"):
             problems.append(f"redirect target missing: {old} -> {new}")
     return problems
+
+
+def check_old_paths(public: Path, redirects: Path) -> list[str]:
+    if not redirects.is_file():
+        return [f"redirects file missing: {redirects}"]
+    problems = []
+    for old, new in _lines(redirects):
+        if not resolves(public, old):
+            problems.append(f"old path missing: {old}")
+        elif new != SITE + old and new not in _page_file(public, old).read_text(encoding="utf-8", errors="replace"):
+            problems.append(f"old path not redirecting: {old} -> {new}")
+    return problems
+
+
+_LANDING_RULES = (
+    ("landing: missing form", lambda h: len(re.findall(r"class=[\"']?nf-form", h)) >= 2),
+    ("landing: missing done section", lambda h: re.search(r"id=[\"']?done[\"'\s>]", h)),
+    ("landing: missing archive link", lambda h: re.search(r"href=[\"']?/archivo/", h)),
+    ("landing: has blog header", lambda h: not re.search(r"class=[\"']?top[\"'\s>]", h)),
+)
+
+
+def check_landing(public: Path) -> list[str]:
+    page = public / "index.html"
+    if not page.is_file():
+        return ["landing missing"]
+    html = page.read_text(encoding="utf-8", errors="replace")
+    return [message for message, ok in _LANDING_RULES if not ok(html)]
+
+
+def check_archive(public: Path, minimum: int) -> list[str]:
+    page = public / "archivo" / "index.html"
+    if not page.is_file():
+        return ["archive missing"]
+    count = page.read_text(encoding="utf-8", errors="replace").count("<li")
+    if count < minimum:
+        return [f"archive lists {count} posts, expected at least {minimum}"]
+    return []
 
 
 def check_index(public: Path, minimum: int) -> list[str]:
@@ -87,8 +134,12 @@ def main(argv=None) -> int:
     parser.add_argument("public", type=Path)
     parser.add_argument("redirects", type=Path)
     parser.add_argument("--min-indexed", type=int, default=332)
+    parser.add_argument("--min-archive", type=int, default=326)
     args = parser.parse_args(argv)
     problems = (check_redirect_targets(args.public, args.redirects)
+                + check_old_paths(args.public, args.redirects)
+                + check_landing(args.public)
+                + check_archive(args.public, args.min_archive)
                 + check_links(args.public)
                 + check_index(args.public, args.min_indexed))
     for problem in problems:
