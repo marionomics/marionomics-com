@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import re
+from dataclasses import dataclass
 from urllib.parse import urlsplit
 
 from bs4 import BeautifulSoup, Comment, NavigableString
@@ -188,3 +189,47 @@ def detect_flags(soup) -> dict:
     math = "$$" in text or r"\(" in text or r"\[" in text
     twitter = bool(soup.select("blockquote.twitter-tweet"))
     return {"math": math, "twitter": twitter}
+
+
+# --- Whole item ---------------------------------------------------------------------------------
+
+
+@dataclass
+class Transformed:
+    html: str
+    math: bool
+    twitter: bool
+    feature_image: str | None
+
+
+def _feature_image(item, store, report: Report) -> str | None:
+    if not item.feature_image:
+        return None
+    url = strip_origin(item.feature_image)
+    if url.startswith("/content/"):
+        if store.copy(url):
+            return url
+        report.add(item.slug, "feature_image_missing", item.feature_image)
+        return None
+    if url.startswith(("http://", "https://")):
+        return url
+    report.add(item.slug, "feature_image_missing", item.feature_image)
+    return None
+
+
+def transform_item(item, known_slugs: set[str], known_tags: set[str], store, report: Report) -> Transformed:
+    from assets import process_assets  # local import keeps transform importable without assets
+
+    soup = parse(item.html)
+    normalize_urls(soup)
+    rewrite_portal_links(soup)
+    rewrite_internal_links(soup, item.slug, known_slugs, known_tags, report)
+    replace_membership_cards(soup)
+    process_assets(soup, store, item.slug, report)
+    normalize_code_languages(soup)
+    handle_scripts(soup, item.slug, report)
+    report_unknown_cards(soup, item.slug, report)
+    convert_inline_math(soup, item.slug, report)
+    check_code_injection(item.code_injection, item.slug, report)
+    flags = detect_flags(soup)
+    return Transformed(str(soup), flags["math"], flags["twitter"], _feature_image(item, store, report))
