@@ -27,6 +27,16 @@ def test_inline_math_converted_and_prices_untouched():
     assert "p" not in r.entries
 
 
+def test_tight_numbers_and_sums_are_math():
+    r = Report()
+    soup = parse("<p>Vale $1$ si se trata y $0$ si no; $100$ unidades; el rezago $r + 1$. Cuesta $100 y $5.</p>")
+    convert_inline_math(soup, "p", r)
+    text = soup.get_text()
+    assert r"\(1\)" in text and r"\(0\)" in text and r"\(100\)" in text and r"\(r + 1\)" in text
+    assert "Cuesta $100 y $5." in text
+    assert "p" not in r.entries
+
+
 def test_dollars_in_code_are_never_math():
     soup = parse('<pre><code class="language-r">df$a$b + df$x</code></pre><p><code>$n$</code></p>')
     convert_inline_math(soup, "p", Report())

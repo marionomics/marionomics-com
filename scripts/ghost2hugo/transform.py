@@ -79,7 +79,8 @@ def replace_membership_cards(soup) -> None:
 # --- Inline math (spec rule 6) ---------------------------------------------------------------
 
 SKIP_TEXT_PARENTS = {"pre", "code", "script", "style"}
-LATEXY = re.compile(r"[\\_^{}=]|^[A-Za-z]$|^[^\s\d]\S{0,19}$")
+LATEXY = re.compile(r"[\\_^{}=+]|^[A-Za-z]$|^[^\s\d]\S{0,19}$")
+NUMBER = re.compile(r"^\d+(?:\.\d+)?$")  # $100$: a closing $ glued to digits is never a price
 INLINE_MATH = re.compile(r"(?<![$\\])\$(?!\$)([^$\n]{1,200}?)(?<![\\\s])\$(?!\$)")
 DISPLAY_MATH = re.compile(r"\$\$.*?\$\$", re.S)
 
@@ -96,6 +97,8 @@ def _text_nodes(soup):
 def _convert_inline(chunk: str, slug: str, report: Report) -> str:
     def sub(match):
         body = match.group(1)
+        if NUMBER.match(body):
+            return r"\(" + body + r"\)"
         if body[0].isspace() or body[0].isdigit() or not LATEXY.search(body):
             report.add(slug, "math_left_as_text", match.group(0))
             return match.group(0)
