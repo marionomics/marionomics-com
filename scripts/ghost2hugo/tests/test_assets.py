@@ -88,3 +88,23 @@ def test_external_images_untouched(tmp_path):
     soup = parse('<img src="https://images.unsplash.com/photo-1">')
     process_assets(soup, make_store(tmp_path), "p", Report())
     assert soup.img["src"] == "https://images.unsplash.com/photo-1"
+
+
+def test_missing_bookmark_images_drop_only_the_image(tmp_path):
+    soup = parse(
+        '<figure class="kg-card kg-bookmark-card"><a class="kg-bookmark-container" href="https://x.com">'
+        '<div class="kg-bookmark-content"><div class="kg-bookmark-title">Título</div>'
+        '<div class="kg-bookmark-metadata"><img class="kg-bookmark-icon" src="/favicon.png"></div></div>'
+        '<div class="kg-bookmark-thumbnail"><img src="/content/images/thumbnail/no.png"></div></a></figure>'
+    )
+    r = Report()
+    process_assets(soup, make_store(tmp_path), "p", r)
+    assert soup.select_one(".kg-bookmark-title").get_text() == "Título"
+    assert soup.find("img") is None
+    assert r.entries["p"]["asset_removed"] == ["/favicon.png", "/content/images/thumbnail/no.png"]
+
+
+def test_root_relative_image_outside_content_is_missing(tmp_path):
+    soup = parse('<p>a <img src="/logo.png"> b</p>')
+    process_assets(soup, make_store(tmp_path), "p", Report())
+    assert str(soup) == "<p>a  b</p>"

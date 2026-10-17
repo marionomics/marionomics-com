@@ -9,7 +9,7 @@
 
 | Issue | Count |
 |---|---|
-| Removed (file not in backup) | 328 |
+| Removed (file not in backup) | 346 |
 | Feature image dropped (file not in backup) | 119 |
 | Link to non-migrated page rewritten to / | 29 |
 | $…$ left as text | 0 |
@@ -52,11 +52,13 @@
 
 **Removed (file not in backup)**
 - `/content/images/size/w256h256/2022/08/Logo-Marionomics-3.png`
+- `/content/images/2023/06/peso-pluma-dedica-mensaje-a.jpg`
 
 ### about-2
 
 **Removed (file not in backup)**
 - `/content/images/size/w256h256/2022/08/Logo-Marionomics-3.png`
+- `/content/images/2022/09/IMG_5659-4.JPG`
 
 ### aprende-a-hacer-un-bot-de-trading
 
@@ -362,6 +364,7 @@
 **Removed (file not in backup)**
 - `/content/images/2023/02/Captura-de-Pantalla-2023-02-26-a-la-s--21.05.52.png`
 - `/content/images/size/w256h256/2022/08/Logo-Marionomics-3.png`
+- `/content/images/image/fetch/f_auto,q_auto:best,fl_progressive:steep/https-3a-2f-2fmarionomics.substack.com-2ftwitter-2fsubscribe-card.jpg`
 
 **Feature image dropped (file not in backup)**
 - `__GHOST_URL__/content/images/2023/02/Captura-de-Pantalla-2023-02-27-a-la-s--11.47.47.png`
@@ -399,7 +402,9 @@
 
 **Removed (file not in backup)**
 - `/content/images/size/w256h256/2022/08/Logo-Marionomics-3.png`
+- `/content/images/2023/07/marionomics_a_very_tired_mother_in_a_suit_taking_her_kids_from__51b88f32-64b4-4954-8221-1c1aae49f8a6.png`
 - `/content/images/size/w256h256/2022/08/Logo-Marionomics-3.png`
+- `/content/images/2023/09/marionomics_a_woman_in_poverty_in_medieval_europe_is_being_burn_d98d4e43-5aff-4b5b-8739-ee1cdc98ffb8.png`
 
 **Feature image dropped (file not in backup)**
 - `__GHOST_URL__/content/images/2023/09/marionomics_a_parent_playing_chess_with_their_child_happy_outdo_4208eae9-31ce-44a4-b750-114434766b0f.png`
@@ -442,6 +447,7 @@
 - `/content/files/2022/09/MarioGarciaM.pdf`
 - `/content/files/2022/09/main.pdf`
 - `/content/images/size/w256h256/2022/08/Logo-Marionomics-3.png`
+- `/content/images/2022/09/IMG_5659-4.JPG`
 
 ### datos-espaciales-vector
 
@@ -458,6 +464,7 @@
 - `/content/images/2023/10/Captura-de-Pantalla-2023-10-10-a-la-s--11.10.21.png`
 - `/content/images/2023/10/IMG_0778.jpeg`
 - `/content/images/size/w256h256/2022/08/Logo-Marionomics-3.png`
+- `/content/images/2023/09/marionomics_A_young_sad_cartel_recruit_in_rural_mexico_semidese_6f8c25a4-33bd-48c2-b82b-c497dcb0473c.png`
 
 ### economia-del-comportamiento-para
 
@@ -507,6 +514,7 @@
 - `/content/images/2023/10/Captura-de-Pantalla-2023-10-07-a-la-s--15.52.03.png`
 - `/content/images/2023/10/xkcd_ai.png`
 - `/content/images/size/w256h256/2022/08/Logo-Marionomics-3.png`
+- `/content/images/2023/09/marionomics_a_little_child_walking_alone_in_the_streets_of_Japa_7516bcbf-adde-4392-83a2-ee097c831e37.png`
 - `/content/images/2023/10/Untitled-1.png`
 
 **Feature image dropped (file not in backup)**
@@ -569,9 +577,12 @@
 - `/content/images/2023/10/IMG_0735.JPG`
 - `/content/images/2023/10/Captura-de-Pantalla-2023-10-09-a-la-s--17.34.34.png`
 - `/content/images/size/w256h256/2022/08/Logo-Marionomics-3.png`
+- `/content/images/2023/07/marionomics_a_barbie_doll_in_the_trading_floor_in_wall_street_p_712e222d-eb88-45f3-9455-a85d9f4b5a17.png`
 - `/content/images/2023/10/Captura-de-Pantalla-2023-10-09-a-la-s--18.33.01.png`
 - `/content/images/size/w256h256/2022/08/Logo-Marionomics-3.png`
+- `/content/images/2023/10/DALL-E-2023-10-09-18.50.57---Wide-photo-of-a-reggaeton-artist-with-light-skin-and-a-chic-outfit--joyfully-raising-a-golden-Nobel-Prize-in-Economics-medal-on-a-red-carpet-event-wit.png`
 - `/content/images/size/w256h256/2022/08/Logo-Marionomics-3.png`
+- `/content/images/image/fetch/w_1200,h_600,c_limit,f_jpg,q_auto:good,fl_progressive:steep/https-3a-2f-2fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com-2fpublic-2fimages-2fa17d4274-617a-4a7e-a9b6-3970fe5f079d_1630x1630.jpg`
 
 ### el-techo-de-deuda-y-la-moneda-de
 
@@ -595,6 +606,7 @@
 
 **Removed (file not in backup)**
 - `/content/images/size/w256h256/2022/08/Logo-Marionomics-3.png`
+- `/content/images/2023/06/PHOTO-2022-03-10-23-13-50.jpg`
 
 **Feature image dropped (file not in backup)**
 - `__GHOST_URL__/content/images/2023/06/marionomics_Albert_Einstein_writing_a_research_article_in_a_lap_3d7e2588-3177-44c3-9620-0b2686e3113b.png`
@@ -626,6 +638,7 @@
 - `/content/images/2022/11/f1133bbe-1470-4cac-b2b7-4a18e5eac2aa_1440x1800.jpg`
 - `/content/images/2022/11/264FADB7-434F-4D5B-BBFA-1EBE34EB35B0.jpeg`
 - `/content/images/size/w256h256/2022/08/Logo-Marionomics-3.png`
+- `/content/images/2022/10/Unknown-1.png`
 
 **Feature image dropped (file not in backup)**
 - `__GHOST_URL__/content/images/2022/11/Unknown-36.png`
@@ -665,6 +678,7 @@
 **Removed (file not in backup)**
 - `/content/images/2023/10/Untitled-2.png`
 - `/content/images/size/w256h256/2022/08/Logo-Marionomics-3.png`
+- `/content/images/2023/09/marionomics_a_woman_in_poverty_in_medieval_europe_is_being_burn_d98d4e43-5aff-4b5b-8739-ee1cdc98ffb8.png`
 
 ### huelgas-y-cuidados
 
@@ -826,6 +840,7 @@
 - `/content/images/2023/09/Untitled.png`
 - `/content/images/2023/09/2quimw.png`
 - `/content/images/size/w256h256/2022/08/Logo-Marionomics-3.png`
+- `/content/images/2023/09/marionomics_a_little_child_walking_alone_in_the_streets_of_Japa_7516bcbf-adde-4392-83a2-ee097c831e37.png`
 
 **Feature image dropped (file not in backup)**
 - `__GHOST_URL__/content/images/2023/09/marionomics_a_mexican_grandmother_taking_care_of_her_grandchild_e20363ac-3dce-4b7e-ae4c-f914d092e58f.png`
@@ -979,6 +994,7 @@
 **Removed (file not in backup)**
 - `/content/images/2023/09/IMG_0357.jpeg`
 - `/content/images/size/w256h256/2022/08/Logo-Marionomics-3.png`
+- `/content/images/2023/09/marionomics_An_economist_searching_in_an_old_library_full_of_ol_fbd4250e-718b-492f-b7e0-93dbe769ba54.png`
 
 ### mexico-vs-arabia-saudita-economia
 
@@ -1301,6 +1317,7 @@
 - `/content/images/2023/10/IMG_1034.jpeg`
 - `/content/images/2023/10/IMG_1035.jpeg`
 - `/content/images/size/w256h256/2022/08/Logo-Marionomics-3.png`
+- `/content/images/2022/11/Unknown-36.png`
 
 **Feature image dropped (file not in backup)**
 - `__GHOST_URL__/content/images/2023/10/marionomics_Taylor_Swift_in_front_of_a_massive_crowd_in_a_stadi_6b6538db-3c25-4f0c-a532-cfb675900d40.png`
@@ -1332,6 +1349,9 @@
 
 **Link to non-migrated page rewritten to /**
 - `/author/mario/`
+
+**Removed (file not in backup)**
+- `/favicon.png`
 
 ### tu-base-de-datos-de-referencias
 

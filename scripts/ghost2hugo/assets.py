@@ -59,8 +59,16 @@ def _attached(el, soup) -> bool:
     return any(parent is soup for parent in el.parents)
 
 
+def _is_missing_site_image(el) -> bool:
+    """A root-relative <img> outside /content/ (e.g. Ghost's /favicon.png) has no file on the blog."""
+    src = el.get("src") or ""
+    return el.name == "img" and src.startswith("/") and not src.startswith(("//", "/content/"))
+
+
 def _removal_target(el):
     """The element to delete when el's asset is missing: its card, gallery tile or figure."""
+    if el.find_parent(class_="kg-bookmark-card") is not None:
+        return el  # a bookmark still works without its icon or thumbnail
     for ancestor in el.parents:
         if ancestor.name == "[document]":
             break
@@ -95,6 +103,8 @@ def process_assets(soup, store: AssetStore, slug: str, report: Report) -> None:
             url = el.get(attr)
             if url and _is_local(url) and not store.copy(url):
                 missing.append((el, url))
+        if _is_missing_site_image(el):
+            missing.append((el, el["src"]))
     for el, url in missing:
         if not _attached(el, soup):
             continue
