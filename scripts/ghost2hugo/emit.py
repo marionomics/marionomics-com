@@ -8,7 +8,7 @@ from zoneinfo import ZoneInfo
 
 import yaml
 
-from scope import BLOG_URL, DROPPED_PAGE_TARGETS, SLUG_ALIASES
+from scope import SITE_URL, DROPPED_PAGE_TARGETS, SLUG_ALIASES
 
 MEXICO = ZoneInfo("America/Mexico_City")
 GENERATED = ("content/posts", "content/pages", "content/tags", "static/content")
@@ -77,11 +77,11 @@ def write_tag_pages(out_root: Path, tags) -> None:
 
 
 def redirect_lines(items, tags) -> list[str]:
-    lines = [f"/{item.slug}/\t{BLOG_URL}/{item.slug}/" for item in items]
-    lines += [f"/tag/{tag.slug}/\t{BLOG_URL}/tag/{tag.slug}/" for tag in tags]
+    lines = [f"/{item.slug}/\t{SITE_URL}/{item.slug}/" for item in items]
+    lines += [f"/tag/{tag.slug}/\t{SITE_URL}/tag/{tag.slug}/" for tag in tags]
     for slug, target in DROPPED_PAGE_TARGETS.items():
-        lines.append(f"/{slug}/\t{BLOG_URL}/" if target == "/" else f"/{slug}/\t{target}")
-    lines += [f"/{old}/\t{BLOG_URL}/{new}/" for old, new in SLUG_ALIASES.items()]
+        lines.append(f"/{slug}/\t{SITE_URL}/" if target == "/" else f"/{slug}/\t{target}")
+    lines += [f"/{old}/\t{SITE_URL}/{new}/" for old, new in SLUG_ALIASES.items()]
     return lines
 
 

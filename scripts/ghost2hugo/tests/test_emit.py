@@ -66,12 +66,12 @@ def test_run_end_to_end(tmp_path):
         "title": "Econometría", "slug": "econometria"}
 
     redirects = (repo / "redirects.txt").read_text(encoding="utf-8").splitlines()
-    assert "/mi-post/\thttps://blog.marionomics.com/mi-post/" in redirects
-    assert "/about-2/\thttps://blog.marionomics.com/about-2/" in redirects
-    assert "/tag/econometria/\thttps://blog.marionomics.com/tag/econometria/" in redirects
-    assert "/cripto/\thttps://blog.marionomics.com/" in redirects
+    assert "/mi-post/\thttps://marionomics.com/mi-post/" in redirects
+    assert "/about-2/\thttps://marionomics.com/about-2/" in redirects
+    assert "/tag/econometria/\thttps://marionomics.com/tag/econometria/" in redirects
+    assert "/cripto/\thttps://marionomics.com/" in redirects
     assert ("/quien-ganara-el-nobel-de-economia-2/\t"
-            "https://blog.marionomics.com/quien-ganara-el-nobel-de-economia/") in redirects
+            "https://marionomics.com/quien-ganara-el-nobel-de-economia/") in redirects
     assert any(line.startswith("/50-recursos-para-econometria/\thttps://marionomics.notion.site/")
                for line in redirects)
 

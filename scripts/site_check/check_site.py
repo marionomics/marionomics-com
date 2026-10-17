@@ -1,4 +1,4 @@
-"""Post-build checks for blog.marionomics.com (spec: Testing → Build checks). Standard library only.
+"""Post-build checks for marionomics.com (spec: Testing → Build checks). Standard library only.
 
 Usage: python scripts/site_check/check_site.py public redirects.txt --min-indexed 332
 """
@@ -11,7 +11,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
-BLOG = "https://blog.marionomics.com"
+SITE = "https://marionomics.com"
 
 
 class _Refs(HTMLParser):
@@ -33,8 +33,8 @@ def _local_refs(html: str):
     parser = _Refs()
     parser.feed(html)
     for ref in parser.refs:
-        if ref.startswith(BLOG):
-            ref = ref[len(BLOG):] or "/"
+        if ref.startswith(SITE):
+            ref = ref[len(SITE):] or "/"
         if ref.startswith("/") and not ref.startswith("//"):
             yield ref
 
@@ -66,7 +66,7 @@ def check_redirect_targets(public: Path, redirects: Path) -> list[str]:
         if not line.strip():
             continue
         old, new = line.split("\t")
-        if new.startswith(BLOG) and not resolves(public, new[len(BLOG):] or "/"):
+        if new.startswith(SITE) and not resolves(public, new[len(SITE):] or "/"):
             problems.append(f"redirect target missing: {old} -> {new}")
     return problems
 

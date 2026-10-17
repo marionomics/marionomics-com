@@ -11,7 +11,7 @@ def _page(public, rel, html):
 
 def _site(tmp_path, page_count=2):
     public = tmp_path / "public"
-    _page(public, "index.html", '<a href=/mi-post/>p</a><link rel=canonical href="https://blog.marionomics.com/">')
+    _page(public, "index.html", '<a href=/mi-post/>p</a><link rel=canonical href="https://marionomics.com/">')
     _page(public, "mi-post/index.html",
           '<img src="/content/images/con%20espacio.png" srcset="/content/images/con%20espacio.png 600w">'
           '<a href="/tag/x/">t</a><a href="https://otro.com/">e</a><iframe src="//youtube.com/e"></iframe>')
@@ -25,8 +25,8 @@ def _site(tmp_path, page_count=2):
 def test_clean_site_has_no_problems(tmp_path):
     public = _site(tmp_path)
     redirects = tmp_path / "redirects.txt"
-    redirects.write_text("/mi-post/\thttps://blog.marionomics.com/mi-post/\n"
-                         "/cripto/\thttps://blog.marionomics.com/\n"
+    redirects.write_text("/mi-post/\thttps://marionomics.com/mi-post/\n"
+                         "/cripto/\thttps://marionomics.com/\n"
                          "/50-recursos/\thttps://marionomics.notion.site/x\n")
     assert check_links(public) == []
     assert check_redirect_targets(public, redirects) == []
@@ -45,9 +45,9 @@ def test_broken_link_and_missing_image_reported(tmp_path):
 def test_missing_redirect_target_reported(tmp_path):
     public = _site(tmp_path)
     redirects = tmp_path / "redirects.txt"
-    redirects.write_text("/perdido/\thttps://blog.marionomics.com/perdido/\n")
+    redirects.write_text("/perdido/\thttps://marionomics.com/perdido/\n")
     assert check_redirect_targets(public, redirects) == [
-        "redirect target missing: /perdido/ -> https://blog.marionomics.com/perdido/"]
+        "redirect target missing: /perdido/ -> https://marionomics.com/perdido/"]
 
 
 def test_low_index_count_reported(tmp_path):
