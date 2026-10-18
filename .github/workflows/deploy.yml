@@ -24,7 +24,7 @@ jobs:
           python-version: '3.12'
       - run: hugo --gc --minify
       - run: npx -y pagefind@1.3.0 --site public
-      - run: python scripts/site_check/check_site.py public redirects.txt --min-indexed 332
+      - run: python scripts/site_check/check_site.py public redirects.txt --min-indexed 332 --min-archive 326
       - uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

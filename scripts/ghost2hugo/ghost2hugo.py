@@ -1,4 +1,4 @@
-"""Convert a Ghost backup into Hugo content for blog.marionomics.com.
+"""Convert a Ghost backup into Hugo content for marionomics.com.
 
 Usage, from the marionomics-com repo root:
 

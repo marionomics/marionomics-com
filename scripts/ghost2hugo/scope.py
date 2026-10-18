@@ -1,6 +1,6 @@
-"""What migrates to the blog and where dropped Ghost pages should point (spec: Content scope)."""
+"""What migrates to marionomics.com and where dropped Ghost pages should point (spec: Content scope)."""
 
-BLOG_URL = "https://blog.marionomics.com"
+SITE_URL = "https://marionomics.com"
 SUBSTACK_URL = "https://marionomics.substack.com"
 SUBSTACK_SUBSCRIBE_URL = "https://marionomics.substack.com/subscribe"
 
@@ -11,7 +11,7 @@ NOTION_50_RECURSOS = (
     "?v=edc6541f06cd4621a33049b93760e8ca"
 )
 
-# "/" means the blog home page.
+# "/" means the landing page at the site root.
 DROPPED_PAGE_TARGETS = {
     "signin": "/",
     "signup": "/",
