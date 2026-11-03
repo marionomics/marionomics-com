@@ -1,6 +1,6 @@
 ---
-title: Despega tu consultoría en Economía
-description: Una masterclass por email para quienes quieren ganar dinero como consultores
+title: El Mapa del Economista Consultor
+description: Elige tu nicho de consultoría y ponle precio en 5 días (sin pagar otro diplomado). Curso gratuito por correo.
 aliases:
   - /signin/
   - /signup/

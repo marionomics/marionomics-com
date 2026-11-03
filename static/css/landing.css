@@ -37,6 +37,7 @@ h1, h2, p, ul { margin: 0; }
 .page > section > .cta { margin-top: 3rem; }
 .checks, .dots { padding: 0; list-style: none; line-height: 1.75; }
 .checks { margin-top: 0.75rem; }
+.checks.wide { max-width: 34rem; }
 .dots { color: #152942; }
 .dots li { position: relative; padding-left: 1.3125rem; }
 .dots li::before { content: ""; position: absolute; left: 0; top: 0.65em; width: 0.5em; height: 0.5em; border-radius: 50%; background: #000; }
@@ -53,3 +54,5 @@ body.is-done #done { display: block; }
 .foot { text-align: center; padding: 2rem 0 1.5rem; font-size: 0.6rem; }
 .foot a { color: #b5b5b5; text-decoration: none; }
 .foot a:hover { text-decoration: underline; }
+@media (max-width: 736px) { .page .nf-form button { font-size: 1.2rem; padding: 0 0.75rem; } }
+.page > section > .t-h2 { margin-top: 3rem; }
